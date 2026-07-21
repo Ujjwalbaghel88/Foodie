@@ -1,0 +1,835 @@
+[{
+  "_id": {
+    "$oid": "69c595931c86a8ec474ccfda"
+  },
+  "restaurantId": {
+    "$oid": "69c592c20d577beee548c1a8"
+  },
+  "items": [
+    {
+      "itemName": "Shahi Paneer",
+      "description": "Rich creamy paneer curry with tomato gravy and dry fruits",
+      "price": 280,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774556564/menus/69c592c20d577beee548c1a8/wtd0wwkgkkzzdopdnduv.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/wtd0wwkgkkzzdopdnduv"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c595961c86a8ec474ccfdb"
+      }
+    },
+    {
+      "itemName": "Steamed Rice",
+      "description": "Fluffy basmati rice",
+      "price": 120,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774556589/menus/69c592c20d577beee548c1a8/t9cpoqwy7bn3ks4v1flu.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/t9cpoqwy7bn3ks4v1flu"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c595af1c86a8ec474ccfef"
+      }
+    },
+    {
+      "itemName": "Lemon Soda",
+      "description": "Refreshing lemon soda drink",
+      "price": 90,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774556622/menus/69c592c20d577beee548c1a8/fcid6rbnlnubysgyviod.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/fcid6rbnlnubysgyviod"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c595d01c86a8ec474cd005"
+      }
+    },
+    {
+      "itemName": "Berry Ice Cream",
+      "description": "Creamy berry flavored ice cream",
+      "price": 150,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598366/menus/69c592c20d577beee548c1a8/kyjdifg5jmmxc8aeupbu.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/kyjdifg5jmmxc8aeupbu"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c638df2a5f7c75d2231ebb"
+      }
+    },
+    {
+      "itemName": "Hot & Sour Soup",
+      "description": "Spicy tangy vegetable soup",
+      "price": 130,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598650/menus/69c592c20d577beee548c1a8/v2h9zxrd7ant0aepv6mc.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/v2h9zxrd7ant0aepv6mc"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c639fc2a5f7c75d2231ed5"
+      }
+    },
+    {
+      "itemName": "Dal Makhani",
+      "description": "Creamy black lentils cooked overnight",
+      "price": 260,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598706/menus/69c592c20d577beee548c1a8/ajhahkdcwm4zxft7flmd.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/ajhahkdcwm4zxft7flmd"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63a352a5f7c75d2231ef1"
+      }
+    },
+    {
+      "itemName": "Masala Papad",
+      "description": "Crispy papad topped with onions and spices",
+      "price": 80,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598768/menus/69c592c20d577beee548c1a8/fnco3zm4ycvhdgvozhf1.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/fnco3zm4ycvhdgvozhf1"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63a722a5f7c75d2231f0f"
+      }
+    },
+    {
+      "itemName": "Sevaiya Kheer",
+      "description": "Sweet vermicelli dessert with milk",
+      "price": 140,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598843/menus/69c592c20d577beee548c1a8/ixqwxdozwzondek2hsyb.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/ixqwxdozwzondek2hsyb"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63abd2a5f7c75d2231f2f"
+      }
+    },
+    {
+      "itemName": "Roasted Papad",
+      "description": "Crunchy roasted papad",
+      "price": 60,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598936/menus/69c592c20d577beee548c1a8/seq6uz2eu3ddutzmeltk.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/seq6uz2eu3ddutzmeltk"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63b192a5f7c75d2231f51"
+      }
+    },
+    {
+      "itemName": "Non Veg Platter",
+      "description": "Mixed non-veg starter platter",
+      "price": 480,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774598997/menus/69c592c20d577beee548c1a8/jet7whz3zmtwspuqnisp.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/jet7whz3zmtwspuqnisp"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63b572a5f7c75d2231f75"
+      }
+    },
+    {
+      "itemName": "Chicken Biryani",
+      "description": "Spiced chicken with basmati rice",
+      "price": 320,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599106/menus/69c592c20d577beee548c1a8/gnepfkhpgpolzgakh8fd.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/gnepfkhpgpolzgakh8fd"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63bc32a5f7c75d2231f9b"
+      }
+    },
+    {
+      "itemName": "Chicken Kebab",
+      "description": "Grilled chicken kebabs",
+      "price": 300,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599161/menus/69c592c20d577beee548c1a8/isvykwo2b8jorhmb4koe.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/isvykwo2b8jorhmb4koe"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63bfa2a5f7c75d2231fc3"
+      }
+    },
+    {
+      "itemName": "Kadhai Paneer",
+      "description": "Paneer cooked with capsicum and spices",
+      "price": 270,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599209/menus/69c592c20d577beee548c1a8/f9atj9bp0z0jjsaguuli.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/f9atj9bp0z0jjsaguuli"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63c2b2a5f7c75d2231fed"
+      }
+    },
+    {
+      "itemName": "Palak Paneer",
+      "description": "Paneer in spinach gravy",
+      "price": 260,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599261/menus/69c592c20d577beee548c1a8/ee9gpnczrewjim0hlke1.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/ee9gpnczrewjim0hlke1"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63c5e2a5f7c75d2232019"
+      }
+    },
+    {
+      "itemName": "Rara Mutton",
+      "description": "Spicy mutton curry with minced meat",
+      "price": 420,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599310/menus/69c592c20d577beee548c1a8/dndvwhcjefg2hqannlx6.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/dndvwhcjefg2hqannlx6"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63c902a5f7c75d2232047"
+      }
+    },
+    {
+      "itemName": "Aloo Paratha",
+      "description": "Stuffed potato flatbread",
+      "price": 120,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599361/menus/69c592c20d577beee548c1a8/vg8ju2obdudqsfjimeax.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/vg8ju2obdudqsfjimeax"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63cc22a5f7c75d2232077"
+      }
+    },
+    {
+      "itemName": "Watermelon Crush",
+      "description": "Chilled watermelon beverage",
+      "price": 110,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599418/menus/69c592c20d577beee548c1a8/ns1c4r9n3btqeimpdof7.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/ns1c4r9n3btqeimpdof7"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63cfb2a5f7c75d22320a9"
+      }
+    },
+    {
+      "itemName": "Paneer Do Pyaza",
+      "description": "Paneer cooked with onions and spices",
+      "price": 280,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599462/menus/69c592c20d577beee548c1a8/sajin39l0bj79dini7ps.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/sajin39l0bj79dini7ps"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63d282a5f7c75d22320dd"
+      }
+    },
+    {
+      "itemName": "Rasmalai",
+      "description": "Soft paneer dumplings in sweet milk",
+      "price": 160,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599514/menus/69c592c20d577beee548c1a8/qb0rdeq2btyjkb0hwpr1.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/qb0rdeq2btyjkb0hwpr1"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63d5b2a5f7c75d2232113"
+      }
+    },
+    {
+      "itemName": "Kheer",
+      "description": "Traditional rice pudding",
+      "price": 150,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599561/menus/69c592c20d577beee548c1a8/p0aaxmyqlvn45c4qdidh.jpg",
+        "publicId": "menus/69c592c20d577beee548c1a8/p0aaxmyqlvn45c4qdidh"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63d8b2a5f7c75d223214b"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-03-26T20:22:46.242Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-27T08:19:23.260Z"
+  },
+  "__v": 19
+},
+{
+  "_id": {
+    "$oid": "69c63ec62a5f7c75d2232186"
+  },
+  "restaurantId": {
+    "$oid": "69c596a211b01f11c9a8a65d"
+  },
+  "items": [
+    {
+      "itemName": "Veg Noodles",
+      "description": "Stir-fried noodles with vegetables and sauces",
+      "price": 180,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599879/menus/69c596a211b01f11c9a8a65d/fw7obepbdchiwyeqajqk.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/fw7obepbdchiwyeqajqk"
+      },
+      "foodType": "veg",
+      "isAvailable": false,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63ec82a5f7c75d2232187"
+      }
+    },
+    {
+      "itemName": "Tandoori Roti",
+      "description": "Whole wheat roti cooked in tandoor",
+      "price": 40,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599940/menus/69c596a211b01f11c9a8a65d/lweyllncplbry5bnbyzi.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/lweyllncplbry5bnbyzi"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63f062a5f7c75d223219d"
+      }
+    },
+    {
+      "itemName": "Papad",
+      "description": "Crispy roasted papad served with chutney",
+      "price": 60,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774599995/menus/69c596a211b01f11c9a8a65d/qr5upspod5zu6v9rqqm8.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/qr5upspod5zu6v9rqqm8"
+      },
+      "foodType": "veg",
+      "isAvailable": false,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63f3c2a5f7c75d22321b5"
+      }
+    },
+    {
+      "itemName": "Butter Naan",
+      "description": "Soft naan topped with butter",
+      "price": 70,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600039/menus/69c596a211b01f11c9a8a65d/txwgt4jhzk4x9rxwbcfc.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/txwgt4jhzk4x9rxwbcfc"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63f692a5f7c75d22321cf"
+      }
+    },
+    {
+      "itemName": "Kadhai Chicken",
+      "description": "Spicy chicken cooked with capsicum and spices",
+      "price": 320,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600090/menus/69c596a211b01f11c9a8a65d/j9fgwb4laqbpballv7tf.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/j9fgwb4laqbpballv7tf"
+      },
+      "foodType": "nonveg",
+      "isAvailable": false,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c63f9b2a5f7c75d22321eb"
+      }
+    },
+    {
+      "itemName": "Red Velvet Cake",
+      "description": "Soft and creamy red velvet cake",
+      "price": 350,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600202/menus/69c596a211b01f11c9a8a65d/olsd2wcfezprz6s4bqvf.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/olsd2wcfezprz6s4bqvf"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6400c2a5f7c75d2232209"
+      }
+    },
+    {
+      "itemName": "Chicken Seekh Kebab",
+      "description": "Minced chicken kebabs grilled to perfection",
+      "price": 280,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600287/menus/69c596a211b01f11c9a8a65d/ho5bs1e0fsijcnsbqhba.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/ho5bs1e0fsijcnsbqhba"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c640602a5f7c75d2232229"
+      }
+    },
+    {
+      "itemName": "Shahi Paneer Special",
+      "description": "Paneer in rich creamy gravy with cheese topping",
+      "price": 300,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600377/menus/69c596a211b01f11c9a8a65d/lhosngy2vlx54zbox0rk.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/lhosngy2vlx54zbox0rk"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c640bb2a5f7c75d223224b"
+      }
+    },
+    {
+      "itemName": "Chicken Tikka",
+      "description": "Marinated chicken pieces grilled in tandoor",
+      "price": 300,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600427/menus/69c596a211b01f11c9a8a65d/jnj54ch4npau7xr5i4qg.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/jnj54ch4npau7xr5i4qg"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c640ec2a5f7c75d223226f"
+      }
+    },
+    {
+      "itemName": "Chicken Biryani Special",
+      "description": "Flavorful biryani with tender chicken pieces",
+      "price": 340,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600487/menus/69c596a211b01f11c9a8a65d/xvvxouo0q8frztz503n6.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/xvvxouo0q8frztz503n6"
+      },
+      "foodType": "nonveg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c641292a5f7c75d2232295"
+      }
+    },
+    {
+      "itemName": "Shahi Tukda",
+      "description": "Royal Mughlai dessert made with fried bread and rabdi",
+      "price": 180,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600540/menus/69c596a211b01f11c9a8a65d/jofvxiqlippofgjgk9g1.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/jofvxiqlippofgjgk9g1"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6415e2a5f7c75d22322bd"
+      }
+    },
+    {
+      "itemName": "Chaap Roll",
+      "description": "Delicious soya chaap wrapped in roti with sauces",
+      "price": 160,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600588/menus/69c596a211b01f11c9a8a65d/dame0qdqpikold4ynyql.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/dame0qdqpikold4ynyql"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6418d2a5f7c75d22322e7"
+      }
+    },
+    {
+      "itemName": "Chilli Paneer",
+      "description": "Spicy Indo-Chinese paneer tossed with capsicum and sauces",
+      "price": 240,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774600634/menus/69c596a211b01f11c9a8a65d/ckmrnnrrl4n7atf6r70y.jpg",
+        "publicId": "menus/69c596a211b01f11c9a8a65d/ckmrnnrrl4n7atf6r70y"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c641bc2a5f7c75d2232313"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-03-27T08:24:40.842Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-07T14:15:57.848Z"
+  },
+  "__v": 12
+},
+{
+  "_id": {
+    "$oid": "69c647032a5f7c75d2232347"
+  },
+  "restaurantId": {
+    "$oid": "69c599071c86a8ec474cd0a0"
+  },
+  "items": [
+    {
+      "itemName": "Veg Hakka Noodles",
+      "description": "Stir-fried noodles with vegetables in Indo-Chinese style",
+      "price": 200,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774601988/menus/69c599071c86a8ec474cd0a0/l50sp153bzrekvljv3gc.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/l50sp153bzrekvljv3gc"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c647062a5f7c75d2232348"
+      }
+    },
+    {
+      "itemName": "Mint Mojito",
+      "description": "Refreshing mint and lemon-based chilled drink",
+      "price": 120,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602037/menus/69c599071c86a8ec474cd0a0/epsb0kd4rovr4essazry.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/epsb0kd4rovr4essazry"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c647362a5f7c75d223235e"
+      }
+    },
+    {
+      "itemName": "White Sauce Pasta",
+      "description": "Creamy pasta cooked with herbs and cheese",
+      "price": 260,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602083/menus/69c599071c86a8ec474cd0a0/yarxn5ey9nrxiyxrzqsz.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/yarxn5ey9nrxiyxrzqsz"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c647642a5f7c75d2232376"
+      }
+    },
+    {
+      "itemName": "Mango Crush",
+      "description": "Chilled mango-based refreshing drink",
+      "price": 140,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602125/menus/69c599071c86a8ec474cd0a0/rjmjfrjvp8hgsfmktayk.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/rjmjfrjvp8hgsfmktayk"
+      },
+      "foodType": "others",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6478e2a5f7c75d2232390"
+      }
+    },
+    {
+      "itemName": "Masala Tea",
+      "description": "Hot Indian chai with spices and milk",
+      "price": 60,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602176/menus/69c599071c86a8ec474cd0a0/kiik6oppyrpkc9pcvgn5.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/kiik6oppyrpkc9pcvgn5"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c647c12a5f7c75d22323ac"
+      }
+    },
+    {
+      "itemName": "Bruschetta",
+      "description": "Toasted bread topped with veggies and cheese",
+      "price": 180,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602226/menus/69c599071c86a8ec474cd0a0/hfcv35cvms7n1rqiann8.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/hfcv35cvms7n1rqiann8"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c647f42a5f7c75d22323ca"
+      }
+    },
+    {
+      "itemName": "Tangy Peanut Salad",
+      "description": "Spicy and tangy peanut salad with veggies",
+      "price": 150,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602276/menus/69c599071c86a8ec474cd0a0/pptwnxm9twvrjh55uefs.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/pptwnxm9twvrjh55uefs"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c648252a5f7c75d22323ea"
+      }
+    },
+    {
+      "itemName": "Green Sauce Pasta",
+      "description": "Creamy pesto-style pasta with herbs",
+      "price": 270,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602315/menus/69c599071c86a8ec474cd0a0/orbtkwyoa4podr0d0nix.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/orbtkwyoa4podr0d0nix"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6484c2a5f7c75d223240c"
+      }
+    },
+    {
+      "itemName": "Veg Pizza",
+      "description": "Cheesy pizza loaded with vegetables",
+      "price": 350,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602363/menus/69c599071c86a8ec474cd0a0/mn4qif5vpdhhrmsa0kr0.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/mn4qif5vpdhhrmsa0kr0"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6487c2a5f7c75d2232430"
+      }
+    },
+    {
+      "itemName": "Chilli Paneer",
+      "description": "Spicy Indo-Chinese paneer tossed in sauces",
+      "price": 240,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602402/menus/69c599071c86a8ec474cd0a0/jcfbza5yn4x4sr2ud0eb.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/jcfbza5yn4x4sr2ud0eb"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c648a42a5f7c75d2232456"
+      }
+    },
+    {
+      "itemName": "Butter Naan",
+      "description": "Soft tandoor-baked naan with butter",
+      "price": 70,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602451/menus/69c599071c86a8ec474cd0a0/tslfihgujsjyrhhdcgko.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/tslfihgujsjyrhhdcgko"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c648d52a5f7c75d223247e"
+      }
+    },
+    {
+      "itemName": "Cheese Fries",
+      "description": "Crispy fries loaded with melted cheese",
+      "price": 180,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602506/menus/69c599071c86a8ec474cd0a0/y27m0s7iif7emao83td5.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/y27m0s7iif7emao83td5"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6490c2a5f7c75d22324a8"
+      }
+    },
+    {
+      "itemName": "French Fries",
+      "description": "Crispy salted potato fries",
+      "price": 120,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602545/menus/69c599071c86a8ec474cd0a0/bd0pi1zjsle5nqi90bqu.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/bd0pi1zjsle5nqi90bqu"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c649332a5f7c75d22324d4"
+      }
+    },
+    {
+      "itemName": "Paneer Tikka",
+      "description": "Grilled paneer cubes marinated in spices",
+      "price": 280,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602583/menus/69c599071c86a8ec474cd0a0/swuffmjrkoxptj5lqwnh.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/swuffmjrkoxptj5lqwnh"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c649592a5f7c75d2232502"
+      }
+    },
+    {
+      "itemName": "Crispy Corn",
+      "description": "Fried corn tossed with spices and herbs",
+      "price": 160,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602641/menus/69c599071c86a8ec474cd0a0/flhyqrd8v7tnm9crwhpm.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/flhyqrd8v7tnm9crwhpm"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c6497d2a5f7c75d2232532"
+      }
+    },
+    {
+      "itemName": "Chana Masala",
+      "description": "Spicy chickpea curry cooked in Indian spices",
+      "price": 220,
+      "image": {
+        "url": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774602683/menus/69c599071c86a8ec474cd0a0/fwl24f0vqggczizkxu4d.jpg",
+        "publicId": "menus/69c599071c86a8ec474cd0a0/fwl24f0vqggczizkxu4d"
+      },
+      "foodType": "veg",
+      "isAvailable": true,
+      "isDiscontinued": false,
+      "ratings": [],
+      "_id": {
+        "$oid": "69c649bc2a5f7c75d2232595"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2026-03-27T08:59:50.041Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-27T09:11:24.668Z"
+  },
+  "__v": 15
+}]

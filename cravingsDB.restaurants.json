@@ -1,0 +1,254 @@
+[{
+  "_id": {
+    "$oid": "69c592c20d577beee548c1a8"
+  },
+  "userId": {
+    "$oid": "69c58f340d577beee548c195"
+  },
+  "restaurantName": "Under The Mango Tree",
+  "address": "157, Shyamla Hills Rd, Shymala Hills,",
+  "city": "Bhopal",
+  "state": "Madhya Pradesh",
+  "zipCode": "462002",
+  "country": "India",
+  "geolocation": {
+    "lat": 23.237728,
+    "lng": 77.376478
+  },
+  "cuisineType": "indian, chineese, ittalian",
+  "images": [
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774555830/restaurants/69c58f340d577beee548c195/aodr3ghsc8plle5nqhhg.webp",
+      "publicId": "restaurants/69c58f340d577beee548c195/aodr3ghsc8plle5nqhhg",
+      "_id": {
+        "$oid": "69c592c20d577beee548c1a9"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774555830/restaurants/69c58f340d577beee548c195/vomkuz5bvw0i7raqddr0.webp",
+      "publicId": "restaurants/69c58f340d577beee548c195/vomkuz5bvw0i7raqddr0",
+      "_id": {
+        "$oid": "69c592c20d577beee548c1aa"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774555830/restaurants/69c58f340d577beee548c195/ri1tcdwheqaba8ziqolw.webp",
+      "publicId": "restaurants/69c58f340d577beee548c195/ri1tcdwheqaba8ziqolw",
+      "_id": {
+        "$oid": "69c592c20d577beee548c1ab"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774555830/restaurants/69c58f340d577beee548c195/rfrnbnlvkpvga7lwbrzs.webp",
+      "publicId": "restaurants/69c58f340d577beee548c195/rfrnbnlvkpvga7lwbrzs",
+      "_id": {
+        "$oid": "69c592c20d577beee548c1ac"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774555831/restaurants/69c58f340d577beee548c195/twkv4xscukc6n69uioor.webp",
+      "publicId": "restaurants/69c58f340d577beee548c195/twkv4xscukc6n69uioor",
+      "_id": {
+        "$oid": "69c592c20d577beee548c1ad"
+      }
+    }
+  ],
+  "openingHours": "09:00",
+  "closingHours": "21:00",
+  "licence": {
+    "fssai": "FASSAI5242652",
+    "GST": "23GST26511AUCKPS445"
+  },
+  "bankingDetails": {
+    "accountNumber": "568956895689",
+    "IFSC": "IFSC123456",
+    "bankName": "Abc Bank",
+    "UPI": "underthemangotree@upi"
+  },
+  "isProfileComplete": true,
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-03-26T20:10:42.294Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-27T20:45:22.944Z"
+  },
+  "__v": 0,
+  "numReviews": 114,
+  "rating": 3.6,
+  "description": "Enjoy the thrill of grill and barbecue at Under The Mango Tree restaurant at Jehan Numa Palace, Bhopal. Head here now!"
+},
+{
+  "_id": {
+    "$oid": "69c596a211b01f11c9a8a65d"
+  },
+  "userId": {
+    "$oid": "69c58f4b0d577beee548c198"
+  },
+  "restaurantName": "Raj darbar",
+  "address": "Ayodhya, Plot no 2, opposite Geet Ganesh Colony, Kokta",
+  "city": "Bhopal",
+  "state": "Madhya Pradesh",
+  "zipCode": "462022",
+  "country": "India",
+  "geolocation": {
+    "lat": 23.276898,
+    "lng": 77.462412
+  },
+  "cuisineType": "indian, chineese, ittalian",
+  "images": [
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557305/restaurants/69c58f4b0d577beee548c198/fpdlv1viy4gucm1vrh7u.webp",
+      "publicId": "restaurants/69c58f4b0d577beee548c198/fpdlv1viy4gucm1vrh7u",
+      "_id": {
+        "$oid": "69c5987b1c86a8ec474cd084"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557305/restaurants/69c58f4b0d577beee548c198/frrk2ll3wpl29xdod7ef.webp",
+      "publicId": "restaurants/69c58f4b0d577beee548c198/frrk2ll3wpl29xdod7ef",
+      "_id": {
+        "$oid": "69c5987b1c86a8ec474cd085"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557305/restaurants/69c58f4b0d577beee548c198/eiojlbmism75zkme2ccs.webp",
+      "publicId": "restaurants/69c58f4b0d577beee548c198/eiojlbmism75zkme2ccs",
+      "_id": {
+        "$oid": "69c5987b1c86a8ec474cd086"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557305/restaurants/69c58f4b0d577beee548c198/ecyng8bgfuspturbicav.webp",
+      "publicId": "restaurants/69c58f4b0d577beee548c198/ecyng8bgfuspturbicav",
+      "_id": {
+        "$oid": "69c5987b1c86a8ec474cd087"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557305/restaurants/69c58f4b0d577beee548c198/brermcscuu4skhgobxud.webp",
+      "publicId": "restaurants/69c58f4b0d577beee548c198/brermcscuu4skhgobxud",
+      "_id": {
+        "$oid": "69c5987b1c86a8ec474cd088"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557305/restaurants/69c58f4b0d577beee548c198/pmc33qjikzw0buz6yqq9.webp",
+      "publicId": "restaurants/69c58f4b0d577beee548c198/pmc33qjikzw0buz6yqq9",
+      "_id": {
+        "$oid": "69c5987b1c86a8ec474cd089"
+      }
+    }
+  ],
+  "openingHours": "09:00",
+  "closingHours": "21:00",
+  "licence": {
+    "fssai": "FASSAI5242652",
+    "GST": "23GST26511AUCKPS445"
+  },
+  "bankingDetails": {
+    "accountNumber": "568956895689",
+    "IFSC": "IFSC123456",
+    "bankName": "Abc Bank",
+    "UPI": "rajdarbar@upi"
+  },
+  "isProfileComplete": true,
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-03-26T20:10:42.294Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-27T20:48:45.482Z"
+  },
+  "__v": 0,
+  "numReviews": 171,
+  "rating": 4.8,
+  "description": "Raj Darbar is a one-of-a-kind Indian restaurant that offers a unique dining experience for families and friends with a dhaba-style theme."
+},
+{
+  "_id": {
+    "$oid": "69c599071c86a8ec474cd0a0"
+  },
+  "userId": {
+    "$oid": "69c590150d577beee548c19b"
+  },
+  "restaurantName": "Countryside Culture",
+  "address": "Rohit Nagar Phas 2, Aakriti Eco City Road, Bawadiya Kalan, Salaiya",
+  "city": "Bhopal",
+  "state": "Madhya Pradesh",
+  "zipCode": "462026",
+  "country": "India",
+  "geolocation": {
+    "lat": 0,
+    "lng": 0
+  },
+  "cuisineType": "indian, chineese",
+  "images": [
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557446/restaurants/69c590150d577beee548c19b/htwjijdrr2gbjdaf355s.webp",
+      "publicId": "restaurants/69c590150d577beee548c19b/htwjijdrr2gbjdaf355s",
+      "_id": {
+        "$oid": "69c599071c86a8ec474cd0a1"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557446/restaurants/69c590150d577beee548c19b/bm3augmwngapvrlypydx.webp",
+      "publicId": "restaurants/69c590150d577beee548c19b/bm3augmwngapvrlypydx",
+      "_id": {
+        "$oid": "69c599071c86a8ec474cd0a2"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557446/restaurants/69c590150d577beee548c19b/mkhr4btpdzcyh80j1yxy.webp",
+      "publicId": "restaurants/69c590150d577beee548c19b/mkhr4btpdzcyh80j1yxy",
+      "_id": {
+        "$oid": "69c599071c86a8ec474cd0a3"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557446/restaurants/69c590150d577beee548c19b/lmxbquc1yqmzjecmvrog.webp",
+      "publicId": "restaurants/69c590150d577beee548c19b/lmxbquc1yqmzjecmvrog",
+      "_id": {
+        "$oid": "69c599071c86a8ec474cd0a4"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557446/restaurants/69c590150d577beee548c19b/hauidksxpqeuxdzkriqf.webp",
+      "publicId": "restaurants/69c590150d577beee548c19b/hauidksxpqeuxdzkriqf",
+      "_id": {
+        "$oid": "69c599071c86a8ec474cd0a5"
+      }
+    },
+    {
+      "URL": "https://res.cloudinary.com/dpl3xwf1z/image/upload/v1774557446/restaurants/69c590150d577beee548c19b/t2ecojbyxwvp8fuivxnz.webp",
+      "publicId": "restaurants/69c590150d577beee548c19b/t2ecojbyxwvp8fuivxnz",
+      "_id": {
+        "$oid": "69c599071c86a8ec474cd0a6"
+      }
+    }
+  ],
+  "openingHours": "09:00",
+  "closingHours": "21:00",
+  "licence": {
+    "fssai": "FASSAI5242652",
+    "GST": "23GST26511AUCKPS445"
+  },
+  "bankingDetails": {
+    "accountNumber": "568956895689",
+    "IFSC": "IFSC123456",
+    "bankName": "Abc Bank",
+    "UPI": "countrysideculture@upi"
+  },
+  "isProfileComplete": true,
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-03-26T20:37:27.955Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-27T20:50:30.163Z"
+  },
+  "__v": 0,
+  "numReviews": 476,
+  "rating": 4.1,
+  "description": "A hidden gem away from the city, offering lush green meadows and peaceful walking paths for relaxation. "
+}]

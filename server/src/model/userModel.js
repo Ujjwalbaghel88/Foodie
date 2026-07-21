@@ -1,0 +1,44 @@
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    userType: {
+      type: String,
+      enum: ["customer", "restaurant", "rider", "admin"],
+      required: true,
+    },
+    photo: {
+      url: {
+        type: String,
+      },
+      publicId: {
+        type: String,
+        default: null,
+      },
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+const User = mongoose.model("User", userSchema);
+
+export default User;

@@ -1,0 +1,63 @@
+[{
+  "_id": {
+    "$oid": "69c58f340d577beee548c195"
+  },
+  "fullName": "Manager 1",
+  "email": "manager1@gmail.com",
+  "password": "$2b$10$UVaBHSMmXqp7DWEmLEI9mufP.0AsXJpw.IuEUkBP2xX3j1Px8c1Y2",
+  "phone": "9856985698",
+  "userType": "restaurant",
+  "photo": {
+    "url": "https://ui-avatars.com/api/?name=Manager%201&background=random&size=512",
+    "publicId": null
+  },
+  "createdAt": {
+    "$date": "2026-03-26T19:55:32.601Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-26T19:55:32.601Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69c58f4b0d577beee548c198"
+  },
+  "fullName": "Manager 2",
+  "email": "manager2@gmail.com",
+  "password": "$2b$10$901RjqMMaNSf4HMEuGtQVe2aeXjN7n0aZVwcsVyUssCx7xtsfxsAu",
+  "phone": "8956895689",
+  "userType": "restaurant",
+  "photo": {
+    "url": "https://ui-avatars.com/api/?name=Manager%202&background=random&size=512",
+    "publicId": null
+  },
+  "createdAt": {
+    "$date": "2026-03-26T19:55:55.566Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-26T19:55:55.566Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69c590150d577beee548c19b"
+  },
+  "fullName": "Manager 3",
+  "email": "manager3@gmail.com",
+  "password": "$2b$10$mxwoT0SOtbgFibag.MMQKuebE1OBojCH1sN7e4haItXMx0QmuNovO",
+  "phone": "9878456589",
+  "userType": "restaurant",
+  "photo": {
+    "url": "https://ui-avatars.com/api/?name=Manager%203&background=random&size=512",
+    "publicId": null
+  },
+  "createdAt": {
+    "$date": "2026-03-26T19:59:17.402Z"
+  },
+  "updatedAt": {
+    "$date": "2026-03-26T19:59:17.402Z"
+  },
+  "__v": 0
+}]
