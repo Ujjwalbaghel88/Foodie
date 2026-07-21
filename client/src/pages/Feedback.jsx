@@ -180,7 +180,7 @@ const Feedback = () => {
               className={inputClass("message") + " resize-none"}
             />
             {errors.message && (
-              <span className="text-(--color-error) text-xs mt-1 block">
+              <span className="text-(--color-error) text-xs mt-1  block">
                 {errors.message}
               </span>
             )}

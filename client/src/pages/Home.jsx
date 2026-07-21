@@ -254,7 +254,7 @@ const Home = () => {
                   setSearchQuery("");
                   setSelectedCategory("all");
                 }}
-                className="mt-4 bg-(--color-primary) text-(--color-primary-content) px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
+                className="mt-4 bg-(--color-primary)   text-(--color-primary-content) px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
               >
                 Clear Filters
               </button>
