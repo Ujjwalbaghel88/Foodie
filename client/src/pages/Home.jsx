@@ -283,7 +283,7 @@ const Home = () => {
                   2.5M+
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-(--color-content) mb-2">
+              <h3 className="text-lg font-semibold  text-(--color-content) mb-2">
                 Successful Deliveries
               </h3>
               <p className="text-(--color-base-content)">
