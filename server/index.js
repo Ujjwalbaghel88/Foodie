@@ -15,6 +15,7 @@ import customerRouter from "./src/router/customerRouter.js";
 import riderRouter from "./src/router/riderRouter.js";
 import menuRouter from "./src/router/menuRouter.js";
 import publicRouter from "./src/router/publicRouter.js";
+import adminRouter from "./src/router/adminRouter.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/customer", customerRouter);
 app.use("/rider", riderRouter);
 app.use("/menu", menuRouter);
 app.use("/public", publicRouter);
+app.use("/admin", adminRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");

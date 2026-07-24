@@ -134,7 +134,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await api.get("/auth/logout");
+      const res = await api.post("/auth/logout");
       toast.success(res.data.message);
       sessionStorage.removeItem("cravingUser");
       setUser(null);

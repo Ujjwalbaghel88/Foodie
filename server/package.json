@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "seed:restaurants": "node src/seeders/restaurantSeeder.js"
+    "seed": "node ./src/seeders/seed.js",
+    "seed:restaurant-menu": "node ./src/seeders/restaurant-menu.seed.js"
   },
   "keywords": [],
   "author": "Raj Vardhan",
