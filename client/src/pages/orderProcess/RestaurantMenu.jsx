@@ -5,6 +5,10 @@ import { MdAdd, MdRemove, MdDelete, MdShoppingCart } from "react-icons/md";
 import api from "../../config/ApiConfig";
 import { useAuth } from "../../context/AuthContext";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
+import {
+  buildCheckoutDataFromRestaurant,
+  storeCheckoutData,
+} from "../../utils/checkoutStorage";
 
 const RestaurantMenu = () => {
   const navigate = useNavigate();
@@ -108,30 +112,8 @@ const RestaurantMenu = () => {
       return;
     }
 
-    const checkoutPayload = {
-      restaurant: {
-        id: restaurant.id,
-        name: restaurant.name,
-        image: restaurant.image,
-        city: restaurant.city,
-        address: restaurant.address,
-        geolocation: restaurant.geolocation,
-      },
-      items: cart.map((item) => ({
-        itemId: item._id || item.itemId || "",
-        itemName: item.itemName,
-        price: Number(item.price),
-        quantity: Number(item.quantity),
-        foodType: item.foodType || "",
-        image: item.image?.url || item.image || "",
-      })),
-      subtotal: Number(getTotalPrice()),
-    };
-
-    localStorage.setItem(
-      "cravings_checkout_data",
-      JSON.stringify(checkoutPayload),
-    );
+    const checkoutPayload = buildCheckoutDataFromRestaurant(restaurant, cart);
+    storeCheckoutData(checkoutPayload);
     navigate("/checkout");
   };
 

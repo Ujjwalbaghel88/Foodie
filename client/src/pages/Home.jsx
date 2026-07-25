@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IoSearch,
@@ -21,6 +21,8 @@ import CarouselComponent from "../components/CarouselComponent";
 import { useAuth } from "../context/AuthContext";
 import api from "../config/ApiConfig";
 import { getRestaurantCoverImage } from "../utils/restaurantCoverImages";
+import { buildCheckoutDataFromOrder, storeCheckoutData } from "../utils/checkoutStorage";
+import { buildCustomerInsights } from "../utils/customerInsights";
 
 const categories = [
   { id: "all", label: "All", icon: MdRestaurant, keyword: null },
@@ -211,6 +213,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [activeOrder, setActiveOrder] = useState(null);
+  const [customerOrders, setCustomerOrders] = useState([]);
+  const [customerOrdersLoading, setCustomerOrdersLoading] = useState(false);
 
   const formatCuisineList = (value) => {
     if (!value) return [];
@@ -319,6 +323,36 @@ const Home = () => {
     };
   }, [user]);
 
+  useEffect(() => {
+    if (!user || user.userType !== "customer") {
+      setCustomerOrders([]);
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const loadCustomerOrders = async () => {
+      try {
+        setCustomerOrdersLoading(true);
+        const response = await api.get("/customer/orders");
+        if (!cancelled) {
+          setCustomerOrders(Array.isArray(response.data?.data) ? response.data.data : []);
+        }
+      } catch (error) {
+        console.error("Failed to load customer orders on home:", error);
+        if (!cancelled) setCustomerOrders([]);
+      } finally {
+        if (!cancelled) setCustomerOrdersLoading(false);
+      }
+    };
+
+    loadCustomerOrders();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
   const handleCloseOrderPopup = () => {
     if (!activeOrder?.orderId) return;
     localStorage.setItem(`${ACTIVE_ORDER_DISMISS_PREFIX}_${activeOrder.orderId}`, "1");
@@ -379,6 +413,21 @@ const Home = () => {
 
   const handleInspirationClick = (title) => {
     navigate(`/order-now?search=${encodeURIComponent(title)}`);
+  };
+
+  const customerInsights = useMemo(
+    () => buildCustomerInsights(customerOrders),
+    [customerOrders],
+  );
+
+  const handleReorderRecentOrder = () => {
+    if (!customerInsights.recentOrder) return;
+
+    const checkoutData = buildCheckoutDataFromOrder(customerInsights.recentOrder);
+    if (!checkoutData) return;
+
+    storeCheckoutData(checkoutData);
+    navigate("/checkout");
   };
 
   return (
@@ -505,7 +554,97 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
+      {user?.userType === "customer" && (
+        <section className="mx-auto mt-8 max-w-7xl px-4 sm:mt-10 sm:px-6 lg:px-8">
+          <div className="rounded-[2rem] border border-orange-200 bg-white p-5 shadow-[0_24px_70px_rgba(0,0,0,0.08)]">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
+                  Your food profile
+                </p>
+                <h2 className="mt-2 text-2xl font-black text-slate-900">
+                  Personalized picks from your order history
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                  We surface the restaurants, dishes, and flavors you keep coming back to.
+                </p>
+              </div>
+              <button
+                onClick={handleReorderRecentOrder}
+                disabled={!customerInsights.recentOrder}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-(--color-primary) px-5 py-3 text-sm font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Quick reorder
+                <MdArrowForward />
+              </button>
+            </div>
+
+            {customerOrdersLoading ? (
+              <div className="mt-5 grid place-items-center rounded-[1.5rem] bg-slate-50 py-10">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
+                <p className="mt-4 text-sm font-semibold text-slate-500">
+                  Loading your profile...
+                </p>
+              </div>
+            ) : customerInsights.totalOrders > 0 ? (
+              <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded-[1.5rem] bg-slate-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                    Favorite restaurant
+                  </p>
+                  <p className="mt-2 text-xl font-black text-slate-900">
+                    {customerInsights.favoriteRestaurant?.name || "N/A"}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Ordered {customerInsights.favoriteRestaurant?.count || 0} times
+                  </p>
+                </div>
+                <div className="rounded-[1.5rem] bg-slate-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                    Favorite cuisine
+                  </p>
+                  <p className="mt-2 text-xl font-black text-slate-900 capitalize">
+                    {customerInsights.favoriteCuisine?.name || "N/A"}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Based on your recent orders
+                  </p>
+                </div>
+                <div className="rounded-[1.5rem] bg-slate-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                    Favorite item
+                  </p>
+                  <p className="mt-2 text-xl font-black text-slate-900 line-clamp-1">
+                    {customerInsights.favoriteItem?.name || "N/A"}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {customerInsights.favoriteItem?.count || 0} total quantity
+                  </p>
+                </div>
+                <div className="rounded-[1.5rem] bg-slate-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                    Average spend
+                  </p>
+                  <p className="mt-2 text-xl font-black text-slate-900">
+                    Rs {customerInsights.averageOrderValue.toFixed(2)}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Across {customerInsights.totalOrders} orders
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 rounded-[1.5rem] bg-slate-50 p-5">
+                <p className="text-sm font-semibold text-slate-700">
+                  Your personalized recommendations will appear here after your first few orders.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <section className="mx-auto mt-8 max-w-7xl px-4 pt-6 sm:mt-10 sm:px-6 lg:px-8 lg:pt-8">
         <div className="rounded-[2rem] border border-white/60 bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
           <div className="flex items-center gap-3 overflow-x-auto pb-1">
             {categories.map((category) => {

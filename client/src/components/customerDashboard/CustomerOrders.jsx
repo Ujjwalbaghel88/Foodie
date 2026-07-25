@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoTimeOutline } from "react-icons/io5";
 import { FaMotorcycle } from "react-icons/fa";
+import toast from "react-hot-toast";
 import api from "../../config/ApiConfig";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
+import {
+  buildCheckoutDataFromOrder,
+  storeCheckoutData,
+} from "../../utils/checkoutStorage";
 
 const statusTone = {
   placed: "bg-blue-100 text-blue-700",
@@ -17,6 +22,19 @@ const CustomerOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleReorder = (order) => {
+    const checkoutData = buildCheckoutDataFromOrder(order);
+
+    if (!checkoutData) {
+      toast.error("Could not rebuild this order.");
+      return;
+    }
+
+    storeCheckoutData(checkoutData);
+    toast.success("Reorder ready in checkout.");
+    navigate("/checkout");
+  };
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -152,12 +170,20 @@ const CustomerOrders = () => {
                     {order.statusProgress || 0}%
                   </p>
                 </div>
-                <button
-                  onClick={() => navigate(`/track-order/${order._id}`)}
-                  className="rounded-full bg-(--color-primary) px-5 py-2 font-bold text-white"
-                >
-                  Track order
-                </button>
+                <div className="flex flex-wrap justify-end gap-2">
+                  <button
+                    onClick={() => navigate(`/track-order/${order._id}`)}
+                    className="rounded-full bg-(--color-primary) px-5 py-2 font-bold text-white"
+                  >
+                    Track order
+                  </button>
+                  <button
+                    onClick={() => handleReorder(order)}
+                    className="rounded-full border border-orange-200 bg-white px-5 py-2 font-bold text-orange-600 transition hover:bg-orange-50"
+                  >
+                    Reorder
+                  </button>
+                </div>
               </div>
             </div>
 
