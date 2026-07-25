@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import api from "../config/ApiConfig";
 
+const registerHeroBg = `${import.meta.env.BASE_URL}foodTable.webp`;
+
 const Register = () => {
   const userType = useParams().userType; // Get userType from URL params (if needed)
   const navigate = useNavigate();
@@ -82,7 +84,10 @@ const Register = () => {
   };
 
   return (
-    <div className="h-[90vh] bg-[url('/foodTable.webp')] flex items-center justify-end bg-cover bg-center p-10 md:pe-30">
+    <div
+      className="flex h-[90vh] items-center justify-end bg-cover bg-center p-10 md:pe-30"
+      style={{ backgroundImage: `url(${registerHeroBg})` }}
+    >
       <div className="bg-white rounded-lg shadow-md px-10 py-6 max-w-md w-full">
         <h1 className="text-3xl font-bold text-(--color-primary) mb-2 text-center">
           Create Account

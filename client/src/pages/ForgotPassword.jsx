@@ -4,6 +4,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../config/ApiConfig";
 
+const forgotPasswordHeroBg = `${import.meta.env.BASE_URL}foodTable.webp`;
+
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -105,7 +107,10 @@ const ForgotPassword = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[url('/foodTable.webp')] bg-cover bg-center px-4 py-10">
+    <div
+      className="min-h-screen bg-cover bg-center px-4 py-10"
+      style={{ backgroundImage: `url(${forgotPasswordHeroBg})` }}
+    >
       <div className="mx-auto max-w-md rounded-3xl bg-white/95 p-8 shadow-2xl backdrop-blur-md">
         <p className="text-sm font-bold uppercase tracking-[0.2em] text-(--color-primary)">
           Forgot Password

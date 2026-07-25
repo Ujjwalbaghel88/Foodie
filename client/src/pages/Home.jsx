@@ -24,6 +24,8 @@ import { getRestaurantCoverImage } from "../utils/restaurantCoverImages";
 import { buildCheckoutDataFromOrder, storeCheckoutData } from "../utils/checkoutStorage";
 import { buildCustomerInsights } from "../utils/customerInsights";
 
+const assetBase = import.meta.env.BASE_URL;
+
 const categories = [
   { id: "all", label: "All", icon: MdRestaurant, keyword: null },
   { id: "veg", label: "Vegetarian", icon: MdLocalDining, keyword: "vegetarian" },
@@ -54,32 +56,32 @@ const foodInspirationCards = [
   {
     title: "Veg Meal",
     subtitle: "Comfort plate",
-    image: "/menu-images/veg-biryani.png",
+    image: `${assetBase}menu-images/veg-biryani.png`,
   },
   {
     title: "Biryani",
     subtitle: "Rich and spicy",
-    image: "/menu-images/chicken-biryani.png",
+    image: `${assetBase}menu-images/chicken-biryani.png`,
   },
   {
     title: "Thali",
     subtitle: "Full meal combo",
-    image: "/menu-images/paneer-butter-masala.png",
+    image: `${assetBase}menu-images/paneer-butter-masala.png`,
   },
   {
     title: "South Indian",
     subtitle: "Light breakfast",
-    image: "/menu-images/masala-dosa.png",
+    image: `${assetBase}menu-images/masala-dosa.png`,
   },
   {
     title: "Dessert",
     subtitle: "Sweet finish",
-    image: "/menu-images/gulab-jamun.png",
+    image: `${assetBase}menu-images/gulab-jamun.png`,
   },
   {
     title: "Refreshing",
     subtitle: "Cool sip",
-    image: "/menu-images/fresh-lime-soda.png",
+    image: `${assetBase}menu-images/fresh-lime-soda.png`,
   },
 ];
 
@@ -406,7 +408,7 @@ const Home = () => {
       image:
         matchedRestaurant?.image ||
         topRestaurants[index % Math.max(topRestaurants.length, 1)]?.image ||
-        "/menu-images/veg-biryani.png",
+        `${assetBase}menu-images/veg-biryani.png`,
       restaurantId: matchedRestaurant?.id || null,
     };
   });

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FaStar } from "react-icons/fa";
-import feedbackBg from "../assets/FeedbackPage.jpeg";
+
+const feedbackHeroBg = `${import.meta.env.BASE_URL}FeedbackPage.jpeg`;
 
 const CATEGORIES = ["Food Quality", "Delivery Experience", "App & Website", "Customer Support", "Pricing & Value"];
 
@@ -58,7 +59,8 @@ const Feedback = () => {
 
   return (
     <div
-      className="h-[90vh] flex items-center justify-end bg-[url('/FeedbackPage.jpeg')] bg-cover bg-center p-10 md:pe-30"
+      className="flex h-[90vh] items-center justify-end bg-cover bg-center p-10 md:pe-30"
+      style={{ backgroundImage: `url(${feedbackHeroBg})` }}
     >
       <div className="bg-white rounded-lg shadow-md px-10 py-6 max-w-md w-full overflow-y-auto max-h-[85vh]">
         <h1 className="text-3xl font-bold text-(--color-primary) mb-2 text-center">

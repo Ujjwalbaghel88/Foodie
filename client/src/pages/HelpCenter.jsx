@@ -7,7 +7,8 @@ import {
   FaMotorcycle,
   FaUser,
 } from "react-icons/fa";
-import helpBg from "../assets/HelpPage.jpg";
+
+const helpHeroBg = `${import.meta.env.BASE_URL}HelpPage.jpg`;
 
 const ISSUE_CATEGORIES = [
   "Account & Profile",
@@ -108,7 +109,10 @@ const HelpCenter = () => {
   const translucent = "bg-black/70 backdrop-blur-sm";
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center bg-[url('/HelpPage.jpg')] bg-cover bg-center p-10">
+    <div
+      className="flex min-h-[90vh] items-center justify-center bg-cover bg-center p-10"
+      style={{ backgroundImage: `url(${helpHeroBg})` }}
+    >
       {/* Two-column card */}
       <div
         className="bg-black/60 backdrop-blur-sm rounded-xl shadow-xl w-full max-w-5xl overflow-hidden"

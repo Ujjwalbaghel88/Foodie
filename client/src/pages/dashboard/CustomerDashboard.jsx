@@ -6,6 +6,8 @@ import CustomerSetting from "../../components/customerDashboard/CustomerSetting"
 import { useLocation , useNavigate} from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
+const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
+
 const CustomerDashboard = () => {
   const { user, isLogin } = useAuth();
   const navigate = useNavigate();
@@ -14,7 +16,10 @@ const CustomerDashboard = () => {
 
   if (!isLogin || user?.userType !== "customer") {
     return (
-      <div className="h-[92vh] bg-[url('/foodTable.webp')]  bg-cover bg-center">
+      <div
+        className="h-[92vh] bg-cover bg-center"
+        style={{ backgroundImage: `url(${dashboardBg})` }}
+      >
         <div className="h-full backdrop-blur-lg flex flex-col items-center justify-center ">
           <h1 className="text-2xl font-bold text-(--color-neutral-content)">
             Access Denied. Please log in as a customer to view this

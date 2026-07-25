@@ -5,6 +5,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import api from "../config/ApiConfig";
 import { useAuth } from "../context/AuthContext";
 
+const loginHeroBg = `${import.meta.env.BASE_URL}foodTable.webp`;
+
 const Login = () => {
   const navigate = useNavigate();
   const { setUser, setIsLogin, setRole } = useAuth();
@@ -78,7 +80,10 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[90vh] bg-[url('/foodTable.webp')] flex items-center justify-start bg-cover bg-center p-10 md:ps-30">
+    <div
+      className="flex h-[90vh] items-center justify-start bg-cover bg-center p-10 md:ps-30"
+      style={{ backgroundImage: `url(${loginHeroBg})` }}
+    >
       <div className="bg-white rounded-lg shadow-md px-10 py-6 max-w-md w-full">
         <h1 className="text-3xl font-bold text-(--color-primary) mb-2 text-center">
           Welcome Back

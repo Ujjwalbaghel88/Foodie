@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FaShieldAlt, FaDatabase, FaCookieBite, FaUserLock, FaEnvelope, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
+const policyHeroBg = `${import.meta.env.BASE_URL}commonBG.avif`;
+
 const SECTIONS = [
   {
     icon: <FaDatabase className="text-xl text-(--color-primary)" />,
@@ -109,7 +111,10 @@ const PrivacyPolicy = () => {
     <div className="bg-(--color-base-100)">
 
       {/* Hero */}
-      <section className="relative h-[45vh] flex items-center justify-center bg-[url('/commonBG.avif')] bg-cover bg-center">
+      <section
+        className="relative flex h-[45vh] items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: `url(${policyHeroBg})` }}
+      >
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 text-center px-6">
           <FaShieldAlt className="text-5xl text-(--color-primary) mx-auto mb-4" />

@@ -15,6 +15,8 @@ import {
   FaUtensils,
 } from "react-icons/fa";
 
+const policyHeroBg = `${import.meta.env.BASE_URL}commonBG.avif`;
+
 const SITE_SECTIONS = [
   {
     heading: "Main",
@@ -56,7 +58,10 @@ const SiteMap = () => {
     <div className="bg-(--color-base-100)">
 
       {/* Hero */}
-      <section className="relative h-[40vh] flex items-center justify-center bg-[url('/commonBG.avif')] bg-cover bg-center">
+      <section
+        className="relative flex h-[40vh] items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: `url(${policyHeroBg})` }}
+      >
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 text-center px-6">
           <FaMap className="text-5xl text-(--color-primary) mx-auto mb-4" />

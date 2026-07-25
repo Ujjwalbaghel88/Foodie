@@ -18,10 +18,23 @@ import publicRouter from "./src/router/publicRouter.js";
 import adminRouter from "./src/router/adminRouter.js";
 
 const app = express();
+const allowedOrigins = new Set(
+  [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    ...((process.env.ALLOWED_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean)),
+  ].filter(Boolean),
+);
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://cravings.ricr.in"],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   }),
 );

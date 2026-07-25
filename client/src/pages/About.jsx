@@ -9,8 +9,9 @@ import {
   FaShieldAlt,
   FaStar,
 } from "react-icons/fa";
-import heroBg from "../assets/foodTable.webp";
 import circleLogo from "../assets/circleLogo.png";
+
+const aboutHeroBg = `${import.meta.env.BASE_URL}aboutPage.png`;
 
 const STATS = [
   { value: "50K+", label: "Happy Customers" },
@@ -50,7 +51,8 @@ const About = () => {
 
       {/* Hero */}
       <section
-        className="relative h-[60vh] flex items-center justify-center bg-[url('/aboutPage.png')] bg-cover bg-center"
+        className="relative flex h-[60vh] items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: `url(${aboutHeroBg})` }}
       >
         <div className="absolute inset-0 bg-black/55" />
         <div className="relative z-10 text-center px-6">
