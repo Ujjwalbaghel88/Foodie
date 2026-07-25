@@ -665,11 +665,21 @@ const Home = () => {
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    <div className="absolute left-4 top-4 rounded-md bg-black/35 px-2 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
-                      Promoted
+                    <div className="absolute left-4 top-4 flex flex-col gap-2">
+                      <div className="w-fit rounded-md bg-black/35 px-2 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+                        Promoted
+                      </div>
+                      <div className="w-fit rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white shadow-lg">
+                        {offer}
+                      </div>
                     </div>
-                    <div className="absolute bottom-4 left-4 rounded-md bg-blue-600 px-2.5 py-1 text-xs font-bold text-white shadow-lg">
-                      {offer}
+                    <div className="absolute left-4 right-16 bottom-4">
+                      <h3 className="text-2xl font-black leading-tight text-white line-clamp-2">
+                        {restaurant.name}
+                      </h3>
+                      <p className="mt-1 text-xs text-white/75 line-clamp-1">
+                        {restaurant.city || restaurant.address || "Trusted local kitchen"}
+                      </p>
                     </div>
                     <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-full bg-white px-3 py-1 text-sm font-bold text-slate-900 shadow-lg">
                       <IoStar className="text-yellow-500" />
@@ -680,9 +690,6 @@ const Home = () => {
                   <div className="space-y-4 p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="text-xl font-black text-slate-900">
-                          {restaurant.name}
-                        </h3>
                         <p className="mt-1 text-sm text-slate-500 line-clamp-2">
                           {restaurant.description}
                         </p>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack, IoStar } from "react-icons/io5";
 import { MdAdd, MdRemove, MdDelete, MdShoppingCart } from "react-icons/md";
-import { FaMapLocationDot, FaRegClock } from "react-icons/fa6";
 import api from "../../config/ApiConfig";
 import { useAuth } from "../../context/AuthContext";
 
@@ -176,33 +175,43 @@ const RestaurantMenu = () => {
             <IoArrowBack size={20} />
             Back to Restaurants
           </button>
-          <div className="flex gap-6 items-start">
-            <img
-              src={restaurant.image}
-              alt={restaurant.name}
-              className="w-48 h-40 object-cover rounded-lg"
-            />
-            <div>
-              <h1 className="text-3xl font-bold text-(--color-content)">
-                {restaurant.name}
-              </h1>
-              <div className="flex items-center gap-2 mb-2">
-                <IoStar className="text-yellow-500" size={18} />
-                <span className="font-semibold text-(--color-content)">
-                  {restaurant.rating} ({restaurant.numReviews} reviews)
-                </span>
+          <div className="relative overflow-hidden rounded-[2rem] border border-(--color-base-200) bg-slate-900 shadow-xl">
+            <div className="relative h-72 sm:h-80">
+              <img
+                src={restaurant.image}
+                alt={restaurant.name}
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+              <div className="absolute left-0 right-0 bottom-0 flex flex-col gap-4 p-6 text-white md:flex-row md:items-end md:justify-between">
+                <div className="max-w-3xl">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
+                    Restaurant cover
+                  </p>
+                  <h1 className="mt-2 text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
+                    {restaurant.name}
+                  </h1>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80">
+                    {restaurant.address}, {restaurant.city}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                      {restaurant.cuisineType}
+                    </span>
+                    <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                      {restaurant.openingHours} - {restaurant.closingHours}
+                    </span>
+                    <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                      {restaurant.numReviews} reviews
+                    </span>
+                  </div>
+                </div>
+
+                <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-900 shadow-lg">
+                  <IoStar className="text-yellow-500" size={18} />
+                  {restaurant.rating}
+                </div>
               </div>
-              <p className="text-(--color-base-content) mb-2">
-                {restaurant.cuisineType}
-              </p>
-              <p className="text-(--color-base-content) mb-2 flex items-center gap-2">
-                <FaMapLocationDot />
-                {restaurant.address}, {restaurant.city}
-              </p>
-              <p className="text-(--color-base-content) flex items-center gap-2">
-                <FaRegClock />
-                {restaurant.openingHours} - {restaurant.closingHours}
-              </p>
             </div>
           </div>
         </div>

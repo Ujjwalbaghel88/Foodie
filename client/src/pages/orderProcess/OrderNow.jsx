@@ -179,24 +179,35 @@ const OrderNow = () => {
                 key={restaurant.id}
                 className="flex flex-col bg-(--color-base-100) rounded-xl overflow-hidden shadow-md hover:shadow-xl transition"
               >
-                {/* Restaurant Image */}
-                <div className="relative h-48 overflow-hidden bg-(--color-base-200)">
+                {/* Restaurant cover photo */}
+                <div className="relative h-56 overflow-hidden bg-(--color-base-200)">
                   <img
                     src={restaurant.image}
                     alt={restaurant.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-3 right-3 bg-(--color-primary) text-(--color-primary-content) px-3 py-1 rounded-full flex items-center gap-1 font-semibold text-sm">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+                  <div className="absolute left-4 right-4 bottom-4 flex items-end justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/75">
+                        Restaurant
+                      </p>
+                      <h3 className="mt-1 text-2xl font-black leading-tight text-white line-clamp-2">
+                        {restaurant.name}
+                      </h3>
+                      <p className="mt-1 text-xs text-white/80 line-clamp-1">
+                        {restaurant.city || restaurant.address || "Available nearby"}
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded-full bg-white px-3 py-1.5 text-sm font-black text-slate-900 shadow-lg">
                     <IoStar size={16} />
                     {restaurant.rating}
+                    </div>
                   </div>
                 </div>
 
                 {/* Restaurant Info */}
                 <div className="flex flex-col flex-1 p-4">
-                  <h3 className="font-bold text-(--color-content) text-lg mb-1">
-                    {restaurant.name}
-                  </h3>
                   <p className="text-(--color-base-content) text-sm mb-3">
                     {restaurant.description}
                   </p>
