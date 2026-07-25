@@ -219,6 +219,7 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [error, setError] = useState("");
+  const activeOrder = order || null;
 
   useEffect(() => {
     if (!isLogin || user?.userType !== "customer") {
@@ -308,8 +309,6 @@ const CheckoutPage = () => {
     if (!customer?.addressBook?.length) return null;
     return customer.addressBook[selectedAddressIndex] || getDefaultAddress(customer.addressBook);
   }, [customer, selectedAddressIndex]);
-
-  const activeOrder = order || null;
 
   const mapPoints = useMemo(() => {
     if (activeOrder) {
