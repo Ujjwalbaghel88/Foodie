@@ -7,6 +7,11 @@ import {
   updateAddress,
   deleteAddress,
 } from "../controller/customerController.js";
+import {
+  createOrder,
+  getCustomerOrders,
+  getCustomerOrderById,
+} from "../controller/orderController.js";
 import { customerMiddleware, Protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -28,5 +33,9 @@ router.delete(
   customerMiddleware,
   deleteAddress,
 );
+
+router.post("/orders", Protect, customerMiddleware, createOrder);
+router.get("/orders", Protect, customerMiddleware, getCustomerOrders);
+router.get("/orders/:orderId", Protect, customerMiddleware, getCustomerOrderById);
 
 export default router;

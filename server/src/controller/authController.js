@@ -5,6 +5,10 @@ import {
   uploadSingleImage,
   deleteImage,
 } from "../utils/imageUploader.js";
+import { sendEmail } from "../utils/sendEmail.js";
+
+const generateOtp = () =>
+  String(Math.floor(100000 + Math.random() * 900000));
 
 export const Register = async (req, res, next) => {
   try {
@@ -133,7 +137,54 @@ export const ChangePassword = async (req, res, next) => {
 
 export const ForgotPassword = async (req, res, next) => {
   try {
-    res.status(200).json({ message: "Password reset link sent successfully" });
+    const { email } = req.body;
+
+    if (!email) {
+      const error = new Error("Email is required");
+      error.status = 400;
+      return next(error);
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("User not found");
+      error.status = 404;
+      return next(error);
+    }
+
+    const otp = generateOtp();
+    const otpHash = await bcrypt.hash(otp, 10);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.passwordResetOtpHash = otpHash;
+    user.passwordResetOtpExpiresAt = expiresAt;
+    await user.save();
+
+    const emailSubject = "Cravings password reset OTP";
+    const emailText = `Your Cravings password reset OTP is ${otp}. It will expire in 10 minutes.`;
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #1f2937;">
+        <h2 style="color: #c2410c;">Cravings password reset</h2>
+        <p>Your password reset OTP is:</p>
+        <div style="font-size: 28px; font-weight: 700; letter-spacing: 4px; color: #111827; margin: 16px 0;">
+          ${otp}
+        </div>
+        <p>This code expires in 10 minutes.</p>
+        <p>If you did not request this, you can safely ignore this email.</p>
+      </div>
+    `;
+
+    await sendEmail({
+      to: user.email,
+      subject: emailSubject,
+      text: emailText,
+      html: emailHtml,
+    });
+
+    res.status(200).json({
+      message: "OTP sent successfully to your email",
+      ...(process.env.NODE_ENV !== "production" ? { devOtp: otp } : {}),
+    });
   } catch (error) {
     next(error);
   }
@@ -141,6 +192,44 @@ export const ForgotPassword = async (req, res, next) => {
 
 export const ResetPassword = async (req, res, next) => {
   try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      const error = new Error("Email, OTP and new password are required");
+      error.status = 400;
+      return next(error);
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("User not found");
+      error.status = 404;
+      return next(error);
+    }
+
+    if (
+      !user.passwordResetOtpHash ||
+      !user.passwordResetOtpExpiresAt ||
+      user.passwordResetOtpExpiresAt.getTime() < Date.now()
+    ) {
+      const error = new Error("OTP has expired. Please request a new one.");
+      error.status = 400;
+      return next(error);
+    }
+
+    const isOtpValid = await bcrypt.compare(otp, user.passwordResetOtpHash);
+    if (!isOtpValid) {
+      const error = new Error("Invalid OTP");
+      error.status = 401;
+      return next(error);
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.passwordResetOtpHash = null;
+    user.passwordResetOtpExpiresAt = null;
+    await user.save();
+
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
     next(error);

@@ -6,12 +6,14 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
 import RestaurantDashboard from "./pages/dashboard/RestaurantDashboard";
 import RiderDashboard from "./pages/dashboard/RiderDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import OrderNow from "./pages/orderProcess/OrderNow";
 import RestaurantMenu from "./pages/orderProcess/RestaurantMenu";
+import CheckoutPage from "./pages/orderProcess/CheckoutPage";
 import TermsAndConditions from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import SiteMap from "./pages/SiteMap";
@@ -32,6 +34,8 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/order-now" element={<OrderNow />} />
         <Route path="/restaurant-menu/:restaurantId" element={<RestaurantMenu />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/track-order/:orderId" element={<CheckoutPage />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/site-map" element={<SiteMap />} />
@@ -41,6 +45,7 @@ const App = () => {
         <Route path="/help-center" element={<HelpCenter />} />
 
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/register/:userType" element={<Register />} />
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
         <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />

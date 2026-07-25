@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IoSearch, IoStar } from "react-icons/io5";
 import {
   MdRestaurant,
@@ -12,6 +12,7 @@ import api from "../../config/ApiConfig";
 
 const OrderNow = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // States
   const [restaurants, setRestaurants] = useState([]);
@@ -19,6 +20,7 @@ const OrderNow = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   const categories = [
     { id: "all", label: "All", icon: MdRestaurant },
@@ -28,14 +30,27 @@ const OrderNow = () => {
     { id: "others", label: "Others", icon: MdLunchDining },
   ];
 
+  const formatCuisineList = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return String(value)
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  };
+
   // Load all restaurants
   useEffect(() => {
     const loadRestaurants = async () => {
       try {
         setLoading(true);
+        setLoadError("");
         const response = await api.get("/public/restaurants");
+          const restaurantsData = Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
 
-        const formattedRestaurants = response.data.data.map((restaurant) => ({
+        const formattedRestaurants = restaurantsData.map((restaurant) => ({
           id: restaurant._id,
           name: restaurant.restaurantName,
           description:
@@ -46,7 +61,7 @@ const OrderNow = () => {
           image:
             restaurant.images?.[0]?.URL ||
             "https://placehold.co/300x200?text=Restaurant",
-          cuisines: restaurant.cuisineType.split(",").map((c) => c.trim()),
+          cuisines: formatCuisineList(restaurant.cuisineType),
           city: restaurant.city,
           address: restaurant.address,
         }));
@@ -55,6 +70,7 @@ const OrderNow = () => {
         setFilteredRestaurants(formattedRestaurants);
       } catch (error) {
         console.error("Error loading restaurants:", error);
+        setLoadError("We could not load restaurants right now. Please try again.");
         setRestaurants([]);
         setFilteredRestaurants([]);
       } finally {
@@ -64,6 +80,14 @@ const OrderNow = () => {
 
     loadRestaurants();
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const prefillSearch = params.get("search") || location.state?.search || "";
+    if (prefillSearch) {
+      setSearchQuery(prefillSearch);
+    }
+  }, [location.search, location.state]);
 
   // Filter restaurants
   useEffect(() => {
@@ -137,6 +161,16 @@ const OrderNow = () => {
             <p className="mt-4 text-(--color-base-content)">
               Loading restaurants...
             </p>
+          </div>
+        ) : loadError ? (
+          <div className="text-center py-12 bg-(--color-base-100) rounded-lg">
+            <p className="text-(--color-base-content) text-lg">{loadError}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 bg-(--color-primary) text-(--color-primary-content) px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
+            >
+              Retry
+            </button>
           </div>
         ) : filteredRestaurants.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

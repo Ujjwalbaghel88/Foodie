@@ -40,6 +40,7 @@ const RestaurantMenu = () => {
           description: restaurantData.description,
           rating: restaurantData.rating || 0,
           numReviews: restaurantData.numReviews || 0,
+          geolocation: restaurantData.geolocation,
           image:
             restaurantData.images?.[0]?.URL ||
             "https://placehold.co/400x200?text=Restaurant",
@@ -97,6 +98,39 @@ const RestaurantMenu = () => {
     return cart
       .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2);
+  };
+
+  const handleCheckout = () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    const checkoutPayload = {
+      restaurant: {
+        id: restaurant.id,
+        name: restaurant.name,
+        image: restaurant.image,
+        city: restaurant.city,
+        address: restaurant.address,
+        geolocation: restaurant.geolocation,
+      },
+      items: cart.map((item) => ({
+        itemId: item._id || item.itemId || "",
+        itemName: item.itemName,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+        foodType: item.foodType || "",
+        image: item.image?.url || item.image || "",
+      })),
+      subtotal: Number(getTotalPrice()),
+    };
+
+    localStorage.setItem(
+      "cravings_checkout_data",
+      JSON.stringify(checkoutPayload),
+    );
+    navigate("/checkout");
   };
 
   if (loading) {
@@ -317,7 +351,10 @@ const RestaurantMenu = () => {
               </div>
 
               {/* Checkout Button */}
-              <button className="bg-(--color-primary) text-(--color-primary-content) px-8 py-3 rounded-lg font-bold hover:opacity-90 transition flex items-center gap-2 whitespace-nowrap ml-4">
+              <button
+                onClick={handleCheckout}
+                className="bg-(--color-primary) text-(--color-primary-content) px-8 py-3 rounded-lg font-bold hover:opacity-90 transition flex items-center gap-2 whitespace-nowrap ml-4"
+              >
                 <MdShoppingCart size={20} />
                 {user ? "Checkout" : "Login to Checkout"}
               </button>

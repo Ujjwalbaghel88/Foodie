@@ -119,7 +119,18 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+
+      window.requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 20);
+        ticking = false;
+      });
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -147,25 +158,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`sticky top-0 z-[999] w-full transition-all duration-300 bg-(--color-primary) text-white ${
-      isScrolled ? "h-14 shadow-xl" : "h-20"
-    }`}>
-      <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6 md:px-12">
+    <nav
+      className={`sticky top-0 z-[999] w-full h-16 bg-(--color-primary) text-white transition-[box-shadow,background-color,transform] duration-300 ${
+        isScrolled ? "shadow-xl" : "shadow-md"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-4 md:px-8">
         
         {/* LOGO */}
-        <div className="h-full py-2">
+        <div className={`h-full flex items-center transition-transform duration-300 ${isScrolled ? "scale-[0.96]" : "scale-100"}`}>
           <Link to="/">
             <img 
               src={logoLight} 
               alt="Logo" 
-              className="h-full w-auto transition-all" 
+              className="h-10 md:h-12 w-auto transition-all" 
             />
           </Link>
         </div>
 
         {/* SEARCH BAR */}
-        <div className={`hidden lg:flex items-center flex-1 max-w-xl mx-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all ${isScrolled ? "opacity-100" : "opacity-90"}`}>
-           <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-200 min-w-[140px] text-red-500">
+        <div className={`hidden lg:flex items-center flex-1 max-w-2xl mx-6 bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100" : "opacity-90"}`}>
+           <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-200 min-w-[130px] text-red-500">
               <FaMapMarkerAlt />
               <input type="text" placeholder="Location" className="bg-transparent text-xs font-bold outline-none text-gray-700 w-full" />
            </div>
@@ -177,19 +190,21 @@ const Navbar = () => {
 
         {/* ACTIONS */}
         {isLogin ? (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleNavigate}
-              className="group flex items-center gap-3 pl-1.5 pr-4 py-1.5 rounded-full transition-all border-2 bg-white/10 border-white/20 text-white hover:bg-white/20 hover:shadow-md cursor-pointer"
+              className="group flex items-center gap-2.5 pl-1.5 pr-3.5 py-1 rounded-full transition-all duration-300 border border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-md cursor-pointer"
               title="Go to Dashboard"
             >
               <img
                 src={user?.photo?.url}
                 alt={user?.fullName}
-                className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                className="w-7 h-7 rounded-full object-cover border border-white"
               />
               <div className="flex flex-col items-start leading-none">
-                <span className="text-sm font-black tracking-tight">{user?.fullName.split(' ')[0]}</span>
+                <span className="text-sm font-black tracking-tight">
+                  {user?.fullName?.split(" ")?.[0] || "User"}
+                </span>
                 <span className="text-[9px] font-bold uppercase mt-0.5 text-white/70">
                   {user?.userType}
                 </span>
@@ -198,20 +213,20 @@ const Navbar = () => {
 
             <button
               onClick={handleLogout}
-              className="p-2.5 rounded-full transition-all bg-white/10 text-white hover:bg-red-500"
+              className="p-2 rounded-full transition-all duration-300 bg-white/10 text-white hover:bg-red-500"
               title="Logout"
             >
               <FaPowerOff size={16} />
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-6 font-bold text-sm">
+          <div className="flex items-center gap-5 font-bold text-sm">
             <Link to="/login" className="hover:scale-105 transition-transform text-white">
               Login
             </Link>
             <Link
               to="/register/customer"
-              className="bg-red-500 text-white px-6 py-2.5 rounded-xl shadow-lg hover:bg-red-600 transition-all active:scale-95"
+              className="bg-red-500 text-white px-5 py-2 rounded-full shadow-lg hover:bg-red-600 transition-all duration-300 active:scale-95"
             >
               Sign Up
             </Link>
