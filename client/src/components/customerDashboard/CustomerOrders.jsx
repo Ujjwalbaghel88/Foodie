@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { IoTimeOutline } from "react-icons/io5";
 import { FaMotorcycle } from "react-icons/fa";
 import api from "../../config/ApiConfig";
+import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const statusTone = {
   placed: "bg-blue-100 text-blue-700",
@@ -109,7 +110,10 @@ const CustomerOrders = () => {
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div className="flex items-start gap-4">
                 <img
-                  src={order.restaurantImage}
+                  src={getRestaurantCoverImage(
+                    order.restaurantName,
+                    order.restaurantImage,
+                  )}
                   alt={order.restaurantName}
                   className="h-20 w-20 rounded-2xl object-cover"
                 />

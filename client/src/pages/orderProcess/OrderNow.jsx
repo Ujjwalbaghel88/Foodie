@@ -9,6 +9,7 @@ import {
   MdLunchDining,
 } from "react-icons/md";
 import api from "../../config/ApiConfig";
+import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const OrderNow = () => {
   const navigate = useNavigate();
@@ -58,9 +59,11 @@ const OrderNow = () => {
             `${restaurant.cuisineType} cuisine in ${restaurant.city}`,
           rating: restaurant.rating || 0,
           numReviews: restaurant.numReviews || 0,
-          image:
+          image: getRestaurantCoverImage(
+            restaurant.restaurantName,
             restaurant.images?.[0]?.URL ||
-            "https://placehold.co/300x200?text=Restaurant",
+              "https://placehold.co/300x200?text=Restaurant",
+          ),
           cuisines: formatCuisineList(restaurant.cuisineType),
           city: restaurant.city,
           address: restaurant.address,

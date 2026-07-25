@@ -4,6 +4,7 @@ import { IoArrowBack, IoStar } from "react-icons/io5";
 import { MdAdd, MdRemove, MdDelete, MdShoppingCart } from "react-icons/md";
 import api from "../../config/ApiConfig";
 import { useAuth } from "../../context/AuthContext";
+import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const RestaurantMenu = () => {
   const navigate = useNavigate();
@@ -40,9 +41,11 @@ const RestaurantMenu = () => {
           rating: restaurantData.rating || 0,
           numReviews: restaurantData.numReviews || 0,
           geolocation: restaurantData.geolocation,
-          image:
+          image: getRestaurantCoverImage(
+            restaurantData.restaurantName,
             restaurantData.images?.[0]?.URL ||
-            "https://placehold.co/400x200?text=Restaurant",
+              "https://placehold.co/400x200?text=Restaurant",
+          ),
         });
 
         // Fetch menu items

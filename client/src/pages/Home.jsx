@@ -20,6 +20,7 @@ import {
 import CarouselComponent from "../components/CarouselComponent";
 import { useAuth } from "../context/AuthContext";
 import api from "../config/ApiConfig";
+import { getRestaurantCoverImage } from "../utils/restaurantCoverImages";
 
 const categories = [
   { id: "all", label: "All", icon: MdRestaurant, keyword: null },
@@ -84,9 +85,9 @@ const brandNames = [
   "Sagar Gaire Fast Food",
   "Sharma And Vishnu Food",
   "Zam Zam Fast Food",
-  "Manohar Restaurant",
+  "Manohar Dairy & Restaurant",
   "Burger King",
-  "Bapu Ki Kutiya",
+  "Meera's Spice Kitchen",
 ];
 
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
@@ -239,9 +240,11 @@ const Home = () => {
             `${restaurant.cuisineType} cuisine in ${restaurant.city}`,
           rating: restaurant.rating || 0,
           numReviews: restaurant.numReviews || 0,
-          image:
+          image: getRestaurantCoverImage(
+            restaurant.restaurantName,
             restaurant.images?.[0]?.URL ||
-            "https://placehold.co/900x600?text=Restaurant",
+              "https://placehold.co/900x600?text=Restaurant",
+          ),
           cuisines: formatCuisineList(restaurant.cuisineType),
           city: restaurant.city,
           address: restaurant.address,

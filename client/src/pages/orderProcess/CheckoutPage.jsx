@@ -15,6 +15,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import api from "../../config/ApiConfig";
 import { useAuth } from "../../context/AuthContext";
+import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const DEFAULT_CENTER = [23.2599, 77.4126];
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
@@ -289,12 +290,15 @@ const CheckoutPage = () => {
 
     localStorage.setItem(
       ACTIVE_ORDER_STORAGE_KEY,
-      JSON.stringify({
-        orderId: activeOrder._id,
-        restaurantName: activeOrder.restaurantName,
-        restaurantImage: activeOrder.restaurantImage,
-        trackingCode: activeOrder.trackingCode,
-        liveStatus: activeOrder.liveStatus,
+        JSON.stringify({
+          orderId: activeOrder._id,
+          restaurantName: activeOrder.restaurantName,
+          restaurantImage: getRestaurantCoverImage(
+            activeOrder.restaurantName,
+            activeOrder.restaurantImage,
+          ),
+          trackingCode: activeOrder.trackingCode,
+          liveStatus: activeOrder.liveStatus,
         liveStatusLabel: activeOrder.liveStatusLabel,
         statusProgress: activeOrder.statusProgress,
         total: activeOrder.total,
@@ -372,7 +376,10 @@ const CheckoutPage = () => {
         JSON.stringify({
           orderId: response.data.data._id,
           restaurantName: response.data.data.restaurantName,
-          restaurantImage: response.data.data.restaurantImage,
+          restaurantImage: getRestaurantCoverImage(
+            response.data.data.restaurantName,
+            response.data.data.restaurantImage,
+          ),
           trackingCode: response.data.data.trackingCode,
           liveStatus: response.data.data.liveStatus,
           liveStatusLabel: response.data.data.liveStatusLabel,

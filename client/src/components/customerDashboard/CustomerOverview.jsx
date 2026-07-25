@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import api from "../../config/ApiConfig";
+import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const CustomerOverview = () => {
   const [orders, setOrders] = useState([]);
@@ -66,7 +67,10 @@ const CustomerOverview = () => {
             {summary.recentOrder ? (
               <div className="mt-4 flex items-center gap-4">
                 <img
-                  src={summary.recentOrder.restaurantImage}
+                  src={getRestaurantCoverImage(
+                    summary.recentOrder.restaurantName,
+                    summary.recentOrder.restaurantImage,
+                  )}
                   alt={summary.recentOrder.restaurantName}
                   className="h-20 w-20 rounded-2xl object-cover"
                 />
