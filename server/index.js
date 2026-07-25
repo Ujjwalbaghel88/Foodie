@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
     .json({ message: err.message || "Internal Server Error" });
 });
 
-const PORT = process.env.PORT || 4500;
+const PORT = process.env.PORT || 4501;
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   await connectDB();
