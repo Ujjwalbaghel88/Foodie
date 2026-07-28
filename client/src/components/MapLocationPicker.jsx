@@ -73,13 +73,15 @@ const MapLocationPicker = ({
   initialLat,
   initialLng,
 }) => {
+  const startLat = initialLat || 20.5937;
+  const startLng = initialLng || 78.9629;
+  const initialPositionRef = useRef([startLat, startLng]);
   const mapContainer = useRef(null);
   const map = useRef(null);
   const marker = useRef(null);
-  const [latitude, setLatitude] = useState(initialLat || 20.5937);
-  const [longitude, setLongitude] = useState(initialLng || 78.9629);
+  const [latitude, setLatitude] = useState(startLat);
+  const [longitude, setLongitude] = useState(startLng);
   const [isLoading, setIsLoading] = useState(false);
-  const [isMapReady, setIsMapReady] = useState(false);
 
   // Add styles on component mount
   useEffect(() => {
@@ -91,11 +93,13 @@ const MapLocationPicker = ({
     if (map.current || !mapContainer.current) return;
 
     try {
+      const [mapLat, mapLng] = initialPositionRef.current;
+
       // Create map
       map.current = L.map(mapContainer.current, {
         animate: true,
         zoomAnimation: true,
-      }).setView([latitude, longitude], 15);
+      }).setView([mapLat, mapLng], 15);
 
       // Add OSM tiles
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -105,7 +109,7 @@ const MapLocationPicker = ({
       }).addTo(map.current);
 
       // Add draggable marker
-      marker.current = L.marker([latitude, longitude], {
+      marker.current = L.marker([mapLat, mapLng], {
         icon: defaultIcon,
         draggable: true,
       }).addTo(map.current);
@@ -125,7 +129,6 @@ const MapLocationPicker = ({
         marker.current.setLatLng([lat, lng]);
       });
 
-      setIsMapReady(true);
       toast.success("Map loaded successfully!");
     } catch (error) {
       console.error("Map initialization error:", error);
@@ -144,7 +147,7 @@ const MapLocationPicker = ({
 
   // Update marker position when coordinates change manually with smooth animation
   useEffect(() => {
-    if (marker.current && isMapReady) {
+    if (marker.current && map.current) {
       marker.current.setLatLng([latitude, longitude]);
       // Use flyTo for smooth animation instead of setView
       map.current.flyTo([latitude, longitude], 15, {
@@ -152,7 +155,7 @@ const MapLocationPicker = ({
         easeLinearity: 0.5,
       });
     }
-  }, [latitude, longitude, isMapReady]);
+  }, [latitude, longitude]);
 
   const getCurrentLocation = () => {
     setIsLoading(true);

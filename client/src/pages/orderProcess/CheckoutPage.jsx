@@ -14,7 +14,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import api from "../../config/ApiConfig";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const DEFAULT_CENTER = [23.2599, 77.4126];
@@ -397,7 +397,6 @@ const CheckoutPage = () => {
     }
   };
 
-  const currentStatus = activeOrder?.liveStatus || "placed";
   const timeline = activeOrder?.statusTimeline || Object.keys(statusMeta).map((status, index) => ({
     status,
     title: statusMeta[status].title,

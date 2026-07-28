@@ -5,7 +5,7 @@ import RiderDeliveries from "../../components/riderDashboard/RiderDeliveries";
 import RiderEarnings from "../../components/riderDashboard/RiderEarnings";
 import RiderSetting from "../../components/riderDashboard/RiderSetting";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 
 const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
 

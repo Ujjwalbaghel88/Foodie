@@ -745,7 +745,7 @@
 import React, { useState, useEffect } from "react";
 import { MdEdit, MdAdd, MdVerified, MdLocationOn, MdAccountBalance, MdDescription } from "react-icons/md";
 import { FaCamera, FaStore, FaClock, FaIdCard } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import AddRestaurantModal from "./modals/AddRestaurantModal";
@@ -772,11 +772,9 @@ const RestaurantSetting = () => {
     phone: user?.phone || "",
   });
   const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [uploadCountdown, setUploadCountdown] = useState(0);
   const countdownIntervalRef = React.useRef(null);
-  const fileInputRef = React.useRef(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const [imageToCrop, setImageToCrop] = useState(null);
 
@@ -805,8 +803,8 @@ const RestaurantSetting = () => {
       setIsLoading(true);
       const response = await api.get(`/restaurant/get-restaurant`);
       setRestaurantData(response.data.data);
-    } catch (err) {
-      if (err.response?.status !== 404) toast.error("Failed to fetch business data");
+    } catch {
+      toast.error("Failed to fetch business data");
       setRestaurantData(null);
     } finally {
       setIsLoading(false);
@@ -846,7 +844,6 @@ const RestaurantSetting = () => {
 
   const uploadProfilePhoto = async (file) => {
     try {
-      setIsUploadingPhoto(true);
       const data = new FormData();
       data.append("photo", file);
       const response = await api.put(`/auth/update-profile-picture`, data);
@@ -854,10 +851,8 @@ const RestaurantSetting = () => {
       sessionStorage.setItem("cravingUser", JSON.stringify(response.data.data));
       toast.success("Identity Photo Updated!");
       setPhotoPreview(null);
-    } catch (err) {
+    } catch {
       toast.error("Upload failed");
-    } finally {
-      setIsUploadingPhoto(false);
     }
   };
 
@@ -869,7 +864,7 @@ const RestaurantSetting = () => {
       sessionStorage.setItem("cravingUser", JSON.stringify(response.data.data));
       setEditingProfile(false);
       toast.success("Profile Updated!");
-    } catch (err) {
+    } catch {
       toast.error("Update failed");
     } finally {
       setIsSavingProfile(false);

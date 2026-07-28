@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../context/AuthContext";
 import api from "../../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { FaCamera } from "react-icons/fa";
@@ -12,7 +11,6 @@ const EditRestaurantModal = ({
   onSuccess,
   restaurantData,
 }) => {
-  const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -111,7 +109,7 @@ const EditRestaurantModal = ({
         });
       }
 
-      const response = await api.put(
+      await api.put(
         `/restaurant/update-restaurant`,
         formDataToSend,
       );

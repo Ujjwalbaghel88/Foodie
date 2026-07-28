@@ -5,10 +5,9 @@ import toast from "react-hot-toast";
 import api from "../../config/ApiConfig";
 
 const RiderDeliveries = () => {
-  const [deliveries, setDeliveries] = useState([]);
+  const [deliveries] = useState([]);
   const [showMap, setShowMap] = useState(false);
   const [selectedDelivery, setSelectedDelivery] = useState(null);
-  const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
 
   useEffect(() => {
     // TODO: Fetch deliveries from API
@@ -25,7 +24,6 @@ const RiderDeliveries = () => {
 
   const handleLocationUpdate = async (location) => {
     try {
-      setIsUpdatingLocation(true);
       await api.put("/rider/update-location", {
         lat: location.lat,
         lng: location.lng,
@@ -35,8 +33,6 @@ const RiderDeliveries = () => {
       toast.success("Location updated successfully!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update location");
-    } finally {
-      setIsUpdatingLocation(false);
     }
   };
 

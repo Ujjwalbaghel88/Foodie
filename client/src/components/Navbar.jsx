@@ -108,13 +108,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoLight from "../assets/transparentLogoLight.png";
-import { useAuth } from "../context/AuthContext";
+import useAuth from "../context/useAuth";
 import { FaPowerOff, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../config/ApiConfig";
 
 const Navbar = () => {
-  const { user, isLogin, role, setUser, setIsLogin, setRole } = useAuth();
+  const { user, isLogin, role, setUser } = useAuth();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -149,8 +149,6 @@ const Navbar = () => {
       toast.success(res.data.message);
       sessionStorage.removeItem("cravingUser");
       setUser(null);
-      setIsLogin(false);
-      setRole(null);
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Logout failed");

@@ -106,8 +106,6 @@ const HelpCenter = () => {
         : "border-(--color-base-300)"
     }`;
 
-  const translucent = "bg-black/70 backdrop-blur-sm";
-
   return (
     <div
       className="flex min-h-[90vh] items-center justify-center bg-cover bg-center p-10"

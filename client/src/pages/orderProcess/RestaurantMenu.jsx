@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack, IoStar } from "react-icons/io5";
 import { MdAdd, MdRemove, MdDelete, MdShoppingCart } from "react-icons/md";
 import api from "../../config/ApiConfig";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 import {
   buildCheckoutDataFromRestaurant,

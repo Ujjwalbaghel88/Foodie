@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdEdit, MdAdd } from "react-icons/md";
 import { FaCamera } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import ImageCropModal from "../ImageCropModal";
@@ -62,7 +62,7 @@ const RiderSetting = () => {
         phone: user.phone || "",
       });
     }
-  }, [user?.fullName, user?.email, user?.phone, user?.photo]);
+  }, [user]);
 
   useEffect(() => {
     if (user?._id) {

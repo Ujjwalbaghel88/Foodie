@@ -4,7 +4,7 @@ import CustomerOverview from "../../components/customerDashboard/CustomerOvervie
 import CustomerOrders from "../../components/customerDashboard/CustomerOrders";
 import CustomerSetting from "../../components/customerDashboard/CustomerSetting";
 import { useLocation , useNavigate} from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 
 const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
 

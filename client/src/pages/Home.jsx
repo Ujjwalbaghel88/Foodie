@@ -18,7 +18,7 @@ import {
   MdVerified,
 } from "react-icons/md";
 import CarouselComponent from "../components/CarouselComponent";
-import { useAuth } from "../context/AuthContext";
+import useAuth from "../context/useAuth";
 import api from "../config/ApiConfig";
 import { getRestaurantCoverImage } from "../utils/restaurantCoverImages";
 import { buildCheckoutDataFromOrder, storeCheckoutData } from "../utils/checkoutStorage";
@@ -271,7 +271,6 @@ const Home = () => {
     };
 
     loadRestaurants();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import RestaurantMenu from "../../components/restaurantDashbaord/RestaurantMenu"
 import RestaurantReviews from "../../components/restaurantDashbaord/RestaurantReviews";
 import RestaurantSetting from "../../components/restaurantDashbaord/RestaurantSetting";
 import { useLocation , useNavigate} from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 
 const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
 

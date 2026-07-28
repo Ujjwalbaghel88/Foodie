@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdEdit, MdAdd, MdDelete } from "react-icons/md";
 import { FaCamera } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import MapLocationPicker from "../MapLocationPicker";
@@ -37,7 +37,6 @@ const CustomerSetting = () => {
 
   // Address States
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [showMapPicker, setShowMapPicker] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
 
@@ -56,7 +55,7 @@ const CustomerSetting = () => {
         phone: user.phone || "",
       });
     }
-  }, [user?.fullName, user?.email, user?.phone, user?.photo]);
+  }, [user]);
 
   useEffect(() => {
     if (user?._id) {

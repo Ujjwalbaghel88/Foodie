@@ -6,6 +6,7 @@ import {
   deleteImage,
 } from "../utils/imageUploader.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import getAuthCookieOptions from "../utils/authCookieOptions.js";
 
 const generateOtp = () =>
   String(Math.floor(100000 + Math.random() * 900000));
@@ -72,10 +73,7 @@ export const Login = async (req, res, next) => {
 export const Logout = async (req, res, next) => {
   try {
     res.clearCookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 0,
+      ...getAuthCookieOptions(),
     });
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {

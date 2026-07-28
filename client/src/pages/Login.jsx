@@ -3,13 +3,13 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import api from "../config/ApiConfig";
-import { useAuth } from "../context/AuthContext";
+import useAuth from "../context/useAuth";
 
 const loginHeroBg = `${import.meta.env.BASE_URL}foodTable.webp`;
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setUser, setIsLogin, setRole } = useAuth();
+  const { setUser } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -55,9 +55,6 @@ const Login = () => {
       toast.success(res.data.message);
       sessionStorage.setItem("cravingUser", JSON.stringify(res.data.data));
       setUser(res.data.data);
-      setIsLogin(true);
-      //console.log(res.data.data.userType);
-      setRole(res.data.data.userType);
       if (res.data.data.userType === "customer") {
         navigate("/customer-dashboard");
       } else if (res.data.data.userType === "restaurant") {

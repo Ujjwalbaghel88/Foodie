@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import getAuthCookieOptions from "./authCookieOptions.js";
 
 const generateToken = (user, res) => {
   const payload = {
@@ -11,9 +12,7 @@ const generateToken = (user, res) => {
   });
 
   res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    ...getAuthCookieOptions(),
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });
 };
