@@ -6,6 +6,8 @@ import {
   IoTimeOutline,
   IoChevronForward,
   IoBagHandleOutline,
+  IoHeartOutline,
+  IoHeart,
 } from "react-icons/io5";
 import { FaMotorcycle, FaShieldAlt, FaFireAlt } from "react-icons/fa";
 import {
@@ -23,6 +25,10 @@ import api from "../config/ApiConfig";
 import { getRestaurantCoverImage } from "../utils/restaurantCoverImages";
 import { buildCheckoutDataFromOrder, storeCheckoutData } from "../utils/checkoutStorage";
 import { buildCustomerInsights } from "../utils/customerInsights";
+import {
+  readFavoriteRestaurantIds,
+  toggleFavoriteRestaurantId,
+} from "../utils/favoritesStorage";
 
 const assetBase = import.meta.env.BASE_URL;
 
@@ -57,31 +63,37 @@ const foodInspirationCards = [
     title: "Veg Meal",
     subtitle: "Comfort plate",
     image: `${assetBase}menu-images/veg-biryani.png`,
+    price: 99,
   },
   {
     title: "Biryani",
     subtitle: "Rich and spicy",
     image: `${assetBase}menu-images/chicken-biryani.png`,
+    price: 49,
   },
   {
     title: "Thali",
     subtitle: "Full meal combo",
     image: `${assetBase}menu-images/paneer-butter-masala.png`,
+    price: 69,
   },
   {
     title: "South Indian",
     subtitle: "Light breakfast",
     image: `${assetBase}menu-images/masala-dosa.png`,
+    price: 49,
   },
   {
     title: "Dessert",
     subtitle: "Sweet finish",
     image: `${assetBase}menu-images/gulab-jamun.png`,
+    price: 99,
   },
   {
     title: "Refreshing",
     subtitle: "Cool sip",
     image: `${assetBase}menu-images/fresh-lime-soda.png`,
+    price: 69,
   },
 ];
 
@@ -96,6 +108,7 @@ const brandNames = [
 
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
 const ACTIVE_ORDER_DISMISS_PREFIX = "cravings_live_order_dismissed";
+const QUICK_ORDER_PROMPT_KEY = "cravings_quick_order_prompt_dismissed_v1";
 
 const readStoredLiveOrder = () => {
   try {
@@ -205,6 +218,78 @@ const LiveOrderPopup = ({ order, onClose, onTrack }) => {
   );
 };
 
+const QuickOrderPopup = ({ onClose, onStartOrder, onBrowseSaved }) => {
+  const quickPicks = ["Biryani", "Paneer", "Burger", "Thali"];
+
+  return (
+    <div className="fixed bottom-5 right-5 z-[79] w-[390px] max-w-[calc(100vw-2rem)]">
+      <div className="overflow-hidden rounded-[2rem] border border-orange-100 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.22)]">
+        <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 px-5 py-4 text-white">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
+                Quick order
+              </p>
+              <h3 className="mt-1 text-xl font-black leading-tight">
+                Hungry? Start your next order.
+              </h3>
+              <p className="mt-1 text-xs text-white/85">
+                Browse dishes, saved restaurants, and popular picks in one tap.
+              </p>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="rounded-full bg-white/15 px-3 py-1.5 text-sm font-bold text-white transition hover:bg-white/25"
+              aria-label="Close quick order popup"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <div className="p-5">
+          <div className="flex flex-wrap gap-2">
+            {quickPicks.map((pick) => (
+              <span
+                key={pick}
+                className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-orange-700"
+              >
+                {pick}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-[1.25rem] bg-slate-50 p-4">
+            <p className="text-sm font-semibold text-slate-900">
+              Ready in minutes from your favorite local kitchens.
+            </p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">
+              Jump into the restaurant list or open your saved restaurants and pick
+              something delicious.
+            </p>
+          </div>
+
+          <div className="mt-4 flex gap-3">
+            <button
+              onClick={onStartOrder}
+              className="flex-1 rounded-2xl bg-(--color-primary) px-4 py-3 text-sm font-black text-white transition hover:bg-orange-600"
+            >
+              Order now
+            </button>
+            <button
+              onClick={onBrowseSaved}
+              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+            >
+              Saved
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -212,11 +297,15 @@ const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [quickFilter, setQuickFilter] = useState("all");
+  const [sortMode, setSortMode] = useState("relevance");
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [activeOrder, setActiveOrder] = useState(null);
+  const [showQuickOrderPopup, setShowQuickOrderPopup] = useState(false);
   const [customerOrders, setCustomerOrders] = useState([]);
   const [customerOrdersLoading, setCustomerOrdersLoading] = useState(false);
+  const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
 
   const formatCuisineList = (value) => {
     if (!value) return [];
@@ -354,10 +443,47 @@ const Home = () => {
     };
   }, [user]);
 
+  useEffect(() => {
+    setSavedRestaurantIds(readFavoriteRestaurantIds());
+  }, []);
+
+  useEffect(() => {
+    if (!user || user.userType !== "customer") {
+      setShowQuickOrderPopup(false);
+      return undefined;
+    }
+
+    if (activeOrder) {
+      setShowQuickOrderPopup(false);
+      return undefined;
+    }
+
+    const dismissed = localStorage.getItem(QUICK_ORDER_PROMPT_KEY);
+    if (dismissed) {
+      setShowQuickOrderPopup(false);
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      setShowQuickOrderPopup(true);
+    }, 3500);
+
+    return () => window.clearTimeout(timer);
+  }, [user, activeOrder]);
+
   const handleCloseOrderPopup = () => {
     if (!activeOrder?.orderId) return;
     localStorage.setItem(`${ACTIVE_ORDER_DISMISS_PREFIX}_${activeOrder.orderId}`, "1");
     setActiveOrder(null);
+  };
+
+  const handleCloseQuickOrderPopup = () => {
+    localStorage.setItem(QUICK_ORDER_PROMPT_KEY, "1");
+    setShowQuickOrderPopup(false);
+  };
+
+  const toggleSavedRestaurant = (restaurantId) => {
+    setSavedRestaurantIds(toggleFavoriteRestaurantId(restaurantId));
   };
 
   useEffect(() => {
@@ -385,12 +511,50 @@ const Home = () => {
       );
     }
 
-    setFilteredRestaurants(filtered);
-  }, [searchQuery, selectedCategory, restaurants]);
+    if (quickFilter === "topRated") {
+      filtered = filtered.filter((restaurant) => Number(restaurant.rating || 0) >= 4.2);
+    }
+
+    if (quickFilter === "saved") {
+      filtered = filtered.filter((restaurant) =>
+        savedRestaurantIds.includes(restaurant.id),
+      );
+    }
+
+    if (quickFilter === "mostReviewed") {
+      filtered = filtered.sort((a, b) => b.numReviews - a.numReviews);
+    }
+
+    setFilteredRestaurants(applySort(filtered));
+  }, [searchQuery, selectedCategory, quickFilter, sortMode, restaurants, savedRestaurantIds]);
 
   const topRestaurants = [...filteredRestaurants]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 6);
+  const savedRestaurants = restaurants.filter((restaurant) =>
+    savedRestaurantIds.includes(restaurant.id),
+  );
+
+  const applySort = (list) => {
+    const sorted = [...list];
+    if (sortMode === "rating") {
+      return sorted.sort((a, b) => b.rating - a.rating);
+    }
+    if (sortMode === "reviews") {
+      return sorted.sort((a, b) => b.numReviews - a.numReviews);
+    }
+    if (sortMode === "name") {
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return sorted;
+  };
+
+  const swiggyFilters = [
+    { id: "all", label: "All" },
+    { id: "topRated", label: "Top Rated" },
+    { id: "saved", label: "Saved" },
+    { id: "mostReviewed", label: "Most Reviewed" },
+  ];
 
   const topBrandCards = brandNames.map((brandName, index) => {
     const matchedRestaurant =
@@ -436,8 +600,21 @@ const Home = () => {
       <LiveOrderPopup
         order={activeOrder}
         onClose={handleCloseOrderPopup}
-        onTrack={() => navigate(`/track-order/${activeOrder.orderId}`)}
+        onTrack={() => activeOrder?.orderId && navigate(`/track-order/${activeOrder.orderId}`)}
       />
+      {showQuickOrderPopup && !activeOrder && (
+        <QuickOrderPopup
+          onClose={handleCloseQuickOrderPopup}
+          onStartOrder={() => {
+            handleCloseQuickOrderPopup();
+            navigate("/order-now");
+          }}
+          onBrowseSaved={() => {
+            handleCloseQuickOrderPopup();
+            navigate("/order-now?saved=1");
+          }}
+        />
+      )}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
           <CarouselComponent />
@@ -670,6 +847,45 @@ const Home = () => {
         </div>
       </section>
 
+      <section className="mx-auto mt-4 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-2">
+              {swiggyFilters.map((filter) => {
+                const active = quickFilter === filter.id;
+                return (
+                  <button
+                    key={filter.id}
+                    onClick={() => setQuickFilter(filter.id)}
+                    className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                      active
+                        ? "bg-(--color-primary) text-white shadow-lg shadow-orange-500/20"
+                        : "bg-orange-50 text-slate-700 hover:bg-orange-100"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-slate-500">Sort by</span>
+              <select
+                value={sortMode}
+                onChange={(e) => setSortMode(e.target.value)}
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 outline-none"
+              >
+                <option value="relevance">Relevance</option>
+                <option value="rating">Rating</option>
+                <option value="reviews">Most reviewed</option>
+                <option value="name">Name A-Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
@@ -687,7 +903,7 @@ const Home = () => {
             <button
               key={item.title}
               onClick={() => handleInspirationClick(item.title)}
-              className="group flex w-32 shrink-0 flex-col items-center text-center transition hover:-translate-y-1"
+              className="group flex w-36 shrink-0 flex-col items-center text-center transition hover:-translate-y-1"
             >
               <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-white shadow-[0_14px_30px_rgba(0,0,0,0.12)] transition group-hover:-translate-y-1 group-hover:shadow-[0_18px_36px_rgba(0,0,0,0.18)]">
                 <img
@@ -696,13 +912,13 @@ const Home = () => {
                   className="h-full w-full rounded-full object-cover"
                 />
               </div>
+              <span className="mt-3 inline-flex items-center justify-center rounded-full border-2 border-yellow-300 bg-yellow-300 px-5 py-2 text-xl font-black text-slate-900 shadow-[0_8px_0_rgba(202,138,4,0.35)]">
+                ₹{item.price}
+              </span>
               <p className="mt-3 text-lg font-semibold text-slate-900">
                 {item.title}
               </p>
               <p className="text-xs text-slate-500">{item.subtitle}</p>
-              <span className="mt-2 rounded-full bg-orange-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-orange-700">
-                Order now
-              </span>
             </button>
           ))}
         </div>
@@ -746,6 +962,64 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+      {savedRestaurants.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
+          <div className="rounded-[2rem] border border-rose-100 bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
+            <div className="mb-5 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-rose-600">
+                  Saved places
+                </p>
+                <h2 className="mt-2 text-3xl font-black text-slate-900">
+                  Restaurants you picked to revisit
+                </h2>
+              </div>
+              <p className="rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700">
+                {savedRestaurants.length} saved
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {savedRestaurants.slice(0, 3).map((restaurant) => (
+                <div
+                  key={restaurant.id}
+                  className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50"
+                >
+                  <img
+                    src={restaurant.image}
+                    alt={restaurant.name}
+                    className="h-40 w-full object-cover"
+                  />
+                  <div className="p-4">
+                    <p className="text-lg font-black text-slate-900 line-clamp-1">
+                      {restaurant.name}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-500 line-clamp-1">
+                      {restaurant.city || restaurant.address || "Near you"}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                      <button
+                        onClick={() => navigate(`/restaurant-menu/${restaurant.id}`)}
+                        className="rounded-full bg-(--color-primary) px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-600"
+                      >
+                        View menu
+                      </button>
+                      <button
+                        onClick={() => toggleSavedRestaurant(restaurant.id)}
+                        className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-bold text-rose-600 transition hover:bg-rose-50"
+                      >
+                        <IoHeart size={16} />
+                        Saved
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
         <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -796,9 +1070,8 @@ const Home = () => {
               const deliveryTime = deliveryTimes[cardIndex % deliveryTimes.length];
 
               return (
-                <button
+                <div
                   key={restaurant.id}
-                  onClick={() => navigate(`/restaurant-menu/${restaurant.id}`)}
                   className="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-2xl"
                 >
                   <div className="relative h-56 overflow-hidden">
@@ -828,6 +1101,25 @@ const Home = () => {
                       <IoStar className="text-yellow-500" />
                       {Number(restaurant.rating || 0).toFixed(1)}
                     </div>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        toggleSavedRestaurant(restaurant.id);
+                      }}
+                      className="absolute right-4 top-4 rounded-full bg-white/95 p-2 text-rose-500 shadow-lg transition hover:scale-105"
+                      aria-label={
+                        savedRestaurantIds.includes(restaurant.id)
+                          ? "Remove from saved restaurants"
+                          : "Save restaurant"
+                      }
+                    >
+                      {savedRestaurantIds.includes(restaurant.id) ? (
+                        <IoHeart size={18} />
+                      ) : (
+                        <IoHeartOutline size={18} />
+                      )}
+                    </button>
                   </div>
 
                   <div className="space-y-4 p-5">
@@ -865,8 +1157,15 @@ const Home = () => {
                         <p className="text-xs text-slate-500">{restaurant.numReviews || 0} reviews</p>
                       </div>
                     </div>
+
+                    <button
+                      onClick={() => navigate(`/restaurant-menu/${restaurant.id}`)}
+                      className="w-full rounded-full bg-(--color-primary) px-4 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
+                    >
+                      View menu
+                    </button>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>

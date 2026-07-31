@@ -117,6 +117,8 @@ const Navbar = () => {
   const { user, isLogin, role, setUser } = useAuth();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [locationQuery, setLocationQuery] = useState("");
+  const [dishQuery, setDishQuery] = useState("");
 
   useEffect(() => {
     let ticking = false;
@@ -155,6 +157,29 @@ const Navbar = () => {
     }
   };
 
+  const handleSearch = () => {
+    const location = locationQuery.trim();
+    const search = dishQuery.trim();
+    const params = new URLSearchParams();
+
+    if (location) params.set("location", location);
+    if (search) params.set("search", search);
+
+    navigate(params.toString() ? `/order-now?${params.toString()}` : "/order-now", {
+      state: {
+        location,
+        search,
+      },
+    });
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSearch();
+    }
+  };
+
   return (
     <nav
       className={`sticky top-0 z-[999] w-full h-16 bg-(--color-primary) text-white transition-[box-shadow,background-color,transform] duration-300 ${
@@ -175,14 +200,35 @@ const Navbar = () => {
         </div>
 
         {/* SEARCH BAR */}
-        <div className={`hidden lg:flex items-center flex-1 max-w-2xl mx-6 bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100" : "opacity-90"}`}>
-           <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-200 min-w-[130px] text-red-500">
-              <FaMapMarkerAlt />
-              <input type="text" placeholder="Location" className="bg-transparent text-xs font-bold outline-none text-gray-700 w-full" />
+        <div className={`hidden lg:flex items-stretch flex-1 max-w-3xl mx-6 bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100" : "opacity-90"}`}>
+           <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-200 min-w-[170px] text-red-500 bg-white">
+              <FaMapMarkerAlt className="shrink-0" />
+              <input
+                type="text"
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Location"
+                className="bg-transparent text-sm font-bold outline-none text-gray-700 w-full placeholder:text-gray-400"
+              />
            </div>
-           <div className="flex items-center gap-3 px-4 w-full text-gray-400">
-              <FaSearch size={14} />
-              <input type="text" placeholder="Search for restaurant..." className="bg-transparent text-sm w-full outline-none text-gray-700" />
+           <div className="flex items-center gap-3 px-4 w-full text-gray-400 bg-white">
+              <FaSearch size={14} className="shrink-0" />
+              <input
+                type="text"
+                value={dishQuery}
+                onChange={(e) => setDishQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Search for a dish..."
+                className="bg-transparent text-sm w-full outline-none text-gray-700 placeholder:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="rounded-full bg-red-500 px-4 py-2 text-xs font-bold text-white transition hover:bg-red-600 active:scale-95"
+              >
+                Search
+              </button>
            </div>
         </div>
 

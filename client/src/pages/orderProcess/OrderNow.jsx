@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IoSearch, IoStar } from "react-icons/io5";
+import { IoSearch, IoStar, IoHeartOutline, IoHeart } from "react-icons/io5";
 import {
   MdRestaurant,
   MdLocalDining,
@@ -10,6 +10,10 @@ import {
 } from "react-icons/md";
 import api from "../../config/ApiConfig";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
+import {
+  readFavoriteRestaurantIds,
+  toggleFavoriteRestaurantId,
+} from "../../utils/favoritesStorage";
 
 const OrderNow = () => {
   const navigate = useNavigate();
@@ -17,11 +21,15 @@ const OrderNow = () => {
 
   // States
   const [restaurants, setRestaurants] = useState([]);
+  const [locationQuery, setLocationQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [quickFilter, setQuickFilter] = useState("all");
+  const [sortMode, setSortMode] = useState("relevance");
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
 
   const categories = [
     { id: "all", label: "All", icon: MdRestaurant },
@@ -38,6 +46,27 @@ const OrderNow = () => {
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
+  };
+
+  const swiggyFilters = [
+    { id: "all", label: "All" },
+    { id: "topRated", label: "Top Rated" },
+    { id: "saved", label: "Saved" },
+    { id: "mostReviewed", label: "Most Reviewed" },
+  ];
+
+  const applySort = (list) => {
+    const sorted = [...list];
+    if (sortMode === "rating") {
+      return sorted.sort((a, b) => b.rating - a.rating);
+    }
+    if (sortMode === "reviews") {
+      return sorted.sort((a, b) => b.numReviews - a.numReviews);
+    }
+    if (sortMode === "name") {
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return sorted;
   };
 
   // Load all restaurants
@@ -86,24 +115,44 @@ const OrderNow = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+    const prefillLocation =
+      params.get("location") || params.get("city") || location.state?.location || "";
     const prefillSearch = params.get("search") || location.state?.search || "";
-    if (prefillSearch) {
-      setSearchQuery(prefillSearch);
-    }
+
+    setLocationQuery(prefillLocation);
+    setSearchQuery(prefillSearch);
   }, [location.search, location.state]);
+
+  useEffect(() => {
+    setSavedRestaurantIds(readFavoriteRestaurantIds());
+  }, []);
+
+  const toggleSavedRestaurant = (restaurantId) => {
+    setSavedRestaurantIds(toggleFavoriteRestaurantId(restaurantId));
+  };
 
   // Filter restaurants
   useEffect(() => {
     let filtered = restaurants;
+    const locationQ = locationQuery.trim().toLowerCase();
+    const searchQ = searchQuery.trim().toLowerCase();
 
-    if (searchQuery) {
+    if (locationQ) {
       filtered = filtered.filter(
         (r) =>
-          r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          r.cuisines.some((c) =>
-            c.toLowerCase().includes(searchQuery.toLowerCase()),
-          ) ||
-          r.city.toLowerCase().includes(searchQuery.toLowerCase()),
+          r.city?.toLowerCase().includes(locationQ) ||
+          r.address?.toLowerCase().includes(locationQ),
+      );
+    }
+
+    if (searchQ) {
+      filtered = filtered.filter(
+        (r) =>
+          r.name.toLowerCase().includes(searchQ) ||
+          r.cuisines.some((c) => c.toLowerCase().includes(searchQ)) ||
+          r.city.toLowerCase().includes(searchQ) ||
+          r.address?.toLowerCase().includes(searchQ) ||
+          r.description?.toLowerCase().includes(searchQ),
       );
     }
 
@@ -121,8 +170,30 @@ const OrderNow = () => {
       );
     }
 
-    setFilteredRestaurants(filtered);
-  }, [searchQuery, selectedCategory, restaurants]);
+    if (quickFilter === "topRated") {
+      filtered = filtered.filter((restaurant) => Number(restaurant.rating || 0) >= 4.2);
+    }
+
+    if (quickFilter === "saved") {
+      filtered = filtered.filter((restaurant) =>
+        savedRestaurantIds.includes(restaurant.id),
+      );
+    }
+
+    if (quickFilter === "mostReviewed") {
+      filtered = filtered.sort((a, b) => b.numReviews - a.numReviews);
+    }
+
+    setFilteredRestaurants(applySort(filtered));
+  }, [
+    locationQuery,
+    searchQuery,
+    selectedCategory,
+    quickFilter,
+    sortMode,
+    restaurants,
+    savedRestaurantIds,
+  ]);
 
   return (
     <div className="min-h-screen bg-(--color-base-200) p-2">
@@ -131,13 +202,62 @@ const OrderNow = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center bg-(--color-base-100) rounded-lg px-4 py-3 border border-(--color-primary)">
             <IoSearch className="text-(--color-base-content) text-xl mr-3" />
-            <input
-              type="text"
-              placeholder="Search restaurants or cuisines..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-(--color-base-100) w-full outline-none text-(--color-primary)"
-            />
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+              <input
+                type="text"
+                placeholder="Search by dish..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-(--color-base-100) w-full outline-none text-(--color-primary)"
+              />
+              <span className="hidden h-5 w-px bg-gray-200 sm:block" />
+              <input
+                type="text"
+                placeholder="Filter by location..."
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+                className="bg-(--color-base-100) w-full outline-none text-(--color-primary)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-2">
+              {swiggyFilters.map((filter) => {
+                const active = quickFilter === filter.id;
+                return (
+                  <button
+                    key={filter.id}
+                    onClick={() => setQuickFilter(filter.id)}
+                    className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                      active
+                        ? "bg-(--color-primary) text-white shadow-lg shadow-orange-500/20"
+                        : "bg-orange-50 text-slate-700 hover:bg-orange-100"
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-slate-500">Sort by</span>
+              <select
+                value={sortMode}
+                onChange={(e) => setSortMode(e.target.value)}
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 outline-none"
+              >
+                <option value="relevance">Relevance</option>
+                <option value="rating">Rating</option>
+                <option value="reviews">Most reviewed</option>
+                <option value="name">Name A-Z</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -207,6 +327,22 @@ const OrderNow = () => {
                     {restaurant.rating}
                     </div>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleSavedRestaurant(restaurant.id)}
+                    className="absolute right-4 top-4 rounded-full bg-white/95 p-2 text-rose-500 shadow-lg transition hover:scale-105"
+                    aria-label={
+                      savedRestaurantIds.includes(restaurant.id)
+                        ? "Remove from saved restaurants"
+                        : "Save restaurant"
+                    }
+                  >
+                    {savedRestaurantIds.includes(restaurant.id) ? (
+                      <IoHeart size={18} />
+                    ) : (
+                      <IoHeartOutline size={18} />
+                    )}
+                  </button>
                 </div>
 
                 {/* Restaurant Info */}
@@ -229,14 +365,24 @@ const OrderNow = () => {
 
                   {/* Footer Info */}
                   <div className="mt-auto pt-3 border-t border-(--color-base-200)">
-                    <button
-                      onClick={() =>
-                        navigate(`/restaurant-menu/${restaurant.id}`)
-                      }
-                      className="w-full bg-(--color-primary) text-(--color-primary-content) px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition"
-                    >
-                      View Menu
-                    </button>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() =>
+                          navigate(`/restaurant-menu/${restaurant.id}`)
+                        }
+                        className="flex-1 bg-(--color-primary) text-(--color-primary-content) px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition"
+                      >
+                        View Menu
+                      </button>
+                      <button
+                        onClick={() => toggleSavedRestaurant(restaurant.id)}
+                        className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-white px-4 py-2 font-semibold text-rose-600 transition hover:bg-rose-50"
+                      >
+                        {savedRestaurantIds.includes(restaurant.id)
+                          ? "Saved"
+                          : "Save"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -250,6 +396,7 @@ const OrderNow = () => {
             <button
               onClick={() => {
                 setSearchQuery("");
+                setLocationQuery("");
                 setSelectedCategory("all");
               }}
               className="mt-4 bg-(--color-primary) text-(--color-primary-content) px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition"
