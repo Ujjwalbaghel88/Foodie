@@ -1,6 +1,12 @@
 import User from "../model/userModel.js";
 import Restaurant from "../model/restaurantModel.js";
 import MenuItem from "../model/menuModel.js";
+import Customer from "../model/customerModel.js";
+import Rider from "../model/riderModel.js";
+import {
+  getLegacyCollections,
+  seedLegacyJsonCollections,
+} from "../utils/legacyJsonData.js";
 
 export const getManagerProgress = async (req, res, next) => {
   try {
@@ -39,6 +45,96 @@ export const getManagerProgress = async (req, res, next) => {
     });
 
     res.status(200).json({ message: "Manager progress retrieved", data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const seedLegacyJsonData = async (req, res, next) => {
+  try {
+    const replace = Boolean(req.body?.replace);
+    const result = await seedLegacyJsonCollections({ replace });
+
+    res.status(200).json({
+      message: replace
+        ? "Legacy JSON data replaced successfully"
+        : "Legacy JSON data imported successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const collectionDeleteMap = {
+  users: () => User.deleteMany({}),
+  restaurants: () => Restaurant.deleteMany({}),
+  menuitems: () => MenuItem.deleteMany({}),
+  customers: () => Customer.deleteMany({}),
+  riders: () => Rider.deleteMany({}),
+};
+
+export const resetDataCollection = async (req, res, next) => {
+  try {
+    const { collection } = req.params;
+    if (!collectionDeleteMap[collection]) {
+      return res.status(400).json({ message: "Invalid collection name" });
+    }
+
+    await collectionDeleteMap[collection]();
+    const result = await seedLegacyJsonCollections();
+
+    res.status(200).json({
+      message: `${collection} reset successfully from legacy JSON`,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getFallbackIfEmpty = async (collection, legacyCollection) => {
+  if (collection.length > 0) return collection;
+  return legacyCollection || [];
+};
+
+export const getDataCollections = async (req, res, next) => {
+  try {
+    const [legacyData, users, restaurants, menus, customers, riders] = await Promise.all([
+      getLegacyCollections(),
+      User.find().select("fullName email phone userType photo createdAt updatedAt").sort({ createdAt: -1 }).lean(),
+      Restaurant.find().select("restaurantName address city state cuisineType images rating numReviews isActive isProfileComplete userId createdAt updatedAt").sort({ createdAt: -1 }).lean(),
+      MenuItem.find().select("restaurantId items createdAt updatedAt").populate("restaurantId", "restaurantName city").sort({ createdAt: -1 }).lean(),
+      Customer.find().select("userId addressBook isProfileComplete isActive createdAt updatedAt").populate("userId", "fullName email").sort({ createdAt: -1 }).lean(),
+      Rider.find().select("userId vehicleDetails currentLocation isAvailable ratings isProfileComplete isActive createdAt updatedAt").populate("userId", "fullName email").sort({ createdAt: -1 }).lean(),
+    ]);
+
+    const data = {
+      users: await getFallbackIfEmpty(users, legacyData.users),
+      restaurants: await getFallbackIfEmpty(restaurants, legacyData.restaurants),
+      menuitems: await getFallbackIfEmpty(menus, legacyData.menuitems),
+      customers: await getFallbackIfEmpty(customers, legacyData.customers),
+      riders: await getFallbackIfEmpty(riders, legacyData.riders),
+    };
+
+    res.status(200).json({
+      message: "Data collections retrieved successfully",
+      data,
+      counts: {
+        users: data.users.length,
+        restaurants: data.restaurants.length,
+        menuitems: data.menuitems.length,
+        customers: data.customers.length,
+        riders: data.riders.length,
+      },
+      source: {
+        users: users.length > 0 ? "database" : "legacy-json",
+        restaurants: restaurants.length > 0 ? "database" : "legacy-json",
+        menuitems: menus.length > 0 ? "database" : "legacy-json",
+        customers: customers.length > 0 ? "database" : "legacy-json",
+        riders: riders.length > 0 ? "database" : "legacy-json",
+      },
+    });
   } catch (error) {
     next(error);
   }

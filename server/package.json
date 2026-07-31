@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "seed": "node ./src/seeders/seed.js",
-    "seed:restaurant-menu": "node ./src/seeders/restaurant-menu.seed.js"
+    "seed:restaurant-menu": "node ./src/seeders/restaurant-menu.seed.js",
+    "seed:legacy-json": "node ./src/seeders/seed-from-json.js"
   },
   "keywords": [],
   "author": "Raj Vardhan",

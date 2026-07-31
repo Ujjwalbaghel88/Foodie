@@ -3,6 +3,10 @@ import {
   uploadMultipleImages,
   deleteMultipleImages,
 } from "../utils/imageUploader.js";
+import {
+  getLegacyRestaurantById,
+  getLegacyRestaurants,
+} from "../utils/legacyJsonData.js";
 
 export const createRestaurant = async (req, res, next) => {
   try {
@@ -190,11 +194,18 @@ export const updateRestaurant = async (req, res, next) => {
 // Public endpoints - No authentication required
 export const getAllRestaurants = async (req, res, next) => {
   try {
-    const restaurants = await Restaurant.find()
+    let restaurants = await Restaurant.find()
       .select(
         "restaurantName address city state cuisineType images openingHours closingHours geolocation rating numReviews description",
       )
       .populate("userId", "email contactNumber");
+
+    if (!restaurants.length) {
+      restaurants = (await getLegacyRestaurants()).map((restaurant) => ({
+        ...restaurant,
+        userId: restaurant.userId || null,
+      }));
+    }
 
     res.status(200).json({
       message: "All restaurants retrieved successfully",
@@ -209,10 +220,14 @@ export const getRestaurantById = async (req, res, next) => {
   try {
     const { restaurantId } = req.params;
 
-    const restaurant = await Restaurant.findById(restaurantId).populate(
+    let restaurant = await Restaurant.findById(restaurantId).populate(
       "userId",
       "email contactNumber fullName",
     );
+
+    if (!restaurant) {
+      restaurant = await getLegacyRestaurantById(restaurantId);
+    }
 
     if (!restaurant) {
       const error = new Error("Restaurant not found");

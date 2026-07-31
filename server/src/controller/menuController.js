@@ -1,6 +1,7 @@
 import MenuItem from "../model/menuModel.js";
 import Restaurant from "../model/restaurantModel.js";
 import { uploadSingleImage, deleteImage } from "../utils/imageUploader.js";
+import { getLegacyMenuByRestaurantId } from "../utils/legacyJsonData.js";
 
 export const addMenuItem = async (req, res, next) => {
   try {
@@ -112,10 +113,14 @@ export const getMenuItemsByRestaurantId = async (req, res, next) => {
   try {
     const { restaurantId } = req.params;
 
-    const menu = await MenuItem.findOne({ restaurantId }).populate(
+    let menu = await MenuItem.findOne({ restaurantId }).populate(
       "items.ratings.customerId",
       "fullName email"
     );
+
+    if (!menu) {
+      menu = await getLegacyMenuByRestaurantId(restaurantId);
+    }
 
     if (!menu) {
       return res.status(200).json({

@@ -3,11 +3,13 @@ import { MdDashboard } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { MdAssessment } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
+import { MdStorage } from "react-icons/md";
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   const mainTabs = [
     { name: "Overview", value: "overview", icon: <MdDashboard /> },
     { name: "Users", value: "users", icon: <FaUsers /> },
+    { name: "Data", value: "data", icon: <MdStorage /> },
     { name: "Reports", value: "reports", icon: <MdAssessment /> },
   ];
 

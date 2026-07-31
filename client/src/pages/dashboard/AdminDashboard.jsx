@@ -4,6 +4,7 @@ import AdminOverview from "../../components/adminDashboard/AdminOverview";
 import AdminUsers from "../../components/adminDashboard/AdminUsers";
 import AdminReports from "../../components/adminDashboard/AdminReports";
 import AdminSetting from "../../components/adminDashboard/AdminSetting";
+import AdminDataViewer from "../../components/adminDashboard/AdminDataViewer";
 import { useLocation , useNavigate} from "react-router-dom";
 import useAuth from "../../context/useAuth";
 
@@ -45,6 +46,7 @@ const AdminDashboard = () => {
         <div className="w-14/17 bg-(--color-base-100) p-4 rounded-lg shadow-md h-full">
           {activeTab === "overview" && <AdminOverview />}
           {activeTab === "users" && <AdminUsers />}
+          {activeTab === "data" && <AdminDataViewer />}
           {activeTab === "reports" && <AdminReports />}
           {activeTab === "settings" && <AdminSetting />}
         </div>
