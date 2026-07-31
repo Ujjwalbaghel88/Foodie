@@ -33,6 +33,7 @@ export const getManagerProgress = async (req, res, next) => {
       const profileComplete = Boolean(restaurant?.isProfileComplete);
       return {
         id: manager._id,
+        restaurantId: restaurant?._id || null,
         fullName: manager.fullName,
         email: manager.email,
         photo: manager.photo,
