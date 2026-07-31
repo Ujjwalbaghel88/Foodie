@@ -213,16 +213,16 @@ const RestaurantMenu = () => {
               {menuItems.map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-(--color-base-100) rounded-lg shadow-md hover:shadow-lg transition flex gap-4 p-4 border border-(--color-base-200)"
+                  className="bg-(--color-base-100) rounded-2xl shadow-md hover:shadow-lg transition flex flex-col md:flex-row gap-4 p-4 border border-(--color-base-200)"
                 >
                   {item.image?.url ? (
                     <img
                       src={item.image.url}
                       alt={item.itemName}
-                      className="w-28 h-28 object-cover rounded-lg shrink-0"
+                      className="w-full md:w-28 h-48 md:h-28 object-cover rounded-xl shrink-0"
                     />
                   ) : (
-                    <div className="w-28 h-28 bg-(--color-base-200) rounded-lg shrink-0 flex items-center justify-center">
+                    <div className="w-full md:w-28 h-48 md:h-28 bg-(--color-base-200) rounded-xl shrink-0 flex items-center justify-center">
                       <MdShoppingCart
                         size={40}
                         className="text-(--color-base-content)"
@@ -230,14 +230,14 @@ const RestaurantMenu = () => {
                     </div>
                   )}
 
-                  <div className="flex-1 flex justify-between">
-                    <div>
-                      <div className="flex justify-between items-start gap-2 mb-2">
-                        <div className="flex  gap-1">
+                  <div className="flex-1 flex flex-col gap-4 md:flex-row md:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-start gap-2 mb-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <h3 className="font-bold text-(--color-content) text-lg">
                             {item.itemName}
                           </h3>
-                          <span className="text-xs bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded-lg font-semibold ">
+                          <span className="text-xs bg-(--color-secondary) text-(--color-secondary-content) px-3 py-1 rounded-lg font-semibold">
                             {item.foodType}
                           </span>
                         </div>
@@ -247,11 +247,11 @@ const RestaurantMenu = () => {
                       </p>
                     </div>
 
-                    <div>
+                    <div className="flex items-center justify-between gap-3 md:flex-col md:items-end md:justify-start">
                       <div className="text-lg font-bold text-(--color-primary) whitespace-nowrap">
                         ₹{item.price}
                       </div>
-                      <div className="flex items-center gap-3 mt-3">
+                      <div className="flex items-center gap-3 md:mt-3">
                         {cart.find((c) => c.itemName === item.itemName) ? (
                           <div className="flex items-center gap-2 bg-(--color-base-200) rounded-lg px-3 py-2">
                             <button
@@ -318,7 +318,7 @@ const RestaurantMenu = () => {
       {cart.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 bg-(--color-base-100) border-t border-(--color-base-200) shadow-lg z-40">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               {/* Item Count */}
               <div className="flex items-center gap-3">
                 <div className="bg-(--color-primary) text-(--color-primary-content) rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg">
@@ -335,7 +335,7 @@ const RestaurantMenu = () => {
               </div>
 
               {/* Total Amount */}
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <p className="text-xs text-(--color-base-content)">
                   Total Amount
                 </p>
@@ -347,7 +347,7 @@ const RestaurantMenu = () => {
               {/* Checkout Button */}
               <button
                 onClick={handleCheckout}
-                className="bg-(--color-primary) text-(--color-primary-content) px-8 py-3 rounded-lg font-bold hover:opacity-90 transition flex items-center gap-2 whitespace-nowrap ml-4"
+                className="w-full sm:w-auto bg-(--color-primary) text-(--color-primary-content) px-8 py-3 rounded-lg font-bold hover:opacity-90 transition flex items-center justify-center gap-2 whitespace-nowrap sm:ml-4"
               >
                 <MdShoppingCart size={20} />
                 {user ? "Checkout" : "Login to Checkout"}

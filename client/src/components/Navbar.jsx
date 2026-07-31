@@ -119,6 +119,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [locationQuery, setLocationQuery] = useState("");
   const [dishQuery, setDishQuery] = useState("");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -171,6 +172,7 @@ const Navbar = () => {
         search,
       },
     });
+    setIsMobileSearchOpen(false);
   };
 
   const handleSearchKeyDown = (event) => {
@@ -186,7 +188,7 @@ const Navbar = () => {
         isScrolled ? "shadow-xl" : "shadow-md"
       }`}
     >
-      <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-4 md:px-8">
+      <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-3 px-4 md:px-8">
         
         {/* LOGO */}
         <div className={`h-full flex items-center transition-transform duration-300 ${isScrolled ? "scale-[0.96]" : "scale-100"}`}>
@@ -234,10 +236,17 @@ const Navbar = () => {
 
         {/* ACTIONS */}
         {isLogin ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => setIsMobileSearchOpen((open) => !open)}
+              className="lg:hidden rounded-full bg-white/10 px-3 py-2 text-sm font-bold text-white transition hover:bg-white/20"
+            >
+              Search
+            </button>
             <button
               onClick={handleNavigate}
-              className="group flex items-center gap-2.5 pl-1.5 pr-3.5 py-1 rounded-full transition-all duration-300 border border-white/20 bg-white/10 text-white hover:bg-white/20 hover:shadow-md cursor-pointer"
+              className="group flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 pl-1.5 pr-3.5 py-1 transition-all duration-300 hover:bg-white/20 hover:shadow-md cursor-pointer"
               title="Go to Dashboard"
             >
               <img
@@ -245,7 +254,7 @@ const Navbar = () => {
                 alt={user?.fullName}
                 className="w-7 h-7 rounded-full object-cover border border-white"
               />
-              <div className="flex flex-col items-start leading-none">
+              <div className="hidden sm:flex flex-col items-start leading-none">
                 <span className="text-sm font-black tracking-tight">
                   {user?.fullName?.split(" ")?.[0] || "User"}
                 </span>
@@ -257,14 +266,14 @@ const Navbar = () => {
 
             <button
               onClick={handleLogout}
-              className="p-2 rounded-full transition-all duration-300 bg-white/10 text-white hover:bg-red-500"
+              className="rounded-full bg-white/10 p-2 transition-all duration-300 text-white hover:bg-red-500"
               title="Logout"
             >
               <FaPowerOff size={16} />
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-5 font-bold text-sm">
+          <div className="flex items-center gap-3 sm:gap-5 font-bold text-sm">
             <Link to="/login" className="hover:scale-105 transition-transform text-white">
               Login
             </Link>
@@ -277,6 +286,52 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {isMobileSearchOpen && (
+        <div className="lg:hidden border-t border-white/10 bg-(--color-primary) px-4 py-4 shadow-lg">
+          <div className="mx-auto max-w-7xl rounded-2xl border border-white/15 bg-white p-3 shadow-xl">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="flex items-center gap-2 rounded-2xl border border-slate-200 px-3 py-2">
+                <FaMapMarkerAlt className="shrink-0 text-red-500" />
+                <input
+                  type="text"
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
+                  placeholder="Location"
+                  className="w-full bg-transparent text-sm font-semibold outline-none text-slate-700 placeholder:text-slate-400"
+                />
+              </div>
+              <div className="flex items-center gap-2 rounded-2xl border border-slate-200 px-3 py-2">
+                <FaSearch className="shrink-0 text-slate-400" size={14} />
+                <input
+                  type="text"
+                  value={dishQuery}
+                  onChange={(e) => setDishQuery(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
+                  placeholder="Search dish"
+                  className="w-full bg-transparent text-sm font-semibold outline-none text-slate-700 placeholder:text-slate-400"
+                />
+              </div>
+            </div>
+            <div className="mt-3 flex gap-3">
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="flex-1 rounded-2xl bg-red-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-600"
+              >
+                Search
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsMobileSearchOpen(false)}
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

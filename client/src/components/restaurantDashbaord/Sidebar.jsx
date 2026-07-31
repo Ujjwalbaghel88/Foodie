@@ -22,7 +22,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   const renderTab = (tab) => (
     <li
       key={tab.value}
-      className={`cursor-pointer p-2 rounded text-(--color-neutral) flex items-center gap-3 ${
+      className={`cursor-pointer rounded-full px-3 py-2 text-sm text-(--color-neutral) flex items-center gap-2 whitespace-nowrap ${
         activeTab === tab.value
           ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
           : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
@@ -36,10 +36,10 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   return (
     <>
       <div className="h-full flex flex-col">
-        <ul className="space-y-4 flex-1">
+        <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-4 lg:overflow-visible lg:pb-0 flex-1">
           {mainTabs.map((tab) => renderTab(tab))}
         </ul>
-        <ul className="space-y-4 border-t border-(--color-secondary) pt-4">
+        <ul className="flex gap-2 overflow-x-auto border-t border-(--color-secondary) pt-4 lg:flex-col lg:gap-4 lg:overflow-visible">
           {renderTab(settingsTab)}
         </ul>
       </div>
