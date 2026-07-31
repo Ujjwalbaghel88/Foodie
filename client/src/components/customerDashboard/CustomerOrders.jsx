@@ -17,6 +17,13 @@ const statusTone = {
   delivered: "bg-emerald-100 text-emerald-700",
 };
 
+const statusLabel = {
+  placed: "Placed",
+  cooked: "Cooking",
+  rider_picked: "Picked / Arriving",
+  delivered: "Delivered",
+};
+
 const CustomerOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -153,7 +160,7 @@ const CustomerOrders = () => {
                         statusTone[order.liveStatus] || "bg-slate-100 text-slate-700"
                       }`}
                     >
-                      {order.liveStatusLabel || "Placed"}
+                      {statusLabel[order.liveStatus] || order.liveStatusLabel || "Placed"}
                     </span>
                     <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                       <IoTimeOutline />
@@ -199,7 +206,12 @@ const CustomerOrders = () => {
                         : "bg-slate-50 text-slate-500"
                   }`}
                 >
-                  {step.label}
+                  <span className="block">{statusLabel[step.status] || step.label}</span>
+                  {step.status === "rider_picked" ? (
+                    <span className="mt-1 inline-flex rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em]">
+                      Arriving
+                    </span>
+                  ) : null}
                 </div>
               ))}
             </div>

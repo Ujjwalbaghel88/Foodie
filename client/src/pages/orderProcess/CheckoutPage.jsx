@@ -22,18 +22,18 @@ const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
 
 const statusMeta = {
   placed: {
-    title: "Order placed",
+    title: "Placed",
     subtitle: "Restaurant has received your order.",
     icon: MdOutlineShoppingBag,
   },
   cooked: {
-    title: "Order cooked",
+    title: "Cooking",
     subtitle: "Kitchen is preparing your meal.",
     icon: MdRestaurant,
   },
   rider_picked: {
-    title: "Delivery rider picked",
-    subtitle: "Your order is on the way.",
+    title: "Picked",
+    subtitle: "Rider picked your order and is arriving.",
     icon: MdDeliveryDining,
   },
   delivered: {
@@ -404,6 +404,10 @@ const CheckoutPage = () => {
     completed: index === 0,
     active: index === 0,
   }));
+  const timelineStatusLabel = (status) => {
+    if (status === "rider_picked") return "Picked / Arriving";
+    return statusMeta[status]?.title || status;
+  };
 
   if (loading) {
     return (
@@ -497,22 +501,31 @@ const CheckoutPage = () => {
                               ? "border-orange-200 bg-orange-50"
                               : "border-slate-100 bg-slate-50"
                         }`}
-                      >
-                        <div
-                          className={`flex h-12 w-12 items-center justify-center rounded-full ${
-                            step.completed
+                        >
+                          <div
+                            className={`flex h-12 w-12 items-center justify-center rounded-full ${
+                              step.completed
                               ? "bg-emerald-500 text-white"
                               : step.active
                                 ? "bg-orange-500 text-white"
                                 : "bg-slate-300 text-slate-600"
-                          }`}
-                        >
-                          <StepIcon />
-                        </div>
-                        <div>
-                          <p className="font-black text-slate-900">{step.title}</p>
-                          <p className="text-sm text-slate-500">{step.subtitle}</p>
-                        </div>
+                            }`}
+                          >
+                            <StepIcon />
+                          </div>
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="font-black text-slate-900">
+                                {timelineStatusLabel(step.status) || step.title}
+                              </p>
+                              {step.status === "rider_picked" ? (
+                                <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[11px] font-bold text-purple-700">
+                                  Arriving
+                                </span>
+                              ) : null}
+                            </div>
+                            <p className="text-sm text-slate-500">{step.subtitle}</p>
+                          </div>
                       </div>
                     );
                   })}
