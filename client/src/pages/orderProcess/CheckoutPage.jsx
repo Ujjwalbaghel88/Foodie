@@ -8,10 +8,12 @@ import {
   MapContainer,
   TileLayer,
   CircleMarker,
+  Marker,
   Polyline,
   Tooltip,
   useMap,
 } from "react-leaflet";
+import { divIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import api from "../../config/ApiConfig";
 import useAuth from "../../context/useAuth";
@@ -113,24 +115,51 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
     return Math.max(8, Math.round(remaining / 6));
   }, [statusProgress]);
 
+  const riderIcon = useMemo(
+    () =>
+      divIcon({
+        className: "rider-map-icon",
+        html: '<span class="rider-map-icon__pulse"></span><span class="rider-map-icon__body">⌁</span>',
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+      }),
+    [],
+  );
+
   return (
-    <div className="overflow-hidden rounded-[2rem] bg-white shadow-sm">
-      <div className="border-b border-slate-100 bg-gradient-to-r from-orange-500 to-red-500 px-5 py-4 text-white">
+    <div className="overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-orange-100">
+      <style>{`
+        .rider-map-icon { background: transparent; border: 0; }
+        .rider-map-icon__body {
+          position: absolute; inset: 8px; display: grid; place-items: center;
+          border: 3px solid white; border-radius: 999px; background: #f97316;
+          color: white; font-size: 24px; font-weight: 900; line-height: 1;
+          box-shadow: 0 5px 14px rgba(234, 88, 12, .4);
+          transform: rotate(-45deg);
+        }
+        .rider-map-icon__pulse {
+          position: absolute; inset: 2px; border-radius: 999px;
+          border: 2px solid #fb923c; animation: rider-pulse 1.8s ease-out infinite;
+        }
+        @keyframes rider-pulse { 0% { transform: scale(.7); opacity: .8; } 100% { transform: scale(1.35); opacity: 0; } }
+      `}</style>
+      <div className="border-b border-orange-400/30 bg-gradient-to-br from-[#f97316] via-[#ea580c] to-[#c2410c] px-5 py-5 text-white">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/75">
-              Live route
+            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white/75">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" /> Live tracking
             </p>
             <h3 className="mt-1 text-lg font-black">{liveLabel}</h3>
           </div>
-          <div className="rounded-full bg-white/15 px-4 py-2 text-xs font-bold backdrop-blur">
-            {statusProgress}% complete
+          <div className="text-right">
+            <p className="text-2xl font-black leading-none">{etaMinutes}<span className="ml-1 text-sm font-bold">min</span></p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-white/70">estimated arrival</p>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 border-b border-slate-100 p-5 sm:grid-cols-3">
-        <div className="rounded-[1.25rem] bg-slate-50 p-4">
+      <div className="grid gap-3 border-b border-slate-100 bg-white p-4 sm:grid-cols-3">
+        <div className="rounded-[1.25rem] border border-slate-100 bg-slate-50 p-3.5">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
             <MdRestaurant />
             Restaurant
@@ -139,7 +168,7 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
             Pickup point
           </p>
         </div>
-        <div className="rounded-[1.25rem] bg-orange-50 p-4">
+        <div className="rounded-[1.25rem] border border-orange-100 bg-orange-50 p-3.5">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-600">
             <FaRoute />
             Distance
@@ -148,7 +177,7 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
             Approx. {estimateDistanceKm} km
           </p>
         </div>
-        <div className="rounded-[1.25rem] bg-emerald-50 p-4">
+        <div className="rounded-[1.25rem] border border-emerald-100 bg-emerald-50 p-3.5">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">
             <FaClock />
             ETA
@@ -159,21 +188,25 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
         </div>
       </div>
 
-      <div className="h-[420px] w-full">
+      <div className="relative h-[420px] w-full">
         <MapContainer center={center} zoom={13} scrollWheelZoom className="h-full w-full">
           <MapAutoFit points={[restaurantPoint, riderPoint, customerPoint]} />
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> &copy; OpenStreetMap contributors'
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            subdomains="abcd"
           />
           <Polyline
-            positions={[restaurantPoint, riderPoint, customerPoint]}
+            positions={[restaurantPoint, riderPoint]}
             pathOptions={{
               color: "#ea580c",
-              weight: 5,
-              dashArray: "10 10",
+              weight: 7,
               lineCap: "round",
             }}
+          />
+          <Polyline
+            positions={[riderPoint, customerPoint]}
+            pathOptions={{ color: "#94a3b8", weight: 5, dashArray: "8 12", lineCap: "round" }}
           />
           <CircleMarker
             center={restaurantPoint}
@@ -184,15 +217,11 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
               Restaurant
             </Tooltip>
           </CircleMarker>
-          <CircleMarker
-            center={riderPoint}
-            radius={10}
-            pathOptions={{ color: "#ea580c", fillColor: "#ea580c", fillOpacity: 1 }}
-          >
+          <Marker position={riderPoint} icon={riderIcon}>
             <Tooltip direction="top" permanent>
-              Rider
+              Your rider
             </Tooltip>
-          </CircleMarker>
+          </Marker>
           <CircleMarker
             center={customerPoint}
             radius={11}
@@ -203,6 +232,22 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
             </Tooltip>
           </CircleMarker>
         </MapContainer>
+        <div className="pointer-events-none absolute left-4 top-4 z-[400] rounded-2xl bg-white/95 px-3 py-2 shadow-lg backdrop-blur">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+            <span className="h-2.5 w-2.5 rounded-full bg-orange-500" /> Rider is on the way
+          </div>
+          <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-slate-400">
+            <span className="h-0.5 w-5 bg-slate-400" /> Live route updates every few seconds
+          </div>
+        </div>
+        <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-[400] rounded-2xl bg-slate-950/85 px-4 py-3 text-white shadow-xl backdrop-blur-sm">
+          <div className="flex items-center justify-between text-xs font-bold">
+            <span>Order progress</span><span>{statusProgress}%</span>
+          </div>
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/20">
+            <div className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-300 transition-all duration-700" style={{ width: `${statusProgress}%` }} />
+          </div>
+        </div>
       </div>
     </div>
   );
