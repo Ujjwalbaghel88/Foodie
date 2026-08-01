@@ -6,6 +6,7 @@ import {
   updateRestaurant,
 } from "../controller/restaurantController.js";
 import { Protect, restaurantMiddleware } from "../middleware/authMiddleware.js";
+import { getRestaurantOrders, updateRestaurantOrderStatus } from "../controller/orderController.js";
 
 const router = express.Router();
 const upload = multer();
@@ -32,5 +33,8 @@ router.put(
   upload.array("images"),
   updateRestaurant,
 );
+
+router.get("/orders", Protect, restaurantMiddleware, getRestaurantOrders);
+router.patch("/orders/:orderId/status", Protect, restaurantMiddleware, updateRestaurantOrderStatus);
 
 export default router;

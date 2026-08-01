@@ -208,3 +208,38 @@ export const getCustomerOrderById = async (req, res, next) => {
   }
 };
 
+export const getRestaurantOrders = async (req, res, next) => {
+  try {
+    const restaurant = await Restaurant.findOne({ userId: req.user._id }).select("_id restaurantName");
+    if (!restaurant) return res.status(404).json({ message: "Restaurant profile not found" });
+
+    const orders = await Order.find({ restaurantId: restaurant._id })
+      .sort({ createdAt: -1 })
+      .populate("customerId", "fullName email phone");
+
+    res.status(200).json({ message: "Restaurant orders retrieved", data: orders.map(serializeOrder) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateRestaurantOrderStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body || {};
+    const allowedStatuses = ["placed", "cooked", "rider_picked", "delivered"];
+    if (!allowedStatuses.includes(status)) return res.status(400).json({ message: "Invalid order status" });
+
+    const restaurant = await Restaurant.findOne({ userId: req.user._id }).select("_id");
+    const order = await Order.findOne({ _id: req.params.orderId, restaurantId: restaurant?._id });
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    const labels = { placed: "Order placed", cooked: "Order cooked", rider_picked: "Delivery rider picked", delivered: "Delivered" };
+    order.status = status;
+    order.statusHistory.push({ status, label: labels[status] });
+    await order.save();
+
+    res.status(200).json({ message: "Order status updated", data: serializeOrder(order) });
+  } catch (error) {
+    next(error);
+  }
+};

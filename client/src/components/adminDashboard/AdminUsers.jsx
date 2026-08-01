@@ -30,6 +30,8 @@ const AdminUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState(null);
+  const [newManagerPassword, setNewManagerPassword] = useState("");
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -81,6 +83,22 @@ const AdminUsers = () => {
       await navigator.clipboard.writeText(email);
     } catch (clipboardError) {
       console.error("Could not copy email:", clipboardError);
+    }
+  };
+
+  const resetManagerPassword = async () => {
+    if (selectedUser?.userType !== "restaurant" || newManagerPassword.length < 8) return;
+    try {
+      setIsResettingPassword(true);
+      const response = await api.post(`/admin/restaurant-managers/${selectedUser._id}/reset-password`, {
+        newPassword: newManagerPassword,
+      });
+      setNewManagerPassword("");
+      window.alert(response.data?.message || "Password reset successfully");
+    } catch (requestError) {
+      window.alert(requestError.response?.data?.message || "Could not reset password");
+    } finally {
+      setIsResettingPassword(false);
     }
   };
 
@@ -292,6 +310,40 @@ const AdminUsers = () => {
                 <p className="mt-2 text-lg font-black text-slate-900">Active</p>
               </div>
             </div>
+
+            {selectedUser.userType === "restaurant" && (
+              <div className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 p-4">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-700">Restaurant manager login</p>
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-slate-500">Login ID / Email</p>
+                    <p className="mt-1 truncate font-black text-slate-900">{selectedUser.email}</p>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-slate-500">Password</p>
+                    <p className="mt-1 font-semibold text-slate-600">Hidden and securely hashed</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <input
+                    type="password"
+                    value={newManagerPassword}
+                    onChange={(event) => setNewManagerPassword(event.target.value)}
+                    placeholder="Set a new password (8+ characters)"
+                    className="flex-1 rounded-xl border border-orange-200 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={resetManagerPassword}
+                    disabled={isResettingPassword || newManagerPassword.length < 8}
+                    className="rounded-xl bg-orange-600 px-4 py-2 text-sm font-black text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isResettingPassword ? "Saving..." : "Reset password"}
+                  </button>
+                </div>
+                <p className="mt-2 text-xs text-orange-800">For security, the existing password cannot be viewed. Set a new one if access is needed.</p>
+              </div>
+            )}
 
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap gap-2 text-xs font-semibold">

@@ -5,6 +5,7 @@ import {
   getManagerProgress,
   resetDataCollection,
   seedLegacyJsonData,
+  resetRestaurantManagerPassword,
 } from "../controller/adminController.js";
 import { Protect, adminMiddleware } from "../middleware/authMiddleware.js";
 
@@ -14,5 +15,6 @@ router.get("/data-collections", Protect, adminMiddleware, getDataCollections);
 router.get("/reports", Protect, adminMiddleware, getReports);
 router.post("/data-collections/:collection/reset", Protect, adminMiddleware, resetDataCollection);
 router.post("/seed-legacy-json", Protect, adminMiddleware, seedLegacyJsonData);
+router.post("/restaurant-managers/:id/reset-password", Protect, adminMiddleware, resetRestaurantManagerPassword);
 
 export default router;

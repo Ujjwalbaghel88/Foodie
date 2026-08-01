@@ -109,7 +109,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoLight from "../assets/transparentLogoLight.png";
 import useAuth from "../context/useAuth";
-import { FaPowerOff, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { FaPowerOff, FaSearch, FaMapMarkerAlt, FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../config/ApiConfig";
 
@@ -120,6 +120,41 @@ const Navbar = () => {
   const [locationQuery, setLocationQuery] = useState("");
   const [dishQuery, setDishQuery] = useState("");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [customerSession, setCustomerSession] = useState(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("cravingCustomerUser")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const [restaurantSession, setRestaurantSession] = useState(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("cravingRestaurantUser")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const [adminSession, setAdminSession] = useState(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("cravingAdminUser")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const [showCustomerLogin, setShowCustomerLogin] = useState(false);
+  const [showRestaurantLogin, setShowRestaurantLogin] = useState(false);
+  const [customerCredentials, setCustomerCredentials] = useState({ email: "", password: "" });
+  const [customerLoginLoading, setCustomerLoginLoading] = useState(false);
+  const [restaurantLoginLoading, setRestaurantLoginLoading] = useState(false);
+
+  useEffect(() => {
+    if (role === "admin" && user) {
+      sessionStorage.setItem("cravingAdminUser", JSON.stringify(user));
+      setAdminSession(user);
+      const activeToken = sessionStorage.getItem("cravingToken");
+      if (activeToken) sessionStorage.setItem("cravingAdminToken", activeToken);
+    }
+  }, [role, user]);
 
   useEffect(() => {
     let ticking = false;
@@ -151,11 +186,171 @@ const Navbar = () => {
       const res = await api.post("/auth/logout");
       toast.success(res.data.message);
       sessionStorage.removeItem("cravingUser");
+      sessionStorage.removeItem("cravingToken");
+      sessionStorage.removeItem("cravingAdminUser");
+      sessionStorage.removeItem("cravingAdminToken");
+      sessionStorage.removeItem("cravingCustomerUser");
+      sessionStorage.removeItem("cravingCustomerToken");
+      sessionStorage.removeItem("cravingRestaurantUser");
+      sessionStorage.removeItem("cravingRestaurantToken");
+      setAdminSession(null);
+      setCustomerSession(null);
+      setRestaurantSession(null);
       setUser(null);
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Logout failed");
     }
+  };
+
+  const activateCustomerSession = () => {
+    if (!customerSession) {
+      setShowCustomerLogin(true);
+      return;
+    }
+
+    sessionStorage.setItem("cravingUser", JSON.stringify(customerSession));
+    sessionStorage.setItem("cravingToken", sessionStorage.getItem("cravingCustomerToken") || "");
+    setUser(customerSession);
+    navigate("/customer-dashboard");
+    toast.success("Customer session opened");
+  };
+
+  const handleCustomerLogin = async (event) => {
+    event.preventDefault();
+    setCustomerLoginLoading(true);
+    try {
+      const response = await api.post("/auth/login", customerCredentials);
+      const loggedInCustomer = response.data.data;
+      if (loggedInCustomer.userType !== "customer") {
+        toast.error("Please use a customer account here.");
+        return;
+      }
+
+      if (role === "admin" && user) {
+        sessionStorage.setItem("cravingAdminUser", JSON.stringify(user));
+        setAdminSession(user);
+        const adminToken = sessionStorage.getItem("cravingToken");
+        if (adminToken) sessionStorage.setItem("cravingAdminToken", adminToken);
+      }
+      sessionStorage.setItem("cravingCustomerUser", JSON.stringify(loggedInCustomer));
+      sessionStorage.setItem("cravingCustomerToken", response.data.token || "");
+      sessionStorage.setItem("cravingUser", JSON.stringify(loggedInCustomer));
+      sessionStorage.setItem("cravingToken", response.data.token || "");
+      setCustomerSession(loggedInCustomer);
+      setUser(loggedInCustomer);
+      setShowCustomerLogin(false);
+      setCustomerCredentials({ email: "", password: "" });
+      navigate("/customer-dashboard");
+      toast.success("Customer session opened");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Customer login failed");
+    } finally {
+      setCustomerLoginLoading(false);
+    }
+  };
+
+  const handleCustomerLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // The local customer session is still removed if the server cookie is unavailable.
+    }
+    sessionStorage.removeItem("cravingCustomerUser");
+    sessionStorage.removeItem("cravingCustomerToken");
+    setCustomerSession(null);
+
+    sessionStorage.removeItem("cravingUser");
+    sessionStorage.removeItem("cravingToken");
+    sessionStorage.removeItem("cravingAdminUser");
+    sessionStorage.removeItem("cravingAdminToken");
+    sessionStorage.removeItem("cravingCustomerUser");
+    sessionStorage.removeItem("cravingCustomerToken");
+    setAdminSession(null);
+    setCustomerSession(null);
+    setUser(null);
+    navigate("/");
+    toast.success("Logged out. Password will be required next time.");
+  };
+
+  const activateRestaurantSession = () => {
+    if (!restaurantSession) {
+      setShowRestaurantLogin(true);
+      return;
+    }
+    sessionStorage.setItem("cravingUser", JSON.stringify(restaurantSession));
+    sessionStorage.setItem("cravingToken", sessionStorage.getItem("cravingRestaurantToken") || "");
+    setUser(restaurantSession);
+    navigate("/restaurant-dashboard");
+    toast.success("Restaurant manager session opened");
+  };
+
+  const handleRestaurantLogin = async (event) => {
+    event.preventDefault();
+    setRestaurantLoginLoading(true);
+    try {
+      const response = await api.post("/auth/login", customerCredentials);
+      const loggedInRestaurant = response.data.data;
+      if (loggedInRestaurant.userType !== "restaurant") {
+        toast.error("Please use a restaurant manager account here.");
+        return;
+      }
+      if (role === "admin" && user) {
+        sessionStorage.setItem("cravingAdminUser", JSON.stringify(user));
+        setAdminSession(user);
+        const adminToken = sessionStorage.getItem("cravingToken");
+        if (adminToken) sessionStorage.setItem("cravingAdminToken", adminToken);
+      }
+      sessionStorage.setItem("cravingRestaurantUser", JSON.stringify(loggedInRestaurant));
+      sessionStorage.setItem("cravingRestaurantToken", response.data.token || "");
+      sessionStorage.setItem("cravingUser", JSON.stringify(loggedInRestaurant));
+      sessionStorage.setItem("cravingToken", response.data.token || "");
+      setRestaurantSession(loggedInRestaurant);
+      setUser(loggedInRestaurant);
+      setShowRestaurantLogin(false);
+      setCustomerCredentials({ email: "", password: "" });
+      navigate("/restaurant-dashboard");
+      toast.success("Restaurant manager session opened");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Restaurant login failed");
+    } finally {
+      setRestaurantLoginLoading(false);
+    }
+  };
+
+  const handleRestaurantLogout = () => {
+    sessionStorage.removeItem("cravingRestaurantUser");
+    sessionStorage.removeItem("cravingRestaurantToken");
+    setRestaurantSession(null);
+    if (role === "restaurant") {
+      const fallbackUser = adminSession || customerSession;
+      const fallbackToken = adminSession
+        ? sessionStorage.getItem("cravingAdminToken")
+        : sessionStorage.getItem("cravingCustomerToken");
+      if (fallbackUser) {
+        sessionStorage.setItem("cravingUser", JSON.stringify(fallbackUser));
+        sessionStorage.setItem("cravingToken", fallbackToken || "");
+        setUser(fallbackUser);
+        navigate(adminSession ? "/admin-dashboard" : "/customer-dashboard");
+      } else {
+        setUser(null);
+        navigate("/");
+      }
+    }
+    toast.success("Restaurant session logged out");
+  };
+
+  const switchBackToAdmin = () => {
+    const adminUser = adminSession || JSON.parse(sessionStorage.getItem("cravingAdminUser") || "null");
+    if (!adminUser) {
+      toast.error("Admin session was not found");
+      return;
+    }
+    sessionStorage.setItem("cravingUser", JSON.stringify(adminUser));
+    sessionStorage.setItem("cravingToken", sessionStorage.getItem("cravingAdminToken") || "");
+    setUser(adminUser);
+    navigate("/admin-dashboard");
+    toast.success("Admin session restored");
   };
 
   const handleSearch = () => {
@@ -264,6 +459,53 @@ const Navbar = () => {
               </div>
             </button>
 
+            {role === "admin" ? (
+              <>
+                <button type="button" onClick={activateCustomerSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex sm:items-center sm:gap-1.5" title="Open customer session">
+                  <FaSignInAlt size={12} />{customerSession ? "Customer" : "Customer login"}
+                </button>
+                <button type="button" onClick={activateRestaurantSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex sm:items-center sm:gap-1.5" title="Open restaurant manager session">
+                  <FaSignInAlt size={12} />{restaurantSession ? "Restaurant" : "Manager login"}
+                </button>
+              </>
+            ) : role === "customer" ? (
+              <>
+                {adminSession && <button type="button" onClick={switchBackToAdmin} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">Open Admin</button>}
+                <button type="button" onClick={activateRestaurantSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">{restaurantSession ? "Restaurant" : "Manager login"}</button>
+              </>
+            ) : role === "restaurant" ? (
+              <>
+                {adminSession && <button type="button" onClick={switchBackToAdmin} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">Open Admin</button>}
+                {customerSession && <button type="button" onClick={activateCustomerSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">Customer</button>}
+              </>
+            ) : adminSession ? (
+              <button
+                type="button"
+                onClick={switchBackToAdmin}
+                className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex sm:items-center sm:gap-1.5"
+                title="Return to admin session"
+              >
+                Open Admin
+              </button>
+            ) : null}
+
+            {customerSession && (
+              <button
+                type="button"
+                onClick={handleCustomerLogout}
+                className="hidden rounded-full bg-white/10 p-2 text-white transition-all duration-300 hover:bg-red-500 sm:inline-flex"
+                title="Logout customer session"
+              >
+                <FaSignOutAlt size={15} />
+              </button>
+            )}
+
+            {restaurantSession && (
+              <button type="button" onClick={handleRestaurantLogout} className="hidden rounded-full bg-white/10 p-2 text-white transition-all duration-300 hover:bg-red-500 sm:inline-flex" title="Logout restaurant manager session">
+                <FaSignOutAlt size={15} />
+              </button>
+            )}
+
             <button
               onClick={handleLogout}
               className="rounded-full bg-white/10 p-2 transition-all duration-300 text-white hover:bg-red-500"
@@ -286,6 +528,61 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {showCustomerLogin && (
+        <div className="fixed inset-0 z-[1000] grid place-items-center bg-black/60 px-4 backdrop-blur-sm">
+          <form onSubmit={handleCustomerLogin} className="relative w-full max-w-md rounded-[2rem] bg-white p-6 text-slate-900 shadow-2xl sm:p-8">
+            <button
+              type="button"
+              onClick={() => setShowCustomerLogin(false)}
+              className="absolute right-5 top-5 rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              aria-label="Close customer login"
+            >
+              <FaTimes />
+            </button>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-600">Secondary session</p>
+            <h2 className="mt-2 text-2xl font-black">Login as customer</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">Your admin session will stay saved and can be restored anytime.</p>
+            <div className="mt-6 space-y-4">
+              <input
+                type="email"
+                required
+                value={customerCredentials.email}
+                onChange={(event) => setCustomerCredentials((previous) => ({ ...previous, email: event.target.value }))}
+                placeholder="Customer email"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              />
+              <input
+                type="password"
+                required
+                value={customerCredentials.password}
+                onChange={(event) => setCustomerCredentials((previous) => ({ ...previous, password: event.target.value }))}
+                placeholder="Customer password"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              />
+            </div>
+            <button type="submit" disabled={customerLoginLoading} className="mt-6 w-full rounded-2xl bg-orange-600 px-4 py-3 text-sm font-black text-white transition hover:bg-orange-700 disabled:cursor-wait disabled:opacity-60">
+              {customerLoginLoading ? "Opening customer..." : "Open customer session"}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {showRestaurantLogin && (
+        <div className="fixed inset-0 z-[1000] grid place-items-center bg-black/60 px-4 backdrop-blur-sm">
+          <form onSubmit={handleRestaurantLogin} className="relative w-full max-w-md rounded-[2rem] bg-white p-6 text-slate-900 shadow-2xl sm:p-8">
+            <button type="button" onClick={() => setShowRestaurantLogin(false)} className="absolute right-5 top-5 rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close restaurant login"><FaTimes /></button>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-600">Secondary session</p>
+            <h2 className="mt-2 text-2xl font-black">Login as restaurant manager</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">Your admin and customer sessions will stay saved.</p>
+            <div className="mt-6 space-y-4">
+              <input type="email" required value={customerCredentials.email} onChange={(event) => setCustomerCredentials((previous) => ({ ...previous, email: event.target.value }))} placeholder="Manager email" className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100" />
+              <input type="password" required value={customerCredentials.password} onChange={(event) => setCustomerCredentials((previous) => ({ ...previous, password: event.target.value }))} placeholder="Manager password" className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100" />
+            </div>
+            <button type="submit" disabled={restaurantLoginLoading} className="mt-6 w-full rounded-2xl bg-orange-600 px-4 py-3 text-sm font-black text-white transition hover:bg-orange-700 disabled:cursor-wait disabled:opacity-60">{restaurantLoginLoading ? "Opening manager..." : "Open manager session"}</button>
+          </form>
+        </div>
+      )}
 
       {isMobileSearchOpen && (
         <div className="lg:hidden border-t border-white/10 bg-(--color-primary) px-4 py-4 shadow-lg">

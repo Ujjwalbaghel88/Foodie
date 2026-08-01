@@ -36,6 +36,9 @@ const Login = () => {
       const response = await api.post("/auth/login", formData);
       toast.success(response.data.message || "Welcome back to Cravings!");
       sessionStorage.setItem("cravingUser", JSON.stringify(response.data.data));
+      if (response.data.token) sessionStorage.setItem("cravingToken", response.data.token);
+      sessionStorage.setItem(`craving${response.data.data.userType[0].toUpperCase()}${response.data.data.userType.slice(1)}User`, JSON.stringify(response.data.data));
+      if (response.data.token) sessionStorage.setItem(`craving${response.data.data.userType[0].toUpperCase()}${response.data.data.userType.slice(1)}Token`, response.data.token);
       setUser(response.data.data);
       const dashboards = {
         customer: "/customer-dashboard",

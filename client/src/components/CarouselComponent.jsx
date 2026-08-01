@@ -1,37 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-import bgImage1 from "../assets/carousel/bgImage1.jpg";
-import bgImage2 from "../assets/carousel/bgImage2.jpg";
-import bgImage3 from "../assets/carousel/bgImage3.jpg";
-import bgImage4 from "../assets/carousel/bgImage4.jpg";
+
+const SLIDES = [
+  { type: "video", source: `${import.meta.env.BASE_URL}cravings-showcase.mp4`, duration: 8000 },
+  { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-2.mp4`, duration: 12000 },
+  { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-3.mp4`, duration: 8000 },
+  { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-4.mp4`, duration: 12000 },
+  { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-5.mp4`, duration: 12000 },
+];
 
 const CarouselComponent = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
-
-  const slides = [
-    { type: "video", source: `${import.meta.env.BASE_URL}cravings-showcase.mp4`, duration: 8000 },
-
-    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-2.mp4`, duration: 12000 },
-    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-3.mp4`, duration: 8000 },
-    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-4.mp4`, duration: 12000 },
-    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-5.mp4`, duration: 12000 },
-    // { type: "image", source: bgImage1, duration: 5000 },
-    // { type: "image", source: bgImage2, duration: 5000 },
-    // { type: "image", source: bgImage3, duration: 5000 },
-    // { type: "image", source: bgImage4, duration: 5000 },
-  ];
 
   // Auto-rotate carousel
   useEffect(() => {
     if (!autoPlay) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, slides[currentSlide]?.duration || 5000);
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    }, SLIDES[currentSlide]?.duration || 5000);
 
     return () => clearInterval(interval);
-  }, [autoPlay, currentSlide, slides.length]);
+  }, [autoPlay, currentSlide]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -39,12 +30,12 @@ const CarouselComponent = () => {
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
     setAutoPlay(false);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
     setAutoPlay(false);
   };
 
@@ -55,7 +46,7 @@ const CarouselComponent = () => {
       onMouseLeave={() => setAutoPlay(true)}
     >
       {/* Carousel Slides */}
-      {slides.map((slide, index) => (
+      {SLIDES.map((slide, index) => (
         <div
           key={index}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
@@ -72,27 +63,32 @@ const CarouselComponent = () => {
 
       {/* Previous Button */}
       <button
+        type="button"
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition z-10 backdrop-blur-sm"
+        className="pointer-events-auto absolute left-4 top-1/2 z-20 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-black/35 text-white shadow-lg backdrop-blur-md transition duration-200 hover:scale-110 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/30 active:scale-95"
         aria-label="Previous slide"
+        title="Previous slide"
       >
-        <IoChevronBack size={24} />
+        <IoChevronBack size={27} />
       </button>
 
       {/* Next Button */}
       <button
+        type="button"
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition z-10 backdrop-blur-sm"
+        className="pointer-events-auto absolute right-4 top-1/2 z-20 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-black/35 text-white shadow-lg backdrop-blur-md transition duration-200 hover:scale-110 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/30 active:scale-95"
         aria-label="Next slide"
+        title="Next slide"
       >
-        <IoChevronForward size={24} />
+        <IoChevronForward size={27} />
       </button>
 
       {/* Dot Indicators */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {slides.map((_, index) => (
+        {SLIDES.map((_, index) => (
           <button
             key={index}
+            type="button"
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 rounded-full transition ${
               index === currentSlide

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IoSearch,
@@ -94,6 +94,49 @@ const foodInspirationCards = [
     subtitle: "Cool sip",
     image: `${assetBase}menu-images/fresh-lime-soda.png`,
     price: 69,
+  },
+];
+
+const threeDDishes = [
+  {
+    title: "Celebration Cake",
+    subtitle: "Soft, creamy layers",
+    search: "cake",
+    emoji: "🎂",
+    tone: "from-rose-100 via-pink-50 to-orange-100",
+    accent: "text-rose-600",
+  },
+  {
+    title: "Fresh Pastry",
+    subtitle: "Buttery and flaky",
+    search: "pastry",
+    model: "cravings-muffin.glb",
+    tone: "from-amber-100 via-orange-50 to-yellow-100",
+    accent: "text-orange-600",
+  },
+  {
+    title: "Kurkure Crunch",
+    subtitle: "Masala in every bite",
+    search: "kurkure",
+    emoji: "🍟",
+    tone: "from-red-100 via-orange-50 to-yellow-100",
+    accent: "text-red-600",
+  },
+  {
+    title: "Loaded Pizza",
+    subtitle: "Cheesy, hot and fresh",
+    search: "pizza",
+    emoji: "🍕",
+    tone: "from-orange-100 via-amber-50 to-red-100",
+    accent: "text-orange-700",
+  },
+  {
+    title: "Classic Burger",
+    subtitle: "Big, juicy and satisfying",
+    search: "burger",
+    model: "cravings-burger.glb",
+    tone: "from-yellow-100 via-orange-50 to-amber-100",
+    accent: "text-amber-700",
   },
 ];
 
@@ -312,6 +355,29 @@ const Home = () => {
   const [customerOrders, setCustomerOrders] = useState([]);
   const [customerOrdersLoading, setCustomerOrdersLoading] = useState(false);
   const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
+  const [dishShowcaseVisible, setDishShowcaseVisible] = useState(false);
+  const dishShowcaseRef = useRef(null);
+
+  useEffect(() => {
+    const showcase = dishShowcaseRef.current;
+    if (!showcase || !("IntersectionObserver" in window)) {
+      setDishShowcaseVisible(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setDishShowcaseVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.45, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    observer.observe(showcase);
+    return () => observer.disconnect();
+  }, []);
 
   const formatCuisineList = (value) => {
     if (!value) return [];
@@ -625,7 +691,7 @@ const Home = () => {
         <div className="absolute inset-0 z-0">
           <CarouselComponent />
         </div>
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/80 via-black/55 to-black/35" />
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/80 via-black/55 to-black/35" />
 
         <div className="relative z-20 mx-auto flex min-h-[58vh] max-w-7xl flex-col justify-center px-4 py-10 sm:px-6 lg:px-8">
           <div className="cravings-fade-up mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
@@ -776,14 +842,67 @@ const Home = () => {
           <div className="relative mx-auto mt-4 grid h-64 w-full max-w-lg grid-cols-2 gap-1 lg:mx-0 lg:mt-0 lg:h-72">
             <div className="absolute inset-8 rounded-full bg-orange-300/30 blur-3xl" />
             <div className="relative flex flex-col items-center">
-              <model-viewer src={`${assetBase}cravings-burger.glb`} alt="Interactive 3D popcorn" camera-controls auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
+              <model-viewer src={`${assetBase}cravings-burger.glb`} alt="Interactive 3D popcorn" camera-controls disable-zoom disable-pan auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
               <span className="absolute bottom-1 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold text-white backdrop-blur">Popcorn</span>
             </div>
             <div className="relative flex flex-col items-center">
-              <model-viewer src={`${assetBase}cravings-muffin.glb`} alt="Interactive 3D muffin" camera-controls auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
+              <model-viewer src={`${assetBase}cravings-muffin.glb`} alt="Interactive 3D muffin" camera-controls disable-zoom disable-pan auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
               <span className="absolute bottom-1 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold text-white backdrop-blur">Muffin</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section ref={dishShowcaseRef} className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className={`mb-7 flex flex-col gap-3 transition-all duration-700 sm:flex-row sm:items-end sm:justify-between ${dishShowcaseVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">3D dish collection</p>
+            <h2 className="mt-2 text-3xl font-black text-slate-900">Pick your next craving</h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Explore our delicious lineup. Hover to lift a card, or drag the 3D dishes around.</p>
+          </div>
+          <button onClick={() => navigate("/order-now")} className="w-fit rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-orange-600">View full menu <MdArrowForward className="ml-1 inline" /></button>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+          {threeDDishes.map((dish, index) => (
+            <button
+              key={dish.title}
+              onClick={() => navigate(`/order-now?search=${encodeURIComponent(dish.search)}`)}
+              className={`group text-left transition-all duration-700 [perspective:1000px] ${dishShowcaseVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-16 scale-95 opacity-0"}`}
+              style={{ transitionDelay: `${index * 90}ms` }}
+            >
+              <div className={`relative h-64 overflow-hidden rounded-[2rem] bg-gradient-to-br ${dish.tone} p-4 shadow-[0_18px_45px_rgba(113,52,18,0.12)] transition duration-500 group-hover:-translate-y-2 group-hover:rotate-[1deg] group-hover:shadow-[0_28px_55px_rgba(113,52,18,0.2)]`}>
+                <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/50 blur-2xl" />
+                <div className="absolute bottom-3 left-1/2 h-5 w-28 -translate-x-1/2 rounded-full bg-orange-900/15 blur-md transition duration-500 group-hover:scale-125" />
+                {dish.model ? (
+                  <model-viewer
+                    src={`${assetBase}${dish.model}`}
+                    alt={`Interactive 3D ${dish.title}`}
+                    camera-controls
+                    disable-zoom
+                    disable-pan
+                    auto-rotate
+                    autoplay
+                    shadow-intensity="1.5"
+                    exposure="1.1"
+                    interaction-prompt="none"
+                    className={`relative z-10 h-44 w-full transition duration-500 group-hover:scale-110 ${dishShowcaseVisible ? "cravings-dish-pop" : ""}`}
+                    style={{ animationDelay: `${index * 120}ms` }}
+                  />
+                ) : (
+                  <div className={`relative z-10 grid h-44 place-items-center text-[7rem] leading-none drop-shadow-[0_18px_12px_rgba(113,52,18,0.2)] transition duration-500 group-hover:-translate-y-2 group-hover:rotate-6 group-hover:scale-110 ${dishShowcaseVisible ? "cravings-dish-pop" : ""}`} style={{ animationDelay: `${index * 120}ms` }} aria-hidden="true">
+                    {dish.emoji}
+                  </div>
+                )}
+                <div className="absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between">
+                  <span className={`rounded-full bg-white/75 px-3 py-1 text-[10px] font-black uppercase tracking-wider backdrop-blur ${dish.accent}`}>3D pick</span>
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-white/80 text-slate-800 shadow-sm transition group-hover:bg-slate-900 group-hover:text-white">↗</span>
+                </div>
+              </div>
+              <h3 className="mt-4 text-lg font-black text-slate-900">{dish.title}</h3>
+              <p className="mt-1 text-sm font-medium text-slate-500">{dish.subtitle}</p>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -960,11 +1079,11 @@ const Home = () => {
               onClick={() => handleInspirationClick(item.title)}
               className="group flex w-36 shrink-0 flex-col items-center text-center transition hover:-translate-y-1"
             >
-              <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-white shadow-[0_14px_30px_rgba(0,0,0,0.12)] transition group-hover:-translate-y-1 group-hover:shadow-[0_18px_36px_rgba(0,0,0,0.18)]">
+              <div className="cravings-menu-dish flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-white shadow-[0_14px_30px_rgba(0,0,0,0.12)] transition group-hover:scale-110 group-hover:shadow-[0_18px_36px_rgba(0,0,0,0.18)]">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="h-full w-full rounded-full object-cover"
+                  className="h-full w-full rounded-full object-cover [backface-visibility:hidden]"
                 />
               </div>
               <span className="mt-3 inline-flex items-center justify-center rounded-full border-2 border-yellow-300 bg-yellow-300 px-5 py-2 text-xl font-black text-slate-900 shadow-[0_8px_0_rgba(202,138,4,0.35)]">

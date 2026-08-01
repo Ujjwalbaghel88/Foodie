@@ -4,6 +4,7 @@ import MenuItem from "../model/menuModel.js";
 import Customer from "../model/customerModel.js";
 import Rider from "../model/riderModel.js";
 import Order from "../model/orderModel.js";
+import bcrypt from "bcrypt";
 import {
   getLegacyCollections,
   seedLegacyJsonCollections,
@@ -47,6 +48,27 @@ export const getManagerProgress = async (req, res, next) => {
     });
 
     res.status(200).json({ message: "Manager progress retrieved", data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetRestaurantManagerPassword = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body || {};
+
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" });
+    }
+
+    const manager = await User.findOne({ _id: id, userType: "restaurant" });
+    if (!manager) return res.status(404).json({ message: "Restaurant manager not found" });
+
+    manager.password = await bcrypt.hash(newPassword, 10);
+    await manager.save();
+
+    res.status(200).json({ message: "Restaurant manager password reset successfully" });
   } catch (error) {
     next(error);
   }

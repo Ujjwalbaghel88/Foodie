@@ -61,10 +61,10 @@ export const Login = async (req, res, next) => {
     const existingUserObj = existingUser.toObject(); // Convert Mongoose document to plain object
     delete existingUserObj.password; // Remove password from plain object
 
-    generateToken(existingUserObj, res);
+    const token = generateToken(existingUserObj, res);
     res
       .status(200)
-      .json({ message: "User logged in successfully", data: existingUserObj });
+      .json({ message: "User logged in successfully", data: existingUserObj, token });
   } catch (error) {
     next(error);
   }
