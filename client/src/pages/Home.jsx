@@ -97,6 +97,12 @@ const foodInspirationCards = [
   },
 ];
 
+const cravingMoods = [
+  { label: "Comfort food", description: "Warm, familiar, and satisfying", search: "biryani", image: `${assetBase}menu-images/chicken-biryani.png`, tone: "from-orange-500 to-red-500" },
+  { label: "Light & fresh", description: "Simple plates for a fresh start", search: "south indian", image: `${assetBase}menu-images/masala-dosa.png`, tone: "from-emerald-500 to-teal-600" },
+  { label: "Something sweet", description: "A little treat makes it better", search: "dessert", image: `${assetBase}menu-images/gulab-jamun.png`, tone: "from-pink-500 to-rose-500" },
+];
+
 const brandNames = [
   "Sagar Gaire Fast Food",
   "Sharma And Vishnu Food",
@@ -622,16 +628,21 @@ const Home = () => {
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/80 via-black/55 to-black/35" />
 
         <div className="relative z-20 mx-auto flex min-h-[58vh] max-w-7xl flex-col justify-center px-4 py-10 sm:px-6 lg:px-8">
-          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
+          <div className="cravings-fade-up mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
             <FaFireAlt className="text-orange-300" />
             Discover restaurants, dishes, and deals near you
           </div>
 
           <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-            <div>
+            <div className="cravings-fade-up [animation-delay:120ms]">
+              <p className="mb-3 text-sm font-bold tracking-wide text-orange-200">
+                {user?.userType === "customer"
+                  ? `Welcome back${user.fullName ? `, ${user.fullName.split(" ")[0]}` : ""} 👋`
+                  : "Your local food playground"}
+              </p>
               <h1 className="max-w-3xl text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.8rem]">
-                Cravings made
-                <span className="block text-orange-300">simple, fast, and local.</span>
+                Good food,
+                <span className="block text-orange-300">good mood.</span>
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-white/82 sm:text-lg">
                 Search restaurants, explore categories, and order from trusted kitchens
@@ -643,7 +654,7 @@ const Home = () => {
                   onClick={() => navigate("/order-now")}
                   className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600"
                 >
-                  Order now
+                  Explore food
                   <MdArrowForward size={18} />
                 </button>
                 {!user && (
@@ -672,7 +683,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/15 bg-white/10 p-4 shadow-2xl backdrop-blur-xl lg:p-5">
+            <div className="cravings-float cravings-glow rounded-[2rem] border border-white/15 bg-white/10 p-4 shadow-2xl backdrop-blur-xl lg:p-5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
@@ -727,6 +738,50 @@ const Home = () => {
                   </button>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-30 mx-auto mt-8 max-w-7xl px-4 sm:mt-10 sm:px-6 lg:px-8">
+        <div className="cravings-fade-up rounded-[1.75rem] border border-white/70 bg-white p-4 shadow-[0_20px_60px_rgba(113,52,18,0.14)] sm:p-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-600">What are you craving?</p>
+              <h2 className="mt-1 text-xl font-black text-slate-900">Pick a mood. We’ll find the food.</h2>
+            </div>
+            <button onClick={() => navigate("/order-now")} className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-orange-600">See all menus <MdArrowForward className="ml-1 inline" /></button>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {cravingMoods.map((mood) => (
+              <button key={mood.label} onClick={() => navigate(`/order-now?search=${encodeURIComponent(mood.search)}`)} className="cravings-fade-up group relative flex min-h-24 items-center overflow-hidden rounded-2xl bg-slate-900 p-4 text-left text-white transition duration-300 hover:-translate-y-1 hover:shadow-xl" style={{ animationDelay: `${180 + cravingMoods.indexOf(mood) * 100}ms` }}>
+                <div className={`absolute inset-0 bg-gradient-to-r ${mood.tone} opacity-90`} />
+                <img src={mood.image} alt="" className="absolute right-0 h-full w-32 object-cover opacity-80 mix-blend-screen transition duration-500 group-hover:scale-110" />
+                <div className="relative z-10 max-w-[70%]"><p className="font-black">{mood.label}</p><p className="mt-1 text-xs text-white/80">{mood.description}</p></div>
+                <span className="absolute bottom-3 right-3 rounded-full bg-white/20 px-2 py-1 text-xs font-bold backdrop-blur">Go →</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#2b120b] via-[#5b2110] to-orange-600 px-6 py-8 text-white shadow-[0_24px_70px_rgba(113,52,18,0.2)] sm:px-10 lg:flex lg:items-center lg:justify-between lg:px-14">
+          <div className="relative z-10 max-w-lg">
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-200">Featured craving</p>
+            <h2 className="mt-3 text-3xl font-black sm:text-4xl">Meet your next favorite bite.</h2>
+            <p className="mt-4 max-w-md text-sm leading-6 text-white/75">Explore our 3D burger showcase. Drag to rotate, pinch to zoom, and get hungry before your order even arrives.</p>
+            <button onClick={() => navigate("/order-now?search=burger")} className="mt-6 rounded-full bg-white px-5 py-3 text-sm font-black text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50">Find snacks <MdArrowForward className="ml-1 inline" /></button>
+          </div>
+          <div className="relative mx-auto mt-4 grid h-64 w-full max-w-lg grid-cols-2 gap-1 lg:mx-0 lg:mt-0 lg:h-72">
+            <div className="absolute inset-8 rounded-full bg-orange-300/30 blur-3xl" />
+            <div className="relative flex flex-col items-center">
+              <model-viewer src={`${assetBase}cravings-burger.glb`} alt="Interactive 3D popcorn" camera-controls auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
+              <span className="absolute bottom-1 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold text-white backdrop-blur">Popcorn</span>
+            </div>
+            <div className="relative flex flex-col items-center">
+              <model-viewer src={`${assetBase}cravings-muffin.glb`} alt="Interactive 3D muffin" camera-controls auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
+              <span className="absolute bottom-1 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold text-white backdrop-blur">Muffin</span>
             </div>
           </div>
         </div>

@@ -84,28 +84,33 @@ const Register = () => {
   };
 
   return (
-    <div
-      className="flex h-[90vh] items-center justify-end bg-cover bg-center p-10 md:pe-30"
-      style={{ backgroundImage: `url(${registerHeroBg})` }}
-    >
-      <div className="bg-white rounded-lg shadow-md px-10 py-6 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-(--color-primary) mb-2 text-center">
-          Create Account
-        </h1>
-        <p className="text-(--color-secondary) text-center mb-4">
-          Join us as a Customer, Restaurant, or Rider
-        </p>
+    <main className="min-h-[calc(100vh-5rem)] bg-[#fff8f1] px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-[0_30px_90px_rgba(113,52,18,0.16)] lg:grid-cols-[0.9fr_1.1fr]">
+        <section className="relative hidden min-h-[680px] overflow-hidden p-10 text-white lg:flex lg:flex-col lg:justify-end lg:p-14">
+          <img src={registerHeroBg} alt="Fresh food served at a table" className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#37160d]/95 via-[#8f2f13]/75 to-[#ee6a20]/35" />
+          <div className="relative z-10">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-orange-200">Welcome to the table</p>
+            <h1 className="mt-4 text-4xl font-black leading-tight">Make every craving count.</h1>
+            <p className="mt-4 max-w-sm text-base leading-7 text-white/80">Save your favorites, reorder in seconds, and enjoy a smoother food journey with Cravings.</p>
+            <div className="mt-7 flex flex-wrap gap-2 text-xs font-bold"><span className="rounded-full bg-white/15 px-3 py-2 backdrop-blur">Saved favorites</span><span className="rounded-full bg-white/15 px-3 py-2 backdrop-blur">Easy reorders</span><span className="rounded-full bg-white/15 px-3 py-2 backdrop-blur">Live updates</span></div>
+          </div>
+        </section>
+        <div className="px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
+        <div className="mb-8 lg:hidden"><p className="text-2xl font-black text-orange-700">Cravings</p><p className="mt-1 text-sm text-slate-500">Make every craving count.</p></div>
+        <h1 className="text-3xl font-black tracking-tight text-slate-900">Create your account</h1>
+        <p className="mt-2 mb-8 text-sm leading-6 text-slate-500">Join Cravings and get your favorite food delivered with less effort.</p>
 
         {/* User Type Selection */}
         <div className="mb-6">
-          <label className="block text-(--color-neutral) font-semibold mb-3">
+            <label className="mb-3 block text-sm font-bold text-slate-700">
             Register as:
           </label>
           <div className="flex gap-5">
             {["customer", "restaurant", "rider"].map((type) => (
               <label
                 key={type}
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
               >
                 <input
                   type="radio"
@@ -115,7 +120,7 @@ const Register = () => {
                   onChange={handleUserTypeChange}
                   className="cursor-pointer"
                 />
-                <span className="text-(--color-neutral) capitalize">
+                <span className="capitalize text-slate-700">
                   {type}
                 </span>
               </label>
@@ -172,7 +177,7 @@ const Register = () => {
           <div className="mb-4">
            
             <input
-              type="number"
+              type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
@@ -215,7 +220,7 @@ const Register = () => {
           {/* Confirm Password */}
           <div className="mb-6">
             <input
-              type="text"
+              type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleInputChange}
@@ -258,14 +263,14 @@ const Register = () => {
           {/* Register Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-(--color-primary) text-white font-semibold rounded-md hover:bg-orange-700 transition-colors duration-300 mb-4"
+            className="mb-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-orange-600 to-red-500 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:shadow-xl"
           >
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
         {/* Login Link */}
-        <p className="text-center text-(--color-secondary) text-sm">
+        <p className="text-center text-sm text-slate-500">
           Already registered?{" "}
           <Link
             to="/login"
@@ -274,8 +279,9 @@ const Register = () => {
             Login here
           </Link>
         </p>
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
 

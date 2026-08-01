@@ -754,9 +754,9 @@ const CheckoutPage = () => {
               <button
                 onClick={handlePlaceOrder}
                 disabled={placingOrder || !activeCheckoutAddress}
-                className="mt-6 w-full rounded-2xl bg-(--color-primary) px-5 py-3 font-black text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-(--color-primary) px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {placingOrder ? "Placing order..." : "Place order"}
+                {placingOrder ? <><span className="cravings-spinner" /> Placing order...</> : <>Place order <MdOutlineShoppingBag /></>}
               </button>
             </div>
 

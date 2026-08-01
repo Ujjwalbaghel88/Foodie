@@ -3,6 +3,7 @@ import Restaurant from "../model/restaurantModel.js";
 import MenuItem from "../model/menuModel.js";
 import Customer from "../model/customerModel.js";
 import Rider from "../model/riderModel.js";
+import Order from "../model/orderModel.js";
 import {
   getLegacyCollections,
   seedLegacyJsonCollections,
@@ -134,6 +135,62 @@ export const getDataCollections = async (req, res, next) => {
         menuitems: menus.length > 0 ? "database" : "legacy-json",
         customers: customers.length > 0 ? "database" : "legacy-json",
         riders: riders.length > 0 ? "database" : "legacy-json",
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReports = async (req, res, next) => {
+  try {
+    const months = Math.min(Math.max(Number(req.query.months) || 6, 3), 12);
+    const startDate = new Date();
+    startDate.setDate(1);
+    startDate.setHours(0, 0, 0, 0);
+    startDate.setMonth(startDate.getMonth() - (months - 1));
+
+    const [report, counts] = await Promise.all([
+      Order.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        {
+          $facet: {
+            totals: [
+              { $group: { _id: null, revenue: { $sum: "$total" }, orders: { $sum: 1 }, averageOrder: { $avg: "$total" } } },
+            ],
+            monthly: [
+              { $group: { _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } }, revenue: { $sum: "$total" }, orders: { $sum: 1 } } },
+              { $sort: { "_id.year": 1, "_id.month": 1 } },
+            ],
+            statuses: [
+              { $group: { _id: "$status", orders: { $sum: 1 } } },
+              { $sort: { orders: -1 } },
+            ],
+            topRestaurants: [
+              { $group: { _id: "$restaurantName", revenue: { $sum: "$total" }, orders: { $sum: 1 } } },
+              { $sort: { revenue: -1 } },
+              { $limit: 5 },
+            ],
+          },
+        },
+      ]),
+      Promise.all([
+        User.countDocuments({ userType: "customer" }),
+        Restaurant.countDocuments({ isActive: true }),
+        Rider.countDocuments({ isActive: true }),
+      ]),
+    ]);
+
+    res.status(200).json({
+      message: "Reports retrieved successfully",
+      data: {
+        months,
+        startDate,
+        totals: report[0]?.totals[0] || { revenue: 0, orders: 0, averageOrder: 0 },
+        monthly: report[0]?.monthly || [],
+        statuses: report[0]?.statuses || [],
+        topRestaurants: report[0]?.topRestaurants || [],
+        platform: { customers: counts[0], activeRestaurants: counts[1], activeRiders: counts[2] },
       },
     });
   } catch (error) {

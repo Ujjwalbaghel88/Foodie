@@ -9,18 +9,29 @@ const CarouselComponent = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
 
-  const images = [bgImage1, bgImage2, bgImage3, bgImage4];
+  const slides = [
+    { type: "video", source: `${import.meta.env.BASE_URL}cravings-showcase.mp4`, duration: 8000 },
+
+    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-2.mp4`, duration: 12000 },
+    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-3.mp4`, duration: 12000 },
+    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-4.mp4`, duration: 12000 },
+    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-5.mp4`, duration: 12000 },
+    // { type: "image", source: bgImage1, duration: 5000 },
+    // { type: "image", source: bgImage2, duration: 5000 },
+    // { type: "image", source: bgImage3, duration: 5000 },
+    // { type: "image", source: bgImage4, duration: 5000 },
+  ];
 
   // Auto-rotate carousel
   useEffect(() => {
     if (!autoPlay) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % images.length);
-    }, 5000); // Change slide every 5 seconds
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, slides[currentSlide]?.duration || 5000);
 
     return () => clearInterval(interval);
-  }, [autoPlay, images.length]);
+  }, [autoPlay, currentSlide, slides.length]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -28,12 +39,12 @@ const CarouselComponent = () => {
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % images.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
     setAutoPlay(false);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     setAutoPlay(false);
   };
 
@@ -44,18 +55,18 @@ const CarouselComponent = () => {
       onMouseLeave={() => setAutoPlay(true)}
     >
       {/* Carousel Slides */}
-      {images.map((image, index) => (
+      {slides.map((slide, index) => (
         <div
           key={index}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img
-            src={image}
-            alt={`Slide ${index + 1}`}
-            className="w-full h-full object-cover"
-          />
+          {slide.type === "video" ? (
+            <video src={slide.source} className="h-full w-full object-cover" autoPlay muted loop playsInline aria-label="Cravings food showcase" />
+          ) : (
+            <img src={slide.source} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
+          )}
         </div>
       ))}
 
@@ -79,7 +90,7 @@ const CarouselComponent = () => {
 
       {/* Dot Indicators */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {images.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}

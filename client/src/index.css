@@ -5,6 +5,73 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #fff8f1;
+  color: #2d1b10;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+@keyframes cravingsFadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cravingsFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.5deg); }
+}
+
+@keyframes cravingsGlow {
+  0%, 100% { box-shadow: 0 18px 40px rgba(249, 115, 22, 0.18); }
+  50% { box-shadow: 0 24px 55px rgba(249, 115, 22, 0.32); }
+}
+
+@keyframes cravingsSpin {
+  to { transform: rotate(360deg); }
+}
+
+.cravings-spinner {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 999px;
+  animation: cravingsSpin 0.7s linear infinite;
+}
+
+.cravings-fade-up {
+  animation: cravingsFadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cravings-float {
+  animation: cravingsFloat 5s ease-in-out infinite;
+}
+
+.cravings-glow {
+  animation: cravingsGlow 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::selection {
+  background: #fed7aa;
+  color: #7c2d12;
+}
+
 button {
   cursor: pointer;
 }
