@@ -13,7 +13,7 @@ const CarouselComponent = () => {
     { type: "video", source: `${import.meta.env.BASE_URL}cravings-showcase.mp4`, duration: 8000 },
 
     { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-2.mp4`, duration: 12000 },
-    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-3.mp4`, duration: 12000 },
+    { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-3.mp4`, duration: 8000 },
     { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-4.mp4`, duration: 12000 },
     { type: "video", source: `${import.meta.env.BASE_URL}cravings-video-5.mp4`, duration: 12000 },
     // { type: "image", source: bgImage1, duration: 5000 },
