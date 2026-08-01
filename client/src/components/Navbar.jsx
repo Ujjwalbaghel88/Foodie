@@ -379,15 +379,15 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-[999] w-full h-16 bg-(--color-primary) text-white transition-[box-shadow,background-color,transform] duration-300 ${
+      className={`sticky top-0 z-[999] relative w-full h-16 overflow-visible border-b border-orange-300/30 bg-gradient-to-r from-[#9f2708] via-[#ea5b0b] to-[#c2410c] text-white transition-[box-shadow,background-color,transform] duration-300 ${
         isScrolled ? "shadow-xl" : "shadow-md"
-      }`}
+      } before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_18%_0%,rgba(255,213,125,0.22),transparent_25%),radial-gradient(circle_at_82%_100%,rgba(255,255,255,0.12),transparent_25%)]`}
     >
-      <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-3 px-4 md:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto h-full flex items-center justify-between gap-3 px-4 md:px-8">
         
         {/* LOGO */}
         <div className={`h-full flex items-center transition-transform duration-300 ${isScrolled ? "scale-[0.96]" : "scale-100"}`}>
-          <Link to="/">
+          <Link to="/" className="rounded-2xl px-2 transition hover:bg-white/10">
             <img 
               src={logoLight} 
               alt="Logo" 
@@ -397,8 +397,8 @@ const Navbar = () => {
         </div>
 
         {/* SEARCH BAR */}
-        <div className={`hidden lg:flex items-stretch flex-1 max-w-3xl mx-6 bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100" : "opacity-90"}`}>
-           <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-200 min-w-[170px] text-red-500 bg-white">
+        <div className={`hidden lg:flex items-stretch flex-1 max-w-3xl mx-6 bg-white rounded-full shadow-[0_8px_28px_rgba(82,28,5,0.18)] border-2 border-orange-200/80 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100 ring-2 ring-yellow-300/20" : "opacity-95"}`}>
+           <div className="flex items-center gap-2 px-4 py-2 border-r border-orange-100 min-w-[170px] text-red-500 bg-gradient-to-r from-white to-orange-50">
               <FaMapMarkerAlt className="shrink-0" />
               <input
                 type="text"
@@ -422,7 +422,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="rounded-full bg-red-500 px-4 py-2 text-xs font-bold text-white transition hover:bg-red-600 active:scale-95"
+                className="rounded-full bg-gradient-to-r from-red-500 to-orange-500 px-5 py-2 text-xs font-black text-white shadow-md shadow-red-500/25 transition hover:from-red-600 hover:to-orange-600 active:scale-95"
               >
                 Search
               </button>
@@ -441,7 +441,7 @@ const Navbar = () => {
             </button>
             <button
               onClick={handleNavigate}
-              className="group flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 pl-1.5 pr-3.5 py-1 transition-all duration-300 hover:bg-white/20 hover:shadow-md cursor-pointer"
+              className="group flex items-center gap-2.5 rounded-full border border-yellow-200/40 bg-gradient-to-r from-amber-300/30 to-white/10 pl-1.5 pr-3.5 py-1 shadow-lg shadow-orange-950/10 transition-all duration-300 hover:-translate-y-0.5 hover:from-amber-300/45 hover:to-white/20 hover:shadow-md cursor-pointer"
               title="Go to Dashboard"
             >
               <img
@@ -461,22 +461,22 @@ const Navbar = () => {
 
             {role === "admin" ? (
               <>
-                <button type="button" onClick={activateCustomerSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex sm:items-center sm:gap-1.5" title="Open customer session">
+                <button type="button" onClick={activateCustomerSession} className="hidden rounded-full border border-sky-200/40 bg-gradient-to-r from-sky-500/35 to-indigo-500/30 px-3 py-2 text-xs font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:from-sky-500/55 sm:inline-flex sm:items-center sm:gap-1.5" title="Open customer session">
                   <FaSignInAlt size={12} />{customerSession ? "Customer" : "Customer login"}
                 </button>
-                <button type="button" onClick={activateRestaurantSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex sm:items-center sm:gap-1.5" title="Open restaurant manager session">
+                <button type="button" onClick={activateRestaurantSession} className="hidden rounded-full border border-fuchsia-200/40 bg-gradient-to-r from-fuchsia-500/35 to-purple-500/30 px-3 py-2 text-xs font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:from-fuchsia-500/55 sm:inline-flex sm:items-center sm:gap-1.5" title="Open restaurant manager session">
                   <FaSignInAlt size={12} />{restaurantSession ? "Restaurant" : "Manager login"}
                 </button>
               </>
             ) : role === "customer" ? (
               <>
-                {adminSession && <button type="button" onClick={switchBackToAdmin} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">Open Admin</button>}
-                <button type="button" onClick={activateRestaurantSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">{restaurantSession ? "Restaurant" : "Manager login"}</button>
+                {adminSession && <button type="button" onClick={switchBackToAdmin} className="hidden rounded-full border border-sky-200/40 bg-sky-500/30 px-3 py-2 text-xs font-black text-white transition hover:bg-sky-500/55 sm:inline-flex">Open Admin</button>}
+                <button type="button" onClick={activateRestaurantSession} className="hidden rounded-full border border-fuchsia-200/40 bg-fuchsia-500/30 px-3 py-2 text-xs font-black text-white transition hover:bg-fuchsia-500/55 sm:inline-flex">{restaurantSession ? "Restaurant" : "Manager login"}</button>
               </>
             ) : role === "restaurant" ? (
               <>
-                {adminSession && <button type="button" onClick={switchBackToAdmin} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">Open Admin</button>}
-                {customerSession && <button type="button" onClick={activateCustomerSession} className="hidden rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 sm:inline-flex">Customer</button>}
+                {adminSession && <button type="button" onClick={switchBackToAdmin} className="hidden rounded-full border border-sky-200/40 bg-sky-500/30 px-3 py-2 text-xs font-black text-white transition hover:bg-sky-500/55 sm:inline-flex">Open Admin</button>}
+                {customerSession && <button type="button" onClick={activateCustomerSession} className="hidden rounded-full border border-cyan-200/40 bg-cyan-500/30 px-3 py-2 text-xs font-black text-white transition hover:bg-cyan-500/55 sm:inline-flex">Customer</button>}
               </>
             ) : adminSession ? (
               <button

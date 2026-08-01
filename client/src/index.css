@@ -51,6 +51,14 @@ body {
   100% { transform: rotateY(346deg) rotateX(4deg) translateY(0); }
 }
 
+@keyframes cravingsEmojiRotate {
+  0% { transform: perspective(700px) rotateY(0deg) rotateX(8deg) rotateZ(0deg) translateY(0); }
+  25% { transform: perspective(700px) rotateY(90deg) rotateX(0deg) rotateZ(90deg) translateY(-8px); }
+  50% { transform: perspective(700px) rotateY(180deg) rotateX(-8deg) rotateZ(180deg) translateY(0); }
+  75% { transform: perspective(700px) rotateY(270deg) rotateX(0deg) rotateZ(270deg) translateY(-8px); }
+  100% { transform: perspective(700px) rotateY(360deg) rotateX(8deg) rotateZ(360deg) translateY(0); }
+}
+
 @keyframes cravingsSpin {
   to { transform: rotate(360deg); }
 }
@@ -89,6 +97,14 @@ body {
   transform-style: preserve-3d;
   perspective: 900px;
   animation: cravingsMenuDishRotate 7s ease-in-out infinite;
+}
+
+.cravings-emoji-rotate {
+  display: inline-block;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  will-change: transform;
+  animation: cravingsEmojiRotate 4.5s linear infinite !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

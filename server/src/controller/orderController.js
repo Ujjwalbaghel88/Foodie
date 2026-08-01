@@ -105,11 +105,12 @@ export const createOrder = async (req, res, next) => {
       return next(error);
     }
 
-    const restaurant = await Restaurant.findById(restaurantId).select(
+    const isBakeryCrav = restaurantId === "bakery-crav";
+    const restaurant = isBakeryCrav ? null : await Restaurant.findById(restaurantId).select(
       "restaurantName images geolocation",
     );
 
-    if (!restaurant) {
+    if (!restaurant && !isBakeryCrav) {
       const error = new Error("Restaurant not found");
       error.status = 404;
       return next(error);
@@ -134,14 +135,14 @@ export const createOrder = async (req, res, next) => {
 
     const order = await Order.create({
       customerId,
-      restaurantId,
-      restaurantName: restaurantName || restaurant.restaurantName,
+      ...(isBakeryCrav ? {} : { restaurantId }),
+      restaurantName: isBakeryCrav ? "BakeryCrav" : restaurantName || restaurant.restaurantName,
       restaurantImage:
         restaurantImage ||
-        restaurant.images?.[0]?.URL ||
+        restaurant?.images?.[0]?.URL ||
         "https://placehold.co/400x200?text=Restaurant",
       restaurantLocation:
-        restaurantLocation || restaurant.geolocation || { lat: 0, lng: 0 },
+        restaurantLocation || restaurant?.geolocation || { lat: 0, lng: 0 },
       deliveryAddress,
       items: normalizedItems,
       subtotal,

@@ -836,18 +836,18 @@ const Home = () => {
           <div className="relative z-10 max-w-lg">
             <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-200">Featured craving</p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">Meet your next favorite bite.</h2>
-            <p className="mt-4 max-w-md text-sm leading-6 text-white/75">Explore our 3D burger showcase. Drag to rotate, pinch to zoom, and get hungry before your order even arrives.</p>
-            <button onClick={() => navigate("/order-now?search=burger")} className="mt-6 rounded-full bg-white px-5 py-3 text-sm font-black text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50">Find snacks <MdArrowForward className="ml-1 inline" /></button>
+            <p className="mt-4 max-w-md text-sm leading-6 text-white/75">Explore our 3D snack showcase, then order popcorn, pastry and every BakeryCrav favourite from one menu.</p>
+            <button onClick={() => navigate("/bakery-crav")} className="mt-6 rounded-full bg-white px-5 py-3 text-sm font-black text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50">Order these snacks <MdArrowForward className="ml-1 inline" /></button>
           </div>
           <div className="relative mx-auto mt-4 grid h-64 w-full max-w-lg grid-cols-2 gap-1 lg:mx-0 lg:mt-0 lg:h-72">
             <div className="absolute inset-8 rounded-full bg-orange-300/30 blur-3xl" />
             <div className="relative flex flex-col items-center">
               <model-viewer src={`${assetBase}cravings-burger.glb`} alt="Interactive 3D popcorn" camera-controls disable-zoom disable-pan auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
-              <span className="absolute bottom-1 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold text-white backdrop-blur">Popcorn</span>
+              <button type="button" onClick={() => navigate("/bakery-crav")} className="absolute bottom-1 rounded-full bg-black/50 px-3 py-1 text-[10px] font-bold text-white backdrop-blur transition hover:bg-orange-500">Order Popcorn</button>
             </div>
             <div className="relative flex flex-col items-center">
               <model-viewer src={`${assetBase}cravings-muffin.glb`} alt="Interactive 3D muffin" camera-controls disable-zoom disable-pan auto-rotate autoplay shadow-intensity="1.5" exposure="1.1" interaction-prompt="none" className="h-full w-full" />
-              <span className="absolute bottom-1 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold text-white backdrop-blur">Muffin</span>
+              <button type="button" onClick={() => navigate("/bakery-crav")} className="absolute bottom-1 rounded-full bg-black/50 px-3 py-1 text-[10px] font-bold text-white backdrop-blur transition hover:bg-orange-500">Order Pastry</button>
             </div>
           </div>
         </div>
@@ -860,14 +860,15 @@ const Home = () => {
             <h2 className="mt-2 text-3xl font-black text-slate-900">Pick your next craving</h2>
             <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Explore our delicious lineup. Hover to lift a card, or drag the 3D dishes around.</p>
           </div>
-          <button onClick={() => navigate("/order-now")} className="w-fit rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-orange-600">View full menu <MdArrowForward className="ml-1 inline" /></button>
+          <button onClick={() => navigate("/bakery-crav")} className="w-fit rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-orange-600">View full menu <MdArrowForward className="ml-1 inline" /></button>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {threeDDishes.map((dish, index) => (
             <button
               key={dish.title}
-              onClick={() => navigate(`/order-now?search=${encodeURIComponent(dish.search)}`)}
+              onClick={() => navigate("/bakery-crav")}
+              aria-label={`Order ${dish.title}`}
               className={`group text-left transition-all duration-700 [perspective:1000px] ${dishShowcaseVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-16 scale-95 opacity-0"}`}
               style={{ transitionDelay: `${index * 90}ms` }}
             >
@@ -890,13 +891,13 @@ const Home = () => {
                     style={{ animationDelay: `${index * 120}ms` }}
                   />
                 ) : (
-                  <div className={`relative z-10 grid h-44 place-items-center text-[7rem] leading-none drop-shadow-[0_18px_12px_rgba(113,52,18,0.2)] transition duration-500 group-hover:-translate-y-2 group-hover:rotate-6 group-hover:scale-110 ${dishShowcaseVisible ? "cravings-dish-pop" : ""}`} style={{ animationDelay: `${index * 120}ms` }} aria-hidden="true">
+                  <div className="cravings-emoji-rotate relative z-10 grid h-44 place-items-center text-[7rem] leading-none drop-shadow-[0_18px_12px_rgba(113,52,18,0.2)] transition duration-500 group-hover:scale-110" style={{ animationDelay: `${index * 120}ms` }} aria-hidden="true">
                     {dish.emoji}
                   </div>
                 )}
                 <div className="absolute bottom-3 left-4 right-4 z-20 flex items-center justify-between">
-                  <span className={`rounded-full bg-white/75 px-3 py-1 text-[10px] font-black uppercase tracking-wider backdrop-blur ${dish.accent}`}>3D pick</span>
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-white/80 text-slate-800 shadow-sm transition group-hover:bg-slate-900 group-hover:text-white">↗</span>
+                  <span className={`rounded-full bg-white/75 px-3 py-1 text-[10px] font-black uppercase tracking-wider backdrop-blur ${dish.accent}`}>Order now</span>
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-white/80 text-slate-800 shadow-sm transition group-hover:bg-slate-900 group-hover:text-white" aria-hidden="true">↗</span>
                 </div>
               </div>
               <h3 className="mt-4 text-lg font-black text-slate-900">{dish.title}</h3>

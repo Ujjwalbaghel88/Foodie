@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack, IoStar } from "react-icons/io5";
 import { MdAdd, MdRemove, MdDelete, MdShoppingCart } from "react-icons/md";
 import api from "../../config/ApiConfig";
@@ -13,6 +13,8 @@ import {
 const RestaurantMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
+  const location = useLocation();
+  const requestedDish = new URLSearchParams(location.search).get("dish") || "";
   const { user } = useAuth();
 
   // States
@@ -56,7 +58,12 @@ const RestaurantMenu = () => {
         const menuResponse = await api.get(
           `/public/restaurant/${restaurantId}/menu`,
         );
-        setMenuItems(menuResponse.data.data.items || []);
+        const allItems = menuResponse.data.data.items || [];
+        const requestedDish = new URLSearchParams(location.search).get("dish")?.trim().toLowerCase();
+        const matchingItems = requestedDish
+          ? allItems.filter((item) => `${item.itemName} ${item.description} ${item.foodType}`.toLowerCase().includes(requestedDish))
+          : allItems;
+        setMenuItems(matchingItems);
       } catch (error) {
         console.error("Error loading restaurant or menu:", error);
         setRestaurant(null);
@@ -69,7 +76,7 @@ const RestaurantMenu = () => {
     if (restaurantId) {
       loadRestaurantAndMenu();
     }
-  }, [restaurantId]);
+  }, [restaurantId, location.search]);
 
   // Add to cart
   const addToCart = (item) => {
@@ -206,8 +213,13 @@ const RestaurantMenu = () => {
         {/* Menu Items Section */}
         <div>
           <h2 className="text-2xl font-bold text-(--color-content) mb-6">
-            Menu
+            {requestedDish ? `${requestedDish} options` : "Menu"}
           </h2>
+          {requestedDish && menuItems.length === 0 && (
+            <div className="mb-5 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-800">
+              This restaurant does not have a matching {requestedDish} item. Use the back button to try another restaurant.
+            </div>
+          )}
           {menuItems.length > 0 ? (
             <div className="space-y-3">
               {menuItems.map((item, idx) => (

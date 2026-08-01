@@ -23,6 +23,7 @@ const OrderNow = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [locationQuery, setLocationQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [dishQuery, setDishQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [quickFilter, setQuickFilter] = useState("all");
   const [sortMode, setSortMode] = useState("relevance");
@@ -118,9 +119,11 @@ const OrderNow = () => {
     const prefillLocation =
       params.get("location") || params.get("city") || location.state?.location || "";
     const prefillSearch = params.get("search") || location.state?.search || "";
+    const prefillDish = params.get("dish") || location.state?.dish || "";
 
     setLocationQuery(prefillLocation);
     setSearchQuery(prefillSearch);
+    setDishQuery(prefillDish);
   }, [location.search, location.state]);
 
   useEffect(() => {
@@ -188,6 +191,7 @@ const OrderNow = () => {
   }, [
     locationQuery,
     searchQuery,
+    dishQuery,
     selectedCategory,
     quickFilter,
     sortMode,
@@ -267,13 +271,15 @@ const OrderNow = () => {
         {/* Results Header */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-(--color-content) mb-2">
-            {selectedCategory === "all"
+            {dishQuery
+              ? `Restaurants for ${dishQuery}`
+              : selectedCategory === "all"
               ? "All Restaurants"
               : `${categories.find((c) => c.id === selectedCategory)?.label} Restaurants`}
           </h2>
           <p className="text-(--color-base-content)">
-            {filteredRestaurants.length} restaurant
-            {filteredRestaurants.length !== 1 ? "s" : ""} available
+            {dishQuery ? `Choose a restaurant and find ${dishQuery} in its menu.` : `${filteredRestaurants.length} restaurant`}
+            {!dishQuery && (filteredRestaurants.length !== 1 ? "s" : "")} {!dishQuery && "available"}
           </p>
         </div>
 
@@ -368,7 +374,7 @@ const OrderNow = () => {
                     <div className="flex gap-3">
                       <button
                         onClick={() =>
-                          navigate(`/restaurant-menu/${restaurant.id}`)
+                          navigate(`/restaurant-menu/${restaurant.id}${dishQuery ? `?dish=${encodeURIComponent(dishQuery)}` : ""}`)
                         }
                         className="flex-1 bg-(--color-primary) text-(--color-primary-content) px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition"
                       >

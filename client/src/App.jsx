@@ -13,6 +13,7 @@ import RiderDashboard from "./pages/dashboard/RiderDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import OrderNow from "./pages/orderProcess/OrderNow";
 import RestaurantMenu from "./pages/orderProcess/RestaurantMenu";
+import BakeryCrav from "./pages/orderProcess/BakeryCrav";
 import CheckoutPage from "./pages/orderProcess/CheckoutPage";
 import TermsAndConditions from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/order-now" element={<OrderNow />} />
         <Route path="/restaurant-menu/:restaurantId" element={<RestaurantMenu />} />
+        <Route path="/bakery-crav" element={<BakeryCrav />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/track-order/:orderId" element={<CheckoutPage />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
