@@ -275,6 +275,7 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [demoPayment, setDemoPayment] = useState(null);
   const [error, setError] = useState("");
   const activeOrder = order || null;
 
@@ -449,6 +450,10 @@ const CheckoutPage = () => {
       }
 
       const paymentOrder = await api.post("/customer/payments/razorpay/order", payload);
+      if (paymentOrder.data.demoMode) {
+        setDemoPayment({ orderId: paymentOrder.data.razorpayOrderId, payload });
+        return;
+      }
       await loadRazorpay();
       const razorpay = new window.Razorpay({
         key: paymentOrder.data.keyId,
@@ -462,7 +467,7 @@ const CheckoutPage = () => {
           contact: activeCheckoutAddress.ReceiverPhone,
           email: user?.email || "",
         },
-        theme: { color: "#f97316" },
+        theme: { color: "#2563eb" },
         handler: async (paymentResponse) => {
           try {
             const response = await api.post("/customer/payments/razorpay/verify", {
@@ -500,6 +505,25 @@ const CheckoutPage = () => {
   const timelineStatusLabel = (status) => {
     if (status === "rider_picked") return "Picked / Arriving";
     return statusMeta[status]?.title || status;
+  };
+
+  const completeDemoPayment = async () => {
+    try {
+      const response = await api.post("/customer/payments/razorpay/verify", {
+        razorpay_order_id: demoPayment.orderId,
+        razorpay_payment_id: `demo_payment_${Date.now()}`,
+        razorpay_signature: "demo_signature",
+        orderPayload: demoPayment.payload,
+      });
+      localStorage.removeItem("cravings_checkout_data");
+      toast.success("Demo payment successful and order placed");
+      setDemoPayment(null);
+      navigate(`/track-order/${response.data.data._id}`, { replace: true });
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Demo payment failed");
+    } finally {
+      setPlacingOrder(false);
+    }
   };
 
   if (loading) {
@@ -830,7 +854,7 @@ const CheckoutPage = () => {
                 disabled={placingOrder || !activeCheckoutAddress}
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-(--color-primary) px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {placingOrder ? <><span className="cravings-spinner" /> Opening payment...</> : <>Pay ₹{total.toFixed(2)} <MdOutlineShoppingBag /></>}
+                {placingOrder ? <><span className="cravings-spinner" /> {paymentMethod === "cod" ? "Placing order..." : "Opening payment..."}</> : <>{paymentMethod === "cod" ? "Place order" : `Pay Rs ${total.toFixed(2)}`} <MdOutlineShoppingBag /></>}
               </button>
             </div>
 
@@ -857,6 +881,14 @@ const CheckoutPage = () => {
             </div>
           </aside>
         </div>
+        {demoPayment && (
+          <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-900/60 p-4">
+            <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+              <div className="bg-blue-600 px-5 py-4 text-white"><div className="flex items-center justify-between"><div><p className="font-bold">Cravings</p><p className="text-xs text-blue-100">Razorpay Trusted Business</p></div><button onClick={() => { setDemoPayment(null); setPlacingOrder(false); }} className="text-2xl">×</button></div></div>
+              <div className="p-5"><p className="text-sm font-bold text-slate-500">Demo payment</p><p className="mt-1 text-3xl font-black text-slate-900">₹{total.toFixed(2)}</p><div className="mt-5 space-y-2"><div className="rounded-xl border-2 border-blue-500 bg-blue-50 p-4"><b>Card</b><p className="text-sm text-slate-500">Visa, MasterCard, RuPay & More</p></div><div className="rounded-xl border p-4"><b>UPI / QR</b><p className="text-sm text-slate-500">Google Pay, PhonePe & More</p></div><div className="rounded-xl border p-4"><b>Netbanking</b><p className="text-sm text-slate-500">All Indian banks</p></div></div><button onClick={completeDemoPayment} className="mt-5 w-full rounded-xl bg-blue-600 py-3 font-bold text-white hover:bg-blue-700">Pay Now (Demo)</button><p className="mt-3 text-center text-xs text-amber-600">Demo mode: no real money will be charged.</p></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

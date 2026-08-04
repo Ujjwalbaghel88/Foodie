@@ -69,6 +69,17 @@ const buildOrderData = async (customerId, payload) => {
 export const createRazorpayOrder = async (req, res, next) => {
   try {
     const orderData = await buildOrderData(req.user._id, req.body);
+    const demoMode = process.env.NODE_ENV !== "production" &&
+      process.env.RAZORPAY_DEMO_MODE === "true";
+    if (demoMode) {
+      return res.status(200).json({
+        demoMode: true,
+        keyId: "rzp_test_demo",
+        razorpayOrderId: `demo_order_${Date.now()}`,
+        amount: Math.round(orderData.total * 100),
+        currency: "INR",
+      });
+    }
     const auth = getRazorpayAuth();
     const response = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
@@ -96,11 +107,15 @@ export const verifyRazorpayPayment = async (req, res, next) => {
       return res.status(400).json({ message: "Incomplete Razorpay payment details" });
     }
 
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
-    if (expectedSignature !== razorpay_signature) return res.status(400).json({ message: "Payment verification failed" });
+    const demoMode = process.env.NODE_ENV !== "production" &&
+      process.env.RAZORPAY_DEMO_MODE === "true";
+    if (!demoMode) {
+      const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest("hex");
+      if (expectedSignature !== razorpay_signature) return res.status(400).json({ message: "Payment verification failed" });
+    }
 
     const orderData = await buildOrderData(req.user._id, orderPayload);
     const order = await Order.create({
