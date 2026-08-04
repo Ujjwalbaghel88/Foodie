@@ -803,6 +803,17 @@ const CheckoutPage = () => {
                 <p className="mb-3 text-sm font-black text-slate-900">Payment method</p>
                 <button
                   type="button"
+                  onClick={() => setPaymentMethod("cod")}
+                  className={`mb-3 flex w-full items-center justify-between rounded-2xl border p-4 text-left transition ${paymentMethod === "cod" ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-slate-50"}`}
+                >
+                  <span>
+                    <span className="block font-black text-slate-900">Cash on delivery</span>
+                    <span className="mt-1 block text-xs text-slate-500">Pay when your order arrives</span>
+                  </span>
+                  <span className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-black text-white">COD</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setPaymentMethod("razorpay")}
                   className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left transition ${paymentMethod === "razorpay" ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-slate-50"}`}
                 >
