@@ -21,6 +21,16 @@ import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const DEFAULT_CENTER = [23.2599, 77.4126];
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
+const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
+
+const loadRazorpay = () => new Promise((resolve, reject) => {
+  if (window.Razorpay) return resolve(true);
+  const script = document.createElement("script");
+  script.src = RAZORPAY_SCRIPT_URL;
+  script.onload = () => resolve(true);
+  script.onerror = () => reject(new Error("Razorpay checkout could not load"));
+  document.body.appendChild(script);
+});
 
 const statusMeta = {
   placed: {
@@ -264,6 +274,7 @@ const CheckoutPage = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const [error, setError] = useState("");
   const activeOrder = order || null;
 
@@ -414,31 +425,68 @@ const CheckoutPage = () => {
         deliveryFee: 30,
       };
 
-      const response = await api.post("/customer/orders", payload);
-      localStorage.removeItem("cravings_checkout_data");
-      localStorage.setItem(
-        ACTIVE_ORDER_STORAGE_KEY,
-        JSON.stringify({
+      const finishOrder = (response) => {
+        localStorage.removeItem("cravings_checkout_data");
+        localStorage.setItem(ACTIVE_ORDER_STORAGE_KEY, JSON.stringify({
           orderId: response.data.data._id,
           restaurantName: response.data.data.restaurantName,
-          restaurantImage: getRestaurantCoverImage(
-            response.data.data.restaurantName,
-            response.data.data.restaurantImage,
-          ),
+          restaurantImage: getRestaurantCoverImage(response.data.data.restaurantName, response.data.data.restaurantImage),
           trackingCode: response.data.data.trackingCode,
           liveStatus: response.data.data.liveStatus,
           liveStatusLabel: response.data.data.liveStatusLabel,
           statusProgress: response.data.data.statusProgress,
           total: response.data.data.total,
           deliveryAddress: response.data.data.deliveryAddress,
-        }),
-      );
-      toast.success(response.data.message);
-      navigate(`/track-order/${response.data.data._id}`, { replace: true });
+        }));
+        toast.success(response.data.message);
+        navigate(`/track-order/${response.data.data._id}`, { replace: true });
+      };
+
+      if (paymentMethod === "cod") {
+        const response = await api.post("/customer/orders", payload);
+        finishOrder(response);
+        return;
+      }
+
+      const paymentOrder = await api.post("/customer/payments/razorpay/order", payload);
+      await loadRazorpay();
+      const razorpay = new window.Razorpay({
+        key: paymentOrder.data.keyId,
+        amount: paymentOrder.data.amount,
+        currency: paymentOrder.data.currency,
+        name: "Cravings",
+        description: `Food order from ${payload.restaurantName}`,
+        order_id: paymentOrder.data.razorpayOrderId,
+        prefill: {
+          name: activeCheckoutAddress.ReceiverName,
+          contact: activeCheckoutAddress.ReceiverPhone,
+          email: user?.email || "",
+        },
+        theme: { color: "#f97316" },
+        handler: async (paymentResponse) => {
+          try {
+            const response = await api.post("/customer/payments/razorpay/verify", {
+              ...paymentResponse,
+              orderPayload: payload,
+            });
+            finishOrder(response);
+          } catch (err) {
+            toast.error(err.response?.data?.message || "Payment verification failed");
+          } finally {
+            setPlacingOrder(false);
+          }
+        },
+        modal: { ondismiss: () => setPlacingOrder(false) },
+      });
+      razorpay.on("payment.failed", (failure) => {
+        toast.error(failure.error?.description || "Payment failed");
+        setPlacingOrder(false);
+      });
+      razorpay.open();
     } catch (err) {
       toast.error(err.response?.data?.message || "Order placement failed");
     } finally {
-      setPlacingOrder(false);
+      if (paymentMethod === "cod") setPlacingOrder(false);
     }
   };
 
@@ -751,12 +799,27 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
+              <div className="mt-5">
+                <p className="mb-3 text-sm font-black text-slate-900">Payment method</p>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("razorpay")}
+                  className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left transition ${paymentMethod === "razorpay" ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-slate-50"}`}
+                >
+                  <span>
+                    <span className="block font-black text-slate-900">Pay online with Razorpay</span>
+                    <span className="mt-1 block text-xs text-slate-500">UPI, cards, net banking & wallets</span>
+                  </span>
+                  <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-black text-white">Razorpay</span>
+                </button>
+              </div>
+
               <button
                 onClick={handlePlaceOrder}
                 disabled={placingOrder || !activeCheckoutAddress}
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-(--color-primary) px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {placingOrder ? <><span className="cravings-spinner" /> Placing order...</> : <>Place order <MdOutlineShoppingBag /></>}
+                {placingOrder ? <><span className="cravings-spinner" /> Opening payment...</> : <>Pay ₹{total.toFixed(2)} <MdOutlineShoppingBag /></>}
               </button>
             </div>
 

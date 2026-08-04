@@ -13,6 +13,7 @@ import {
   getCustomerOrderById,
 } from "../controller/orderController.js";
 import { customerMiddleware, Protect } from "../middleware/authMiddleware.js";
+import { createRazorpayOrder, verifyRazorpayPayment } from "../controller/paymentController.js";
 
 const router = express.Router();
 
@@ -35,6 +36,8 @@ router.delete(
 );
 
 router.post("/orders", Protect, customerMiddleware, createOrder);
+router.post("/payments/razorpay/order", Protect, customerMiddleware, createRazorpayOrder);
+router.post("/payments/razorpay/verify", Protect, customerMiddleware, verifyRazorpayPayment);
 router.get("/orders", Protect, customerMiddleware, getCustomerOrders);
 router.get("/orders/:orderId", Protect, customerMiddleware, getCustomerOrderById);
 
