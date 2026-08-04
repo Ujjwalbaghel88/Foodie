@@ -74,7 +74,7 @@ const foodInspirationCards = [
   {
     title: "Thali",
     subtitle: "Full meal combo",
-    image: `${assetBase}menu-images/paneer-butter-masala.png`,
+    image: `${assetBase}menu-images/Thali.png`,
     price: 69,
   },
   {
