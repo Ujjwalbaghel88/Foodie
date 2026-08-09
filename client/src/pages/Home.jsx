@@ -640,10 +640,8 @@ const Home = () => {
     return {
       name: brandName,
       time: `${25 + (index % 4) * 2} min`,
-      image:
-        matchedRestaurant?.image ||
-        topRestaurants[index % Math.max(topRestaurants.length, 1)]?.image ||
-        `${assetBase}menu-images/veg-biryani.png`,
+      // This section represents kitchens, so never fall back to a menu-item image.
+      image: getRestaurantCoverImage(brandName, `${assetBase}aboutPage.png`),
       restaurantId: matchedRestaurant?.id || null,
     };
   });
@@ -1127,6 +1125,10 @@ const Home = () => {
                   src={brand.image}
                   alt={brand.name}
                   className="h-full w-full object-cover"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = `${assetBase}aboutPage.png`;
+                  }}
                 />
               </div>
               <p className="mt-4 text-base font-bold text-slate-900 line-clamp-2">

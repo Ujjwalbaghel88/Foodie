@@ -1,4 +1,4 @@
-const DEFAULT_FALLBACK_IMAGE = "https://placehold.co/900x600?text=Restaurant";
+const DEFAULT_FALLBACK_IMAGE = "/aboutPage.png";
 
 const normalizeName = (value = "") =>
   String(value)
@@ -10,17 +10,34 @@ const normalizeName = (value = "") =>
 
 const COVER_IMAGE_OVERRIDES = [
   {
+    patterns: ["sagar gaire", "sagar gaire fast food"],
+    image:
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=85",
+  },
+  {
     patterns: ["sharma", "sharma and vishnu", "sharma vishnu"],
-    image: "/restaurant-logos/sharma-vishnu-logo.png",
+    image:
+      "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    patterns: ["zam zam", "zam zam fast food"],
+    image:
+      "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=85",
   },
   {
     patterns: ["manohar", "manohar dairy", "manohar dairy and restaurant"],
     image:
-      "https://media-cdn.tripadvisor.com/media/photo-s/0e/59/00/68/restaurant.jpg",
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    patterns: ["burger king"],
+    image:
+      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=900&q=85",
   },
   {
     patterns: ["spice kitchen", "meeras spice kitchen", "meera spice kitchen"],
-    image: "/restaurant-logos/meera-spice-kitchen.png",
+    image:
+      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=85",
   },
 ];
 
