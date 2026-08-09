@@ -289,6 +289,92 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
   );
 };
 
+const DemoPaymentModal = ({ total, method, setMethod, onClose, onComplete }) => {
+  const methods = [
+    ["card", "Card", "Visa, MasterCard, RuPay & More"],
+    ["upi", "UPI / QR", "Google Pay, PhonePe & More"],
+    ["netbanking", "Netbanking", "All Indian banks"],
+  ];
+
+  return (
+    <div className="fixed inset-0 z-[1100] grid place-items-center bg-slate-900/60 p-4">
+      <div className="max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-2xl">
+        <div className="bg-blue-600 px-5 py-4 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-bold">Cravings</p>
+              <p className="text-xs text-blue-100">Razorpay Trusted Business</p>
+            </div>
+            <button type="button" aria-label="Close payment" onClick={onClose} className="rounded-full px-2 text-2xl leading-none hover:bg-blue-700">x</button>
+          </div>
+        </div>
+
+        <div className="p-5">
+          <p className="text-sm font-bold text-slate-500">Demo payment</p>
+          <p className="mt-1 text-3xl font-black text-slate-900">Rs {total.toFixed(2)}</p>
+
+          <div className="mt-5 grid gap-2" role="tablist" aria-label="Payment methods">
+            {methods.map(([value, title, description]) => {
+              const selected = method === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  onClick={() => setMethod(value)}
+                  className={`w-full rounded-xl border p-4 text-left transition ${selected ? "border-2 border-blue-500 bg-blue-50" : "border-slate-300 bg-white hover:border-blue-300 hover:bg-slate-50"}`}
+                >
+                  <b className="block text-base text-slate-900">{title}</b>
+                  <span className="mt-1 block text-sm text-slate-500">{description}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            {method === "card" && (
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-slate-700">Enter card details</p>
+                <input aria-label="Card number" inputMode="numeric" placeholder="Card number" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500" />
+                <div className="grid grid-cols-2 gap-3">
+                  <input aria-label="Expiry date" placeholder="MM / YY" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500" />
+                  <input aria-label="CVV" inputMode="numeric" placeholder="CVV" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500" />
+                </div>
+              </div>
+            )}
+            {method === "upi" && (
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-slate-700">Pay with UPI</p>
+                <input aria-label="UPI ID" placeholder="Enter UPI ID (example@upi)" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500" />
+                <div className="flex items-center gap-3 rounded-lg border border-dashed border-blue-300 bg-blue-50 p-3">
+                  <div className="grid h-14 w-14 place-items-center rounded bg-white text-[10px] font-black text-blue-700">UPI QR</div>
+                  <p className="text-xs text-slate-600">Scan the QR code with any UPI app.</p>
+                </div>
+              </div>
+            )}
+            {method === "netbanking" && (
+              <label className="block space-y-2">
+                <span className="text-sm font-bold text-slate-700">Select your bank</span>
+                <select className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500" defaultValue="">
+                  <option value="" disabled>Choose a bank</option>
+                  <option>State Bank of India</option>
+                  <option>HDFC Bank</option>
+                  <option>ICICI Bank</option>
+                  <option>Other banks</option>
+                </select>
+              </label>
+            )}
+          </div>
+
+          <button type="button" onClick={onComplete} className="mt-5 w-full rounded-xl bg-blue-600 py-3 font-bold text-white hover:bg-blue-700">Pay Rs {total.toFixed(2)}</button>
+          <p className="mt-3 text-center text-xs text-amber-600">Demo mode: no real money will be charged.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
@@ -302,6 +388,7 @@ const CheckoutPage = () => {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [demoPayment, setDemoPayment] = useState(null);
+  const [demoPaymentMethod, setDemoPaymentMethod] = useState("card");
   const [error, setError] = useState("");
   const activeOrder = order || null;
 
@@ -477,6 +564,7 @@ const CheckoutPage = () => {
 
       const paymentOrder = await api.post("/customer/payments/razorpay/order", payload);
       if (paymentOrder.data.demoMode) {
+        setDemoPaymentMethod("card");
         setDemoPayment({ orderId: paymentOrder.data.razorpayOrderId, payload });
         return;
       }
@@ -907,13 +995,22 @@ const CheckoutPage = () => {
             </div>
           </aside>
         </div>
-        {demoPayment && (
-          <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-900/60 p-4">
+        {false && demoPayment && (
+          <div className="fixed inset-0 z-[1100] grid place-items-center bg-slate-900/60 p-4">
             <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
               <div className="bg-blue-600 px-5 py-4 text-white"><div className="flex items-center justify-between"><div><p className="font-bold">Cravings</p><p className="text-xs text-blue-100">Razorpay Trusted Business</p></div><button onClick={() => { setDemoPayment(null); setPlacingOrder(false); }} className="text-2xl">×</button></div></div>
               <div className="p-5"><p className="text-sm font-bold text-slate-500">Demo payment</p><p className="mt-1 text-3xl font-black text-slate-900">₹{total.toFixed(2)}</p><div className="mt-5 space-y-2"><div className="rounded-xl border-2 border-blue-500 bg-blue-50 p-4"><b>Card</b><p className="text-sm text-slate-500">Visa, MasterCard, RuPay & More</p></div><div className="rounded-xl border p-4"><b>UPI / QR</b><p className="text-sm text-slate-500">Google Pay, PhonePe & More</p></div><div className="rounded-xl border p-4"><b>Netbanking</b><p className="text-sm text-slate-500">All Indian banks</p></div></div><button onClick={completeDemoPayment} className="mt-5 w-full rounded-xl bg-blue-600 py-3 font-bold text-white hover:bg-blue-700">Pay Now (Demo)</button><p className="mt-3 text-center text-xs text-amber-600">Demo mode: no real money will be charged.</p></div>
             </div>
           </div>
+        )}
+        {demoPayment && (
+          <DemoPaymentModal
+            total={total}
+            method={demoPaymentMethod}
+            setMethod={setDemoPaymentMethod}
+            onClose={() => { setDemoPayment(null); setPlacingOrder(false); }}
+            onComplete={completeDemoPayment}
+          />
         )}
       </div>
     </div>
