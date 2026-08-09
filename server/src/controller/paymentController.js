@@ -14,6 +14,15 @@ const getRazorpayAuth = () => {
   ).toString("base64");
 };
 
+const assertRazorpayConfiguration = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw Object.assign(
+      new Error("Razorpay keys are not configured on the server"),
+      { status: 503 },
+    );
+  }
+};
+
 const buildOrderData = async (customerId, payload) => {
   const {
     restaurantId,
@@ -110,6 +119,7 @@ export const verifyRazorpayPayment = async (req, res, next) => {
     const demoMode = process.env.NODE_ENV !== "production" &&
       process.env.RAZORPAY_DEMO_MODE === "true";
     if (!demoMode) {
+      assertRazorpayConfiguration();
       const expectedSignature = crypto
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
         .update(`${razorpay_order_id}|${razorpay_payment_id}`)

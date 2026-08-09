@@ -60,8 +60,34 @@ const getDefaultAddress = (addressBook = []) => addressBook[0] || null;
 const normalizeCheckoutData = (data) => {
   if (!data) return null;
 
+  const sourceRestaurant = data.restaurant || {};
+  const restaurantId =
+    sourceRestaurant.id ||
+    sourceRestaurant._id ||
+    sourceRestaurant.restaurantId?._id ||
+    sourceRestaurant.restaurantId ||
+    "";
+  const restaurantName =
+    sourceRestaurant.name ||
+    sourceRestaurant.restaurantName ||
+    sourceRestaurant.restaurantId?.restaurantName ||
+    "";
+
   return {
-    restaurant: data.restaurant || null,
+    restaurant: {
+      ...sourceRestaurant,
+      id: restaurantId,
+      name: restaurantName,
+      image:
+        sourceRestaurant.image ||
+        sourceRestaurant.images?.[0]?.URL ||
+        "https://placehold.co/400x200?text=Restaurant",
+      geolocation:
+        sourceRestaurant.geolocation ||
+        sourceRestaurant.location ||
+        sourceRestaurant.restaurantId?.geolocation ||
+        { lat: 0, lng: 0 },
+    },
     items: Array.isArray(data.items) ? data.items : [],
     subtotal: Number(data.subtotal || 0),
   };
