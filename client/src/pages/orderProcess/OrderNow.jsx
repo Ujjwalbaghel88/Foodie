@@ -77,7 +77,7 @@ const OrderNow = () => {
         setLoading(true);
         setLoadError("");
         const response = await api.get("/public/restaurants");
-          const restaurantsData = Array.isArray(response.data?.data)
+        const restaurantsData = Array.isArray(response.data?.data)
           ? response.data.data
           : [];
 
@@ -92,7 +92,7 @@ const OrderNow = () => {
           image: getRestaurantCoverImage(
             restaurant.restaurantName,
             restaurant.images?.[0]?.URL ||
-              "https://placehold.co/300x200?text=Restaurant",
+            "https://placehold.co/300x200?text=Restaurant",
           ),
           cuisines: formatCuisineList(restaurant.cuisineType),
           city: restaurant.city,
@@ -237,11 +237,10 @@ const OrderNow = () => {
                   <button
                     key={filter.id}
                     onClick={() => setQuickFilter(filter.id)}
-                    className={`rounded-full px-4 py-2 text-sm font-bold transition ${
-                      active
-                        ? "bg-(--color-primary) text-white shadow-lg shadow-orange-500/20"
-                        : "bg-orange-50 text-slate-700 hover:bg-orange-100"
-                    }`}
+                    className={`rounded-full px-4 py-2 text-sm font-bold transition ${active
+                      ? "bg-(--color-primary) text-white shadow-lg shadow-orange-500/20"
+                      : "bg-orange-50 text-slate-700 hover:bg-orange-100"
+                      }`}
                   >
                     {filter.label}
                   </button>
@@ -274,8 +273,8 @@ const OrderNow = () => {
             {dishQuery
               ? `Restaurants for ${dishQuery}`
               : selectedCategory === "all"
-              ? "All Restaurants"
-              : `${categories.find((c) => c.id === selectedCategory)?.label} Restaurants`}
+                ? "All Restaurants"
+                : `${categories.find((c) => c.id === selectedCategory)?.label} Restaurants`}
           </h2>
           <p className="text-(--color-base-content)">
             {dishQuery ? `Choose a restaurant and find ${dishQuery} in its menu.` : `${filteredRestaurants.length} restaurant`}
@@ -329,8 +328,8 @@ const OrderNow = () => {
                       </p>
                     </div>
                     <div className="shrink-0 rounded-full bg-white px-3 py-1.5 text-sm font-black text-slate-900 shadow-lg">
-                    <IoStar size={16} />
-                    {restaurant.rating}
+                      <IoStar size={16} />
+                      {restaurant.rating}
                     </div>
                   </div>
                   <button

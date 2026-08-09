@@ -141,8 +141,8 @@ const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statu
     const a =
       Math.sin(dLat / 2) ** 2 +
       Math.cos(toRad(restaurantPoint[0])) *
-        Math.cos(toRad(customerPoint[0])) *
-        Math.sin(dLng / 2) ** 2;
+      Math.cos(toRad(customerPoint[0])) *
+      Math.sin(dLng / 2) ** 2;
     return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(1);
   }, [customerPoint, restaurantPoint]);
 
@@ -425,7 +425,7 @@ const CheckoutPage = () => {
         console.error("Checkout load error:", err);
         setError(
           err.response?.data?.message ||
-            "We could not load checkout details right now.",
+          "We could not load checkout details right now.",
         );
       } finally {
         setLoading(false);
@@ -460,15 +460,15 @@ const CheckoutPage = () => {
 
     localStorage.setItem(
       ACTIVE_ORDER_STORAGE_KEY,
-        JSON.stringify({
-          orderId: activeOrder._id,
-          restaurantName: activeOrder.restaurantName,
-          restaurantImage: getRestaurantCoverImage(
-            activeOrder.restaurantName,
-            activeOrder.restaurantImage,
-          ),
-          trackingCode: activeOrder.trackingCode,
-          liveStatus: activeOrder.liveStatus,
+      JSON.stringify({
+        orderId: activeOrder._id,
+        restaurantName: activeOrder.restaurantName,
+        restaurantImage: getRestaurantCoverImage(
+          activeOrder.restaurantName,
+          activeOrder.restaurantImage,
+        ),
+        trackingCode: activeOrder.trackingCode,
+        liveStatus: activeOrder.liveStatus,
         liveStatusLabel: activeOrder.liveStatusLabel,
         statusProgress: activeOrder.statusProgress,
         total: activeOrder.total,
@@ -725,38 +725,36 @@ const CheckoutPage = () => {
                     return (
                       <div
                         key={step.status}
-                        className={`flex items-start gap-4 rounded-[1.5rem] border p-4 ${
-                          step.completed
-                            ? "border-emerald-200 bg-emerald-50"
+                        className={`flex items-start gap-4 rounded-[1.5rem] border p-4 ${step.completed
+                          ? "border-emerald-200 bg-emerald-50"
+                          : step.active
+                            ? "border-orange-200 bg-orange-50"
+                            : "border-slate-100 bg-slate-50"
+                          }`}
+                      >
+                        <div
+                          className={`flex h-12 w-12 items-center justify-center rounded-full ${step.completed
+                            ? "bg-emerald-500 text-white"
                             : step.active
-                              ? "border-orange-200 bg-orange-50"
-                              : "border-slate-100 bg-slate-50"
-                        }`}
-                        >
-                          <div
-                            className={`flex h-12 w-12 items-center justify-center rounded-full ${
-                              step.completed
-                              ? "bg-emerald-500 text-white"
-                              : step.active
-                                ? "bg-orange-500 text-white"
-                                : "bg-slate-300 text-slate-600"
+                              ? "bg-orange-500 text-white"
+                              : "bg-slate-300 text-slate-600"
                             }`}
-                          >
-                            <StepIcon />
+                        >
+                          <StepIcon />
+                        </div>
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-black text-slate-900">
+                              {timelineStatusLabel(step.status) || step.title}
+                            </p>
+                            {step.status === "rider_picked" ? (
+                              <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[11px] font-bold text-purple-700">
+                                Arriving
+                              </span>
+                            ) : null}
                           </div>
-                          <div>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <p className="font-black text-slate-900">
-                                {timelineStatusLabel(step.status) || step.title}
-                              </p>
-                              {step.status === "rider_picked" ? (
-                                <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[11px] font-bold text-purple-700">
-                                  Arriving
-                                </span>
-                              ) : null}
-                            </div>
-                            <p className="text-sm text-slate-500">{step.subtitle}</p>
-                          </div>
+                          <p className="text-sm text-slate-500">{step.subtitle}</p>
+                        </div>
                       </div>
                     );
                   })}
@@ -856,11 +854,10 @@ const CheckoutPage = () => {
                     <button
                       key={address._id}
                       onClick={() => setSelectedAddressIndex(index)}
-                      className={`w-full rounded-[1.5rem] border p-4 text-left transition ${
-                        selectedAddressIndex === index
-                          ? "border-orange-300 bg-orange-50"
-                          : "border-slate-200 bg-slate-50 hover:bg-slate-100"
-                      }`}
+                      className={`w-full rounded-[1.5rem] border p-4 text-left transition ${selectedAddressIndex === index
+                        ? "border-orange-300 bg-orange-50"
+                        : "border-slate-200 bg-slate-50 hover:bg-slate-100"
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
