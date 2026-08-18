@@ -583,12 +583,12 @@ const Home = () => {
       )}
 
       <section className="relative overflow-hidden text-white">
-        <div className="absolute inset-0">
+        <div className="pointer-events-none absolute inset-0 z-0">
           <CarouselComponent />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/82 via-black/56 to-black/28" />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/82 via-black/56 to-black/28" />
 
-        <div className="relative mx-auto grid min-h-[70vh] max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+        <div className="relative z-10 mx-auto grid min-h-[70vh] max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div className="max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
               <FaFireAlt className="text-orange-300" />
@@ -888,7 +888,7 @@ const Home = () => {
             </button>
           </div>
         ) : topRestaurants.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
             {topRestaurants.map((restaurant) => {
               const cuisines = restaurant.cuisines.length ? restaurant.cuisines : ["Popular"];
               const isSaved = savedRestaurantIds.includes(restaurant.id);
@@ -896,23 +896,23 @@ const Home = () => {
               return (
                 <div
                   key={restaurant.id}
-                  className="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-2xl"
+                  className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white text-left shadow-[0_12px_36px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(190,24,93,0.16)]"
                 >
-                  <div className="relative h-56 overflow-hidden">
+                  <div className="relative h-64 overflow-hidden">
                     <img
                       src={restaurant.image}
                       alt={restaurant.name}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    <div className="absolute left-4 top-4 rounded-md bg-black/35 px-2 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                    <div className="absolute left-4 top-4 rounded-full bg-white/18 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
                       Trusted pick
                     </div>
                     <div className="absolute left-4 right-16 bottom-4">
-                      <h3 className="text-2xl font-black leading-tight text-white line-clamp-2">
+                      <h3 className="text-[1.7rem] font-black leading-tight text-white line-clamp-2">
                         {restaurant.name}
                       </h3>
-                      <p className="mt-1 text-xs text-white/75 line-clamp-1">
+                      <p className="mt-1 text-sm text-white/75 line-clamp-1">
                         {restaurant.city || restaurant.address || "Trusted local kitchen"}
                       </p>
                     </div>
@@ -933,9 +933,9 @@ const Home = () => {
                     </button>
                   </div>
 
-                  <div className="space-y-4 p-5">
+                  <div className="flex flex-1 flex-col gap-4 p-6">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="mt-1 text-sm text-slate-500 line-clamp-2">
+                      <p className="mt-1 text-sm leading-6 text-slate-500 line-clamp-3">
                         {restaurant.description}
                       </p>
                       <div className="rounded-full bg-orange-50 p-2 text-orange-500">
@@ -947,14 +947,14 @@ const Home = () => {
                       {cuisines.slice(0, 3).map((cuisine) => (
                         <span
                           key={cuisine}
-                          className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold capitalize text-slate-600"
+                          className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold capitalize text-slate-600"
                         >
                           {cuisine}
                         </span>
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                    <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
                       <div className="text-sm text-slate-500">
                         <p className="font-semibold text-slate-700">
                           Rs {100 + (restaurant.numReviews % 4) * 50} for one
@@ -969,7 +969,7 @@ const Home = () => {
 
                     <button
                       onClick={() => navigate(`/restaurant-menu/${restaurant.id}`)}
-                      className="w-full rounded-full bg-(--color-primary) px-4 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
+                      className="w-full rounded-full bg-(--color-primary) px-4 py-3.5 text-sm font-bold text-white transition hover:bg-orange-600"
                     >
                       View menu
                     </button>
@@ -1017,19 +1017,19 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {savedRestaurants.slice(0, 3).map((restaurant) => (
                 <div
                   key={restaurant.id}
-                  className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50"
+                  className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-50 shadow-sm"
                 >
                   <img
                     src={restaurant.image}
                     alt={restaurant.name}
-                    className="h-40 w-full object-cover"
+                    className="h-44 w-full object-cover"
                   />
-                  <div className="p-4">
-                    <p className="text-lg font-black text-slate-900 line-clamp-1">
+                  <div className="p-5">
+                    <p className="text-xl font-black text-slate-900 line-clamp-1">
                       {restaurant.name}
                     </p>
                     <p className="mt-1 text-sm text-slate-500 line-clamp-1">
@@ -1204,9 +1204,9 @@ const Home = () => {
                     ? navigate(`/restaurant-menu/${brand.restaurantId}`)
                     : navigate("/order-now")
                 }
-                className="flex w-44 shrink-0 flex-col items-center rounded-[1.75rem] border border-slate-200 bg-white px-4 py-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                className="flex w-48 shrink-0 flex-col items-center rounded-[1.75rem] border border-slate-200 bg-white px-4 py-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-slate-100 bg-slate-50">
+                <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-slate-100 bg-slate-50">
                   <img
                     src={brand.image}
                     alt={brand.name}
@@ -1217,7 +1217,7 @@ const Home = () => {
                     }}
                   />
                 </div>
-                <p className="mt-4 text-base font-bold text-slate-900 line-clamp-2">
+                <p className="mt-4 text-lg font-bold text-slate-900 line-clamp-2">
                   {brand.name}
                 </p>
                 <p className="mt-2 text-sm text-orange-600">{brand.time}</p>
@@ -1263,3 +1263,4 @@ const Home = () => {
 };
 
 export default Home;
+
