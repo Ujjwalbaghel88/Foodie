@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IoBagHandleOutline,
+  IoChevronBack,
+  IoChevronForward,
   IoHeart,
   IoHeartOutline,
   IoSearch,
@@ -291,6 +293,7 @@ const Home = () => {
   const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
   const [dishShowcaseVisible, setDishShowcaseVisible] = useState(false);
   const dishShowcaseRef = useRef(null);
+  const brandCarouselRef = useRef(null);
 
   useEffect(() => {
     const showcase = dishShowcaseRef.current;
@@ -541,6 +544,13 @@ const Home = () => {
 
     storeCheckoutData(checkoutData);
     navigate("/checkout");
+  };
+
+  const scrollBrandCarousel = (direction) => {
+    brandCarouselRef.current?.scrollBy({
+      left: direction * 280,
+      behavior: "smooth",
+    });
   };
 
   const topBrandCards = brandNames.map((brandName, index) => {
@@ -1186,16 +1196,40 @@ const Home = () => {
 
       <section className="bg-[#fff7f1] py-8 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-8 text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
-              Top brands for you
-            </p>
-            <h2 className="mt-2 text-3xl font-black text-slate-900">
-              Popular kitchens in your area
-            </h2>
+          <div className="mb-7 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">
+                Top brands for you
+              </p>
+              <h2 className="mt-2 text-3xl font-black text-slate-900">
+                Popular kitchens in your area
+              </h2>
+              <p className="mt-2 text-sm text-slate-500">Explore nearby restaurants picked for you.</p>
+            </div>
+            <div className="hidden items-center gap-2 sm:flex">
+              <button
+                type="button"
+                onClick={() => scrollBrandCarousel(-1)}
+                className="grid h-11 w-11 place-items-center rounded-full border border-orange-200 bg-white text-orange-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-orange-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                aria-label="Show previous restaurants"
+              >
+                <IoChevronBack size={21} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollBrandCarousel(1)}
+                className="grid h-11 w-11 place-items-center rounded-full bg-orange-600 text-white shadow-lg shadow-orange-500/25 transition hover:-translate-y-0.5 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                aria-label="Show more restaurants"
+              >
+                <IoChevronForward size={21} />
+              </button>
+            </div>
           </div>
 
-          <div className="flex gap-5 overflow-x-auto pb-3">
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-12 bg-gradient-to-r from-[#fff7f1] to-transparent sm:block" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-[#fff7f1] to-transparent sm:block" />
+            <div ref={brandCarouselRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-1 pb-5 pt-1 [scrollbar-width:thin]">
             {topBrandCards.map((brand) => (
               <button
                 key={brand.name}
@@ -1204,25 +1238,32 @@ const Home = () => {
                     ? navigate(`/restaurant-menu/${brand.restaurantId}`)
                     : navigate("/order-now")
                 }
-                className="flex w-48 shrink-0 flex-col items-center rounded-[1.75rem] border border-slate-200 bg-white px-4 py-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                className="group w-60 shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               >
-                <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-slate-100 bg-slate-50">
+                <div className="relative h-36 w-full overflow-hidden bg-slate-100">
                   <img
                     src={brand.image}
                     alt={brand.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     onError={(event) => {
                       event.currentTarget.onerror = null;
                       event.currentTarget.src = `${assetBase}aboutPage.png`;
                     }}
                   />
+                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent" />
                 </div>
-                <p className="mt-4 text-lg font-bold text-slate-900 line-clamp-2">
-                  {brand.name}
-                </p>
-                <p className="mt-2 text-sm text-orange-600">{brand.time}</p>
+                <div className="p-4">
+                  <p className="min-h-12 text-lg font-black leading-6 text-slate-900 line-clamp-2">
+                    {brand.name}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <p className="text-sm font-bold text-orange-600">{brand.time}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 transition group-hover:text-orange-600">View menu <IoChevronForward /></span>
+                  </div>
+                </div>
               </button>
             ))}
+            </div>
           </div>
         </div>
       </section>
