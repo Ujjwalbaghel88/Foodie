@@ -598,7 +598,7 @@ const Home = () => {
         </div>
         <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/82 via-black/56 to-black/28" />
 
-        <div className="relative z-10 mx-auto grid min-h-[70vh] max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+        <div className="relative z-10 mx-auto grid min-h-[64vh] max-w-7xl items-center gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div className="max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
               <FaFireAlt className="text-orange-300" />
@@ -610,17 +610,17 @@ const Home = () => {
                 ? `Welcome back${user.fullName ? `, ${user.fullName.split(" ")[0]}` : ""} 👋`
                 : "Your local food playground"}
             </p>
-            <h1 className="mt-3 max-w-xl text-4xl font-black tracking-tight sm:text-5xl lg:text-[4rem]">
+            <h1 className="mt-3 max-w-xl text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.5rem]">
               Good food,
               <span className="block text-orange-300">good mood.</span>
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white/82 sm:text-lg">
+            <p className="mt-3 max-w-2xl text-base leading-6 text-white/82 sm:text-lg">
               Search restaurants, explore moods, and order from trusted kitchens with
               a smoother experience that feels crafted, not crowded.
             </p>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]">
-              <div className="flex items-center gap-3 rounded-full bg-white px-4 py-3 text-slate-900 shadow-[0_18px_45px_rgba(0,0,0,0.18)]">
+            <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
+              <div className="flex items-center gap-3 rounded-full bg-white px-4 py-2.5 text-slate-900 shadow-[0_18px_45px_rgba(0,0,0,0.18)]">
                 <IoSearch className="text-lg text-orange-500" />
                 <input
                   type="text"
@@ -639,52 +639,52 @@ const Home = () => {
                       : "/order-now",
                   )
                 }
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600"
               >
                 Explore food
                 <MdArrowForward size={18} />
               </button>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               {["Biryani", "Pizza", "Thali", "Dessert", "Burger", "South Indian"].map((chip) => (
                 <button
                   key={chip}
                   onClick={() => setSearchQuery(chip)}
-                  className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
+                  className="rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20"
                 >
                   {chip}
                 </button>
               ))}
             </div>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
               {highlightStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-2xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-md"
+                  className="rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-md"
                 >
-                  <p className="text-2xl font-black">{stat.value}</p>
+                  <p className="text-xl font-black">{stat.value}</p>
                   <p className="mt-1 text-sm text-white/75">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/15 bg-white/10 p-4 shadow-2xl backdrop-blur-xl lg:p-5">
+          <div className="rounded-[2rem] border border-white/15 bg-white/10 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
                   Quick search
                 </p>
-                <h2 className="mt-1 text-2xl font-black">Find your next meal</h2>
+                <h2 className="mt-1 text-xl font-black">Find your next meal</h2>
               </div>
-              <div className="rounded-full bg-orange-500/20 p-3 text-orange-200">
-                <IoBagHandleOutline size={24} />
+              <div className="rounded-full bg-orange-500/20 p-2.5 text-orange-200">
+                <IoBagHandleOutline size={22} />
               </div>
             </div>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-3 space-y-2.5">
               {["all", "topRated", "saved", "mostReviewed"].map((filter) => {
                 const filterLabel = {
                   all: "All restaurants",
@@ -711,7 +711,7 @@ const Home = () => {
               })}
             </div>
 
-            <div className="mt-4 rounded-[1.25rem] bg-white p-4 text-slate-900 shadow-lg">
+            <div className="mt-3 rounded-[1.25rem] bg-white p-3.5 text-slate-900 shadow-lg">
               <p className="text-sm font-semibold">
                 Search, filter, and save restaurants without losing your place.
               </p>
@@ -724,7 +724,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="mx-auto -mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto mt-6 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-[1.75rem] border border-white/70 bg-white p-4 shadow-[0_20px_60px_rgba(113,52,18,0.14)] sm:p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>

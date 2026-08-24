@@ -109,25 +109,7 @@ const CarouselComponent = () => {
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent" />
 
-      <div className="pointer-events-none absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white backdrop-blur-md sm:left-5 sm:top-5">
-        <span className="h-2 w-2 rounded-full bg-orange-400 shadow-[0_0_0_4px_rgba(251,146,60,0.18)]" />
-        Featured carousel
-      </div>
-
-      <div className="pointer-events-none absolute bottom-5 left-4 right-4 z-20 flex flex-col gap-3 sm:left-5 sm:right-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-xl rounded-[1.5rem] border border-white/15 bg-black/35 p-4 text-white backdrop-blur-md sm:p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-orange-200">
-            {SLIDES[currentSlide]?.title}
-          </p>
-          <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
-            Turn every scroll into a craving.
-          </h3>
-          <p className="mt-2 max-w-lg text-sm leading-6 text-white/78">
-            {SLIDES[currentSlide]?.subtitle}
-          </p>
-        </div>
-
-        <div className="pointer-events-auto flex items-center gap-3 self-start rounded-full border border-white/15 bg-black/30 px-4 py-3 text-white backdrop-blur-lg">
+      <div className="pointer-events-auto absolute bottom-5 right-4 z-20 flex items-center gap-3 rounded-full border border-white/15 bg-black/30 px-4 py-3 text-white backdrop-blur-lg sm:right-5">
           <div className="flex items-center gap-1.5">
             {SLIDES.map((_, index) => (
               <button
@@ -146,7 +128,6 @@ const CarouselComponent = () => {
           <span className="hidden text-xs font-semibold text-white/70 sm:inline">
             {String(currentSlide + 1).padStart(2, "0")}/{String(SLIDES.length).padStart(2, "0")}
           </span>
-        </div>
       </div>
 
       {/* Previous Button */}
