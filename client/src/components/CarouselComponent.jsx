@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
 const SLIDES = [
@@ -42,17 +42,23 @@ const SLIDES = [
 const CarouselComponent = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
+  const prefersReducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    [],
+  );
 
   // Auto-rotate carousel
   useEffect(() => {
-    if (!autoPlay) return;
+    if (!autoPlay || prefersReducedMotion) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
     }, SLIDES[currentSlide]?.duration || 5000);
 
     return () => clearInterval(interval);
-  }, [autoPlay, currentSlide]);
+  }, [autoPlay, currentSlide, prefersReducedMotion]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -69,6 +75,8 @@ const CarouselComponent = () => {
     setAutoPlay(false);
   };
 
+  const activeSlide = SLIDES[currentSlide];
+
   return (
     <div
       className="relative h-full w-full overflow-hidden rounded-[2rem] border border-white/15 bg-slate-950/30 shadow-[0_30px_80px_rgba(15,23,42,0.35)]"
@@ -77,29 +85,27 @@ const CarouselComponent = () => {
     >
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_20%_20%,rgba(251,146,60,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(244,114,182,0.18),transparent_25%),linear-gradient(180deg,rgba(2,6,23,0.08),rgba(2,6,23,0.46))]" />
 
-      {/* Carousel Slides */}
-      {SLIDES.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          {slide.type === "video" ? (
-            <video
-              src={slide.source}
-              className="h-full w-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-label="Cravings food showcase"
-            />
-          ) : (
-            <img src={slide.source} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
-          )}
-        </div>
-      ))}
+      <div key={currentSlide} className="absolute inset-0 cravings-media-reveal">
+        {activeSlide.type === "video" ? (
+          <video
+            src={activeSlide.source}
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-label="Cravings food showcase"
+          />
+        ) : (
+          <img
+            src={activeSlide.source}
+            alt={`Slide ${currentSlide + 1}`}
+            className="h-full w-full object-cover"
+            decoding="async"
+          />
+        )}
+      </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent" />
 
@@ -109,7 +115,7 @@ const CarouselComponent = () => {
       </div>
 
       <div className="pointer-events-none absolute bottom-5 left-4 right-4 z-20 flex flex-col gap-3 sm:left-5 sm:right-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-xl rounded-[1.5rem] border border-white/15 bg-black/35 p-4 text-white backdrop-blur-lg sm:p-5">
+        <div className="max-w-xl rounded-[1.5rem] border border-white/15 bg-black/35 p-4 text-white backdrop-blur-md sm:p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-orange-200">
             {SLIDES[currentSlide]?.title}
           </p>

@@ -756,6 +756,8 @@ const Home = () => {
                   src={mood.image}
                   alt=""
                   className="absolute right-0 h-full w-32 object-cover opacity-80 mix-blend-screen transition duration-500 group-hover:scale-110"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="relative z-10 max-w-[70%]">
                   <p className="font-black">{mood.label}</p>
@@ -806,6 +808,8 @@ const Home = () => {
                   src={item.image}
                   alt={item.title}
                   className="h-40 w-full rounded-[1.25rem] object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="mt-3 flex items-center justify-between gap-3">
                   <div>
@@ -913,6 +917,8 @@ const Home = () => {
                       src={restaurant.image}
                       alt={restaurant.name}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
                     <div className="absolute left-4 top-4 rounded-full bg-white/18 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
@@ -1037,6 +1043,8 @@ const Home = () => {
                     src={restaurant.image}
                     alt={restaurant.name}
                     className="h-44 w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="p-5">
                     <p className="text-xl font-black text-slate-900 line-clamp-1">
@@ -1245,6 +1253,8 @@ const Home = () => {
                     src={brand.image}
                     alt={brand.name}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
                     onError={(event) => {
                       event.currentTarget.onerror = null;
                       event.currentTarget.src = `${assetBase}aboutPage.png`;

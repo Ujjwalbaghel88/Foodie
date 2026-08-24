@@ -5,7 +5,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   background:
     radial-gradient(circle at top, rgba(251, 146, 60, 0.14), transparent 32%),
     radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.1), transparent 24%),
@@ -22,7 +22,8 @@ body {
     linear-gradient(180deg, #fffaf5 0%, #fff4ea 38%, #fffdfb 100%);
   color: #2d1b10;
   font-family: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background-attachment: fixed;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
@@ -80,6 +81,11 @@ body {
   to { transform: rotate(360deg); }
 }
 
+@keyframes cravingsMediaReveal {
+  from { opacity: 0.72; transform: scale(1.015); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .cravings-spinner {
   display: inline-block;
   height: 1rem;
@@ -124,12 +130,25 @@ body {
   animation: cravingsEmojiRotate 4.5s linear infinite !important;
 }
 
+.cravings-media-reveal {
+  animation: cravingsMediaReveal 480ms ease-out both;
+}
+
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 720px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .cravings-media-reveal {
+    animation: none !important;
   }
 }
 
@@ -145,6 +164,18 @@ a {
 
 button {
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(249, 115, 22, 0.45);
+  outline-offset: 3px;
 }
 
 :root {
