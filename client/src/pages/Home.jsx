@@ -598,7 +598,7 @@ const Home = () => {
         </div>
         <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/82 via-black/56 to-black/28" />
 
-        <div className="relative z-10 mx-auto grid min-h-[64vh] max-w-7xl items-center gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+        <div className="relative z-10 mx-auto grid min-h-[64vh] max-w-7xl items-center gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
           <div className="max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
               <FaFireAlt className="text-orange-300" />
@@ -671,7 +671,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/15 bg-white/10 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
+          <div className="w-full max-w-md justify-self-end rounded-[2rem] border border-white/15 bg-white/10 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
