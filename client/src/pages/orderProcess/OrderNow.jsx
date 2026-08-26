@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoSearch, IoStar, IoHeartOutline, IoHeart } from "react-icons/io5";
 import {
@@ -56,7 +56,7 @@ const OrderNow = () => {
     { id: "mostReviewed", label: "Most Reviewed" },
   ];
 
-  const applySort = (list) => {
+  const applySort = useCallback((list) => {
     const sorted = [...list];
     if (sortMode === "rating") {
       return sorted.sort((a, b) => b.rating - a.rating);
@@ -68,7 +68,7 @@ const OrderNow = () => {
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
     }
     return sorted;
-  };
+  }, [sortMode]);
 
   // Load all restaurants
   useEffect(() => {
@@ -197,6 +197,7 @@ const OrderNow = () => {
     sortMode,
     restaurants,
     savedRestaurantIds,
+    applySort,
   ]);
 
   return (

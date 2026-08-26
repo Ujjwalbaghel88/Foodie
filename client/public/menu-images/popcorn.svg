@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Fresh popcorn</title>
+  <desc id="desc">A red striped bucket filled with golden popcorn</desc>
+  <rect width="640" height="420" fill="#fff1df"/>
+  <circle cx="90" cy="80" r="54" fill="#ffd166" opacity=".35"/>
+  <circle cx="560" cy="330" r="80" fill="#ff8c42" opacity=".18"/>
+  <g transform="translate(160 28)">
+    <g fill="#fff4c2" stroke="#e7a93b" stroke-width="6">
+      <circle cx="92" cy="98" r="44"/>
+      <circle cx="152" cy="70" r="48"/>
+      <circle cx="222" cy="92" r="48"/>
+      <circle cx="278" cy="70" r="44"/>
+      <circle cx="332" cy="103" r="43"/>
+      <circle cx="130" cy="132" r="44"/>
+      <circle cx="195" cy="132" r="48"/>
+      <circle cx="260" cy="132" r="45"/>
+    </g>
+    <path d="M42 145h330l-42 218H84Z" fill="#e54b27" stroke="#9e2f1b" stroke-width="8"/>
+    <path d="M105 150h55l-20 210h-55Zm115 0h55l-10 210h-55Z" fill="#fff3d0" opacity=".95"/>
+    <path d="M72 190h270" stroke="#f9a03f" stroke-width="8" opacity=".7"/>
+  </g>
+</svg>

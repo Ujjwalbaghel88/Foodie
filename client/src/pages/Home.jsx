@@ -30,7 +30,6 @@ import {
   readFavoriteRestaurantIds,
   toggleFavoriteRestaurantId,
 } from "../utils/favoritesStorage";
-
 const assetBase = import.meta.env.BASE_URL;
 
 const categories = [
@@ -795,8 +794,8 @@ const Home = () => {
 
           <div className="mt-4 grid gap-3 lg:mt-0 lg:grid-cols-2">
             {[
-              { title: "Popcorn", image: `${assetBase}menu-images/fresh-lime-soda.png` },
-              { title: "Pastry", image: `${assetBase}menu-images/gulab-jamun.png` },
+              { title: "Popcorn", image: `${assetBase}menu-images/popcorn.svg` },
+              { title: "Pastry", model: "cravings-muffin.glb" },
             ].map((item) => (
               <button
                 key={item.title}
@@ -804,13 +803,28 @@ const Home = () => {
                 onClick={() => navigate("/bakery-crav")}
                 className="relative overflow-hidden rounded-[1.5rem] bg-white/10 p-4 text-left backdrop-blur-md transition hover:-translate-y-1"
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="h-40 w-full rounded-[1.25rem] object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className="grid h-40 w-full place-items-center overflow-hidden rounded-[1.25rem] bg-orange-50">
+                  {item.model ? (
+                    <model-viewer
+                      src={`${assetBase}${item.model}`}
+                      alt={item.title}
+                      auto-rotate
+                      autoplay
+                      disable-pan
+                      disable-zoom
+                      shadow-intensity="1.2"
+                      className="h-36 w-full"
+                    />
+                  ) : (
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </div>
                 <div className="mt-3 flex items-center justify-between gap-3">
                   <div>
                     <p className="text-sm font-bold uppercase tracking-[0.18em] text-orange-100">

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaDownload, FaRedo, FaShoppingBag, FaUsers, FaStore, FaMotorcycle } from "react-icons/fa";
 import api from "../../config/ApiConfig";
 
@@ -11,7 +11,7 @@ const AdminReports = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadReport = async () => {
+  const loadReport = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -22,9 +22,9 @@ const AdminReports = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [months]);
 
-  useEffect(() => { loadReport(); }, [months]);
+  useEffect(() => { loadReport(); }, [loadReport]);
 
   const monthly = useMemo(() => {
     const rows = report?.monthly || [];

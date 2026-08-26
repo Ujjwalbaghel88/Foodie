@@ -94,15 +94,12 @@ const AdminDataViewer = () => {
     [counts, source],
   );
 
-  const decorateRows = (rows, collectionName) =>
-    rows.map((row) => ({
-      ...row,
-      __collection: collectionName,
-      __source: source?.[collectionName] || "database",
-    }));
-
   const collectionRows = useMemo(
-    () => decorateRows(data[activeCollection] || [], activeCollection),
+    () => (data[activeCollection] || []).map((row) => ({
+      ...row,
+      __collection: activeCollection,
+      __source: source?.[activeCollection] || "database",
+    })),
     [data, activeCollection, source],
   );
 

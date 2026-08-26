@@ -992,7 +992,7 @@ const CheckoutPage = () => {
             </div>
           </aside>
         </div>
-        {false && demoPayment && (
+        {demoPayment?.mode === "legacy" && (
           <div className="fixed inset-0 z-[1100] grid place-items-center bg-slate-900/60 p-4">
             <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
               <div className="bg-blue-600 px-5 py-4 text-white"><div className="flex items-center justify-between"><div><p className="font-bold">Cravings</p><p className="text-xs text-blue-100">Razorpay Trusted Business</p></div><button onClick={() => { setDemoPayment(null); setPlacingOrder(false); }} className="text-2xl">×</button></div></div>
