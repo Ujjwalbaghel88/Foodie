@@ -181,7 +181,6 @@ export const ForgotPassword = async (req, res, next) => {
 
     res.status(200).json({
       message: "OTP sent successfully to your email",
-      ...(process.env.NODE_ENV !== "production" ? { devOtp: otp } : {}),
     });
   } catch (error) {
     next(error);

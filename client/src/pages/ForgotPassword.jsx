@@ -19,7 +19,6 @@ const ForgotPassword = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [devOtp, setDevOtp] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,9 +63,6 @@ const ForgotPassword = () => {
       });
 
       toast.success(res.data.message);
-      if (res.data?.devOtp) {
-        setDevOtp(res.data.devOtp);
-      }
       setStep(2);
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not send OTP");
@@ -160,12 +156,6 @@ const ForgotPassword = () => {
           </form>
         ) : (
           <form onSubmit={handleResetPassword} className="mt-8 space-y-5">
-            {devOtp && (
-              <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-900">
-                Dev OTP: <span className="font-black">{devOtp}</span>
-              </div>
-            )}
-
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 OTP
