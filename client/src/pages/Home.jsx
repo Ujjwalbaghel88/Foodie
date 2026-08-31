@@ -88,6 +88,12 @@ const highlightStats = [
   { value: "Live", label: "tracking on active orders" },
 ];
 
+const heroSpotlight = [
+  { label: "Bestseller", value: "Chicken Biryani" },
+  { label: "Healthy pick", value: "Paneer Bowl" },
+  { label: "Sweet treat", value: "Gulab Jamun" },
+];
+
 const brandNames = [
   "Sagar Gaire Fast Food",
   "Sharma And Vishnu Food",
@@ -710,14 +716,53 @@ const Home = () => {
               })}
             </div>
 
-            <div className="mt-3 rounded-[1.25rem] bg-white p-3.5 text-slate-900 shadow-lg">
-              <p className="text-sm font-semibold">
-                Search, filter, and save restaurants without losing your place.
-              </p>
-              <p className="mt-1 text-xs leading-5 text-slate-500">
-                The page updates instantly, so you can compare options and jump straight
-                into ordering.
-              </p>
+            <div className="mt-3 overflow-hidden rounded-[1.5rem] bg-[#fffaf6] p-3 text-slate-900 shadow-[0_18px_45px_rgba(0,0,0,0.18)]">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-600">
+                    Hot now
+                  </p>
+                  <h3 className="mt-1 text-lg font-black">Royal Chicken Feast</h3>
+                </div>
+                <div className="rounded-full bg-orange-100 p-2 text-orange-600">
+                  <FaFireAlt size={16} />
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-white p-2 shadow-sm">
+                <img
+                  src={`${assetBase}menu-images/chicken-biryani.png`}
+                  alt="Biryani"
+                  className="h-16 w-16 rounded-2xl object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-black text-slate-900">Biryani Combo</p>
+                    <span className="text-sm font-bold text-orange-600">₹299</span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
+                    <span className="rounded-full bg-emerald-100 px-2 py-1 text-emerald-700">
+                      4.8 ★
+                    </span>
+                    <span>25 min</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {heroSpotlight.map((item) => (
+                  <div key={item.label} className="rounded-2xl bg-orange-50 px-2 py-2 text-center">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-orange-500">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-[11px] font-black text-slate-800 line-clamp-2">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
