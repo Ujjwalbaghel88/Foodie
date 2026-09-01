@@ -6,4 +6,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/Foodie/',
+  server: {
+    port: 5175,
+    host: '0.0.0.0',
+    strictPort: true,
+  },
 })

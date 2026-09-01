@@ -20,8 +20,8 @@ import adminRouter from "./src/router/adminRouter.js";
 const app = express();
 const allowedOrigins = new Set(
   [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
     ...((process.env.ALLOWED_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean)),
   ].filter(Boolean),
 );
