@@ -24,11 +24,19 @@ const statusLabel = {
   delivered: "Delivered",
 };
 
+const reviewOptions = [
+  { label: "Good", rating: 4, tone: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { label: "Bad", rating: 2, tone: "bg-rose-100 text-rose-700 border-rose-200" },
+  { label: "Excellent", rating: 5, tone: "bg-amber-100 text-amber-700 border-amber-200" },
+];
+
 const CustomerOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reviewDrafts, setReviewDrafts] = useState({});
+  const [submittingReviewId, setSubmittingReviewId] = useState(null);
 
   const handleReorder = (order) => {
     const checkoutData = buildCheckoutDataFromOrder(order);
@@ -41,6 +49,51 @@ const CustomerOrders = () => {
     storeCheckoutData(checkoutData);
     toast.success("Reorder ready in checkout.");
     navigate("/checkout");
+  };
+
+  const getDraftForOrder = (orderId) => ({
+    sentiment: "Good",
+    rating: 4,
+    feedback: "",
+    ...reviewDrafts[orderId],
+  });
+
+  const updateReviewDraft = (orderId, updates) => {
+    setReviewDrafts((previous) => ({
+      ...previous,
+      [orderId]: {
+        ...getDraftForOrder(orderId),
+        ...updates,
+      },
+    }));
+  };
+
+  const handleReviewSubmit = async (order) => {
+    const draft = getDraftForOrder(order._id);
+
+    try {
+      setSubmittingReviewId(order._id);
+      const response = await api.post(`/customer/orders/${order._id}/review`, {
+        rating: draft.rating,
+        sentiment: draft.sentiment,
+        feedback: draft.feedback,
+      });
+
+      const updatedOrder = response.data?.data;
+      setOrders((prev) =>
+        prev.map((item) => (item._id === order._id ? updatedOrder : item)),
+      );
+      setReviewDrafts((previous) => ({
+        ...previous,
+        [order._id]: { sentiment: "Good", rating: 4, feedback: "" },
+      }));
+      toast.success("Thanks for the feedback!");
+    } catch (err) {
+      const message = err.response?.data?.message || "Could not submit feedback.";
+      toast.error(message);
+    } finally {
+      setSubmittingReviewId(null);
+    }
   };
 
   useEffect(() => {
@@ -215,6 +268,68 @@ const CustomerOrders = () => {
                 </div>
               ))}
             </div>
+
+            {order.status === "delivered" && !order.review?.submittedAt && (
+              <div className="mt-4 rounded-[1.5rem] border border-orange-200 bg-orange-50 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-black text-slate-900">Rate this restaurant</p>
+                  <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-orange-600">
+                    Feedback
+                  </span>
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {reviewOptions.map((option) => {
+                    const active = getDraftForOrder(order._id).sentiment === option.label;
+                    return (
+                      <button
+                        key={option.label}
+                        type="button"
+                        onClick={() => updateReviewDraft(order._id, { sentiment: option.label, rating: option.rating })}
+                        className={`rounded-full border px-3 py-2 text-sm font-bold transition ${
+                          active
+                            ? `${option.tone} shadow-sm`
+                            : "border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-orange-600"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <textarea
+                  value={getDraftForOrder(order._id).feedback}
+                  onChange={(event) =>
+                    updateReviewDraft(order._id, { feedback: event.target.value })
+                  }
+                  rows={3}
+                  placeholder="Write your feedback about the restaurant..."
+                  className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-0 transition focus:border-orange-300"
+                />
+
+                <div className="mt-3 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => handleReviewSubmit(order)}
+                    disabled={submittingReviewId === order._id}
+                    className="rounded-full bg-(--color-primary) px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {submittingReviewId === order._id ? "Submitting..." : "Submit review"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {order.status === "delivered" && order.review?.submittedAt && (
+              <div className="mt-4 rounded-[1.5rem] border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                <p className="font-black">Thank you for your review</p>
+                <p className="mt-1">
+                  You rated this restaurant as <span className="font-bold">{order.review.sentiment}</span> with {order.review.rating}/5.
+                </p>
+                {order.review.feedback && <p className="mt-2">“{order.review.feedback}”</p>}
+              </div>
+            )}
           </div>
         ))}
       </div>

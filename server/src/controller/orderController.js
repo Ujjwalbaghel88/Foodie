@@ -67,6 +67,7 @@ const serializeOrder = (orderDoc) => {
 
   return {
     ...order,
+    review: order.review || null,
     liveStatus: live.status,
     liveStatusLabel: live.label,
     statusProgress: live.progress,
@@ -202,6 +203,69 @@ export const getCustomerOrderById = async (req, res, next) => {
 
     res.status(200).json({
       message: "Order retrieved successfully",
+      data: serializeOrder(order),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const submitRestaurantReview = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const { rating, sentiment = "Good", feedback = "" } = req.body || {};
+    const customerId = req.user._id;
+
+    const order = await Order.findOne({ _id: orderId, customerId });
+    if (!order) {
+      const error = new Error("Order not found");
+      error.status = 404;
+      return next(error);
+    }
+
+    if (order.status !== "delivered") {
+      const error = new Error("You can only review a delivered order");
+      error.status = 400;
+      return next(error);
+    }
+
+    if (order.review?.submittedAt) {
+      return res.status(200).json({
+        message: "Review already submitted for this order",
+        data: serializeOrder(order),
+      });
+    }
+
+    const allowedSentiments = ["Good", "Bad", "Excellent"];
+    const validRating = Number(rating);
+    const normalizedRating = Number.isFinite(validRating) ? Math.min(5, Math.max(1, validRating)) : 4;
+    const normalizedSentiment = allowedSentiments.includes(sentiment) ? sentiment : "Good";
+
+    const reviewPayload = {
+      rating: normalizedRating,
+      sentiment: normalizedSentiment,
+      feedback: String(feedback || "").trim(),
+      submittedAt: new Date(),
+    };
+
+    if (order.restaurantId) {
+      const restaurant = await Restaurant.findById(order.restaurantId);
+      if (restaurant) {
+        const previousTotal = Number(restaurant.rating || 0) * Number(restaurant.numReviews || 0);
+        const newReviewCount = Number(restaurant.numReviews || 0) + 1;
+        const nextRating = (previousTotal + normalizedRating) / newReviewCount;
+
+        restaurant.rating = Number(nextRating.toFixed(2));
+        restaurant.numReviews = newReviewCount;
+        await restaurant.save();
+      }
+    }
+
+    order.review = reviewPayload;
+    await order.save();
+
+    res.status(200).json({
+      message: "Thank you for your feedback",
       data: serializeOrder(order),
     });
   } catch (error) {

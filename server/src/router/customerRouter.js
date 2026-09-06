@@ -11,6 +11,7 @@ import {
   createOrder,
   getCustomerOrders,
   getCustomerOrderById,
+  submitRestaurantReview,
 } from "../controller/orderController.js";
 import { customerMiddleware, Protect } from "../middleware/authMiddleware.js";
 import { createRazorpayOrder, verifyRazorpayPayment } from "../controller/paymentController.js";
@@ -36,6 +37,7 @@ router.delete(
 );
 
 router.post("/orders", Protect, customerMiddleware, createOrder);
+router.post("/orders/:orderId/review", Protect, customerMiddleware, submitRestaurantReview);
 router.post("/payments/razorpay/order", Protect, customerMiddleware, createRazorpayOrder);
 router.post("/payments/razorpay/verify", Protect, customerMiddleware, verifyRazorpayPayment);
 router.get("/orders", Protect, customerMiddleware, getCustomerOrders);

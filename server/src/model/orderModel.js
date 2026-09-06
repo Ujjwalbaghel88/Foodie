@@ -66,6 +66,31 @@ const orderStatusHistorySchema = new mongoose.Schema(
   { _id: false },
 );
 
+const reviewSchema = new mongoose.Schema(
+  {
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: 0,
+    },
+    sentiment: {
+      type: String,
+      enum: ["Good", "Bad", "Excellent"],
+      default: "Good",
+    },
+    feedback: {
+      type: String,
+      default: "",
+    },
+    submittedAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  { _id: false },
+);
+
 const orderSchema = new mongoose.Schema(
   {
     customerId: {
@@ -134,6 +159,10 @@ const orderSchema = new mongoose.Schema(
     trackingCode: {
       type: String,
       default: "",
+    },
+    review: {
+      type: reviewSchema,
+      default: null,
     },
   },
   {
