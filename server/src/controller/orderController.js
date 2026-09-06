@@ -223,7 +223,7 @@ export const submitRestaurantReview = async (req, res, next) => {
       return next(error);
     }
 
-    if (order.status !== "delivered") {
+    if (getLiveStatus(order).status !== "delivered") {
       const error = new Error("You can only review a delivered order");
       error.status = 400;
       return next(error);

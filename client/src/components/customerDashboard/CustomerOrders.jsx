@@ -237,6 +237,24 @@ const CustomerOrders = () => {
                   >
                     Track order
                   </button>
+                  {order.liveStatus === "delivered" ? (
+                    order.review?.submittedAt ? (
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-5 py-2 font-bold text-emerald-700">
+                        Rated
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          document
+                            .getElementById(`review-${order._id}`)
+                            ?.scrollIntoView({ behavior: "smooth", block: "center" })
+                        }
+                        className="rounded-full border border-amber-300 bg-amber-50 px-5 py-2 font-bold text-amber-700 transition hover:bg-amber-100"
+                      >
+                        Rate order
+                      </button>
+                    )
+                  ) : null}
                   <button
                     onClick={() => handleReorder(order)}
                     className="rounded-full border border-orange-200 bg-white px-5 py-2 font-bold text-orange-600 transition hover:bg-orange-50"
@@ -269,8 +287,11 @@ const CustomerOrders = () => {
               ))}
             </div>
 
-            {order.status === "delivered" && !order.review?.submittedAt && (
-              <div className="mt-4 rounded-[1.5rem] border border-orange-200 bg-orange-50 p-4">
+            {order.liveStatus === "delivered" && !order.review?.submittedAt && (
+              <div
+                id={`review-${order._id}`}
+                className="mt-4 rounded-[1.5rem] border border-orange-200 bg-orange-50 p-4"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-black text-slate-900">Rate this restaurant</p>
                   <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-orange-600">

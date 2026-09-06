@@ -32,6 +32,12 @@ const loadRazorpay = () => new Promise((resolve, reject) => {
   document.body.appendChild(script);
 });
 
+const reviewOptions = [
+  { label: "Good", rating: 4, tone: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { label: "Bad", rating: 2, tone: "bg-rose-100 text-rose-700 border-rose-200" },
+  { label: "Excellent", rating: 5, tone: "bg-amber-100 text-amber-700 border-amber-200" },
+];
+
 const statusMeta = {
   placed: {
     title: "Placed",
@@ -389,6 +395,8 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [demoPayment, setDemoPayment] = useState(null);
   const [demoPaymentMethod, setDemoPaymentMethod] = useState("card");
+  const [reviewDrafts, setReviewDrafts] = useState({});
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [error, setError] = useState("");
   const activeOrder = order || null;
 
@@ -515,6 +523,49 @@ const CheckoutPage = () => {
 
     return { restaurantPoint, customerPoint, riderPoint };
   }, [activeCheckoutAddress, activeOrder, checkoutData]);
+
+  const getReviewDraft = (orderId) => ({
+    sentiment: "Good",
+    rating: 4,
+    feedback: "",
+    ...reviewDrafts[orderId],
+  });
+
+  const updateReviewDraft = (orderId, updates) => {
+    setReviewDrafts((previous) => ({
+      ...previous,
+      [orderId]: {
+        ...getReviewDraft(orderId),
+        ...updates,
+      },
+    }));
+  };
+
+  const handleReviewSubmit = async () => {
+    if (!activeOrder?._id || activeOrder.status !== "delivered") return;
+
+    const draft = getReviewDraft(activeOrder._id);
+
+    try {
+      setReviewSubmitting(true);
+      const response = await api.post(`/customer/orders/${activeOrder._id}/review`, {
+        rating: draft.rating,
+        sentiment: draft.sentiment,
+        feedback: draft.feedback,
+      });
+
+      setOrder(response.data.data);
+      setReviewDrafts((previous) => ({
+        ...previous,
+        [activeOrder._id]: { sentiment: "Good", rating: 4, feedback: "" },
+      }));
+      toast.success("Thanks for the feedback!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Could not submit feedback");
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   const handlePlaceOrder = async () => {
     if (!checkoutData?.restaurant || !checkoutData?.items?.length) {
@@ -760,6 +811,68 @@ const CheckoutPage = () => {
                   })}
                 </div>
               </section>
+
+              {activeOrder.status === "delivered" && !activeOrder.review?.submittedAt && (
+                <section className="rounded-[2rem] bg-white p-6 shadow-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 className="text-xl font-black text-slate-900">Rate this restaurant</h2>
+                    <span className="rounded-full bg-orange-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-orange-700">
+                      Feedback
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {reviewOptions.map((option) => {
+                      const active = getReviewDraft(activeOrder._id).sentiment === option.label;
+                      return (
+                        <button
+                          key={option.label}
+                          type="button"
+                          onClick={() => updateReviewDraft(activeOrder._id, { sentiment: option.label, rating: option.rating })}
+                          className={`rounded-full border px-3 py-2 text-sm font-bold transition ${
+                            active
+                              ? `${option.tone} shadow-sm`
+                              : "border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-orange-600"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <textarea
+                    value={getReviewDraft(activeOrder._id).feedback}
+                    onChange={(event) => updateReviewDraft(activeOrder._id, { feedback: event.target.value })}
+                    rows={4}
+                    placeholder="Tell us how your experience was"
+                    className="mt-4 w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-orange-300 focus:bg-white"
+                  />
+
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleReviewSubmit}
+                      disabled={reviewSubmitting}
+                      className="rounded-full bg-(--color-primary) px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {reviewSubmitting ? "Submitting..." : "Submit review"}
+                    </button>
+                  </div>
+                </section>
+              )}
+
+              {activeOrder.status === "delivered" && activeOrder.review?.submittedAt && (
+                <section className="rounded-[2rem] border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+                  <h2 className="text-xl font-black text-emerald-800">Thank you for your review</h2>
+                  <p className="mt-2 text-sm text-emerald-700">
+                    You rated this restaurant as <span className="font-bold">{activeOrder.review.sentiment}</span> with {activeOrder.review.rating}/5.
+                  </p>
+                  {activeOrder.review.feedback && (
+                    <p className="mt-2 text-sm text-emerald-700">“{activeOrder.review.feedback}”</p>
+                  )}
+                </section>
+              )}
             </div>
 
             <div className="space-y-6">

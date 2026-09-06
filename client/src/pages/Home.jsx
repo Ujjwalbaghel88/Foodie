@@ -281,6 +281,124 @@ const QuickOrderPopup = ({ onClose, onStartOrder, onBrowseSaved }) => {
   );
 };
 
+const ReviewPromptPopup = ({ order, onClose, onSubmit }) => {
+  const [sentiment, setSentiment] = useState("Good");
+  const [feedback, setFeedback] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (!order) return null;
+
+  const options = [
+    { label: "Good", rating: 4, tone: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+    { label: "Bad", rating: 2, tone: "bg-rose-100 text-rose-700 border-rose-200" },
+    { label: "Excellent", rating: 5, tone: "bg-amber-100 text-amber-700 border-amber-200" },
+  ];
+
+  const submit = async () => {
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        rating: options.find((option) => option.label === sentiment)?.rating || 4,
+        sentiment,
+        feedback,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-900/55 p-4 backdrop-blur-[2px]">
+      <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-orange-100 bg-white shadow-[0_35px_120px_rgba(0,0,0,0.28)] ring-1 ring-orange-100">
+        <div className="bg-gradient-to-r from-orange-500 via-orange-600 to-red-500 px-5 py-5 text-white">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/15 text-2xl shadow-inner shadow-white/10">
+                ★
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-white/70">
+                  Order review
+                </p>
+                <h3 className="mt-1 text-2xl font-black leading-tight">
+                  {order.restaurantName}
+                </h3>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="rounded-full bg-white/15 px-2.5 py-1 text-lg font-bold text-white transition hover:bg-white/25"
+              aria-label="Close review popup"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <div className="p-5">
+          <div className="rounded-[1.5rem] bg-gradient-to-br from-orange-50 to-amber-50 p-4 ring-1 ring-orange-100">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-600">
+              Feedback
+            </p>
+            <p className="mt-2 text-base font-black text-slate-900">
+              How was your food experience?
+            </p>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {options.map((option) => {
+              const active = sentiment === option.label;
+              return (
+                <button
+                  key={option.label}
+                  type="button"
+                  onClick={() => setSentiment(option.label)}
+                  className={`rounded-full border px-3 py-2 text-sm font-bold transition-all ${
+                    active
+                      ? `${option.tone} shadow-sm ring-2 ring-white ring-offset-2 ring-offset-orange-100`
+                      : "border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-orange-600 hover:shadow-sm"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-4">
+            <label className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+              Your note
+            </label>
+            <textarea
+              value={feedback}
+              onChange={(event) => setFeedback(event.target.value)}
+              rows={4}
+              placeholder="Tell us how your meal was..."
+              className="w-full rounded-[1.35rem] border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-orange-300 focus:bg-white focus:shadow-[0_0_0_4px_rgba(251,146,60,0.08)]"
+            />
+          </div>
+
+          <div className="mt-5 flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+            >
+              Later
+            </button>
+            <button
+              onClick={submit}
+              disabled={isSubmitting}
+              className="flex-1 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 text-sm font-black text-white shadow-lg shadow-orange-200 transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -296,6 +414,7 @@ const Home = () => {
   const [customerOrders, setCustomerOrders] = useState([]);
   const [customerOrdersLoading, setCustomerOrdersLoading] = useState(false);
   const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
+  const [pendingReviewOrder, setPendingReviewOrder] = useState(null);
   const [dishShowcaseVisible, setDishShowcaseVisible] = useState(false);
   const dishShowcaseRef = useRef(null);
   const brandCarouselRef = useRef(null);
@@ -423,6 +542,7 @@ const Home = () => {
   useEffect(() => {
     if (!user || user.userType !== "customer") {
       setCustomerOrders([]);
+      setPendingReviewOrder(null);
       return undefined;
     }
 
@@ -432,9 +552,16 @@ const Home = () => {
       try {
         setCustomerOrdersLoading(true);
         const response = await api.get("/customer/orders");
-        if (!cancelled) {
-          setCustomerOrders(Array.isArray(response.data?.data) ? response.data.data : []);
-        }
+        if (cancelled) return;
+
+        const orders = Array.isArray(response.data?.data) ? response.data.data : [];
+        setCustomerOrders(orders);
+
+        const reviewCandidate = [...orders]
+          .filter((order) => order.status === "delivered" && !order.review?.submittedAt)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0] || null;
+
+        setPendingReviewOrder(reviewCandidate);
       } catch (error) {
         console.error("Failed to load customer orders on home:", error);
         if (!cancelled) setCustomerOrders([]);
@@ -541,6 +668,27 @@ const Home = () => {
     setShowQuickOrderPopup(false);
   };
 
+  const handleReviewSubmit = async ({ rating, sentiment, feedback }) => {
+    if (!pendingReviewOrder?._id) return;
+
+    try {
+      const response = await api.post(`/customer/orders/${pendingReviewOrder._id}/review`, {
+        rating,
+        sentiment,
+        feedback,
+      });
+
+      setCustomerOrders((previous) =>
+        previous.map((order) => (order._id === pendingReviewOrder._id ? response.data.data : order)),
+      );
+      setPendingReviewOrder(null);
+      toast.success("Thanks for your feedback!");
+    } catch (error) {
+      console.error("Failed to submit review from home popup:", error);
+      toast.error(error.response?.data?.message || "Could not submit feedback right now.");
+    }
+  };
+
   const handleReorderRecentOrder = () => {
     if (!customerInsights.recentOrder) return;
 
@@ -594,6 +742,14 @@ const Home = () => {
             handleCloseQuickOrderPopup();
             navigate("/order-now?saved=1");
           }}
+        />
+      )}
+
+      {pendingReviewOrder && (
+        <ReviewPromptPopup
+          order={pendingReviewOrder}
+          onClose={() => setPendingReviewOrder(null)}
+          onSubmit={handleReviewSubmit}
         />
       )}
 
