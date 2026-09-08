@@ -100,10 +100,9 @@ const HelpCenter = () => {
   };
 
   const inputClass = (field) =>
-    `w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) bg-white/60 ${
-      errors[field]
-        ? "border-(--color-error) border-2"
-        : "border-(--color-base-300)"
+    `w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) bg-white/60 ${errors[field]
+      ? "border-(--color-error) border-2"
+      : "border-(--color-base-300)"
     }`;
 
   return (
@@ -189,7 +188,7 @@ const HelpCenter = () => {
 
               {/* Email */}
               <div className="mb-4">
-               
+
                 <input
                   type="email"
                   name="email"
@@ -207,7 +206,7 @@ const HelpCenter = () => {
 
               {/* Issue Category */}
               <div className="mb-4">
-              
+
                 <select
                   name="issueCategory"
                   value={formData.issueCategory}
@@ -230,7 +229,7 @@ const HelpCenter = () => {
 
               {/* Order ID (optional) */}
               <div className="mb-4">
-               
+
                 <input
                   type="text"
                   name="orderId"
@@ -243,7 +242,7 @@ const HelpCenter = () => {
 
               {/* Description */}
               <div className="mb-6">
-              
+
                 <textarea
                   name="description"
                   value={formData.description}

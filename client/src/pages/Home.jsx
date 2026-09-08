@@ -353,11 +353,10 @@ const ReviewPromptPopup = ({ order, onClose, onSubmit }) => {
                   key={option.label}
                   type="button"
                   onClick={() => setSentiment(option.label)}
-                  className={`rounded-full border px-3 py-2 text-sm font-bold transition-all ${
-                    active
-                      ? `${option.tone} shadow-sm ring-2 ring-white ring-offset-2 ring-offset-orange-100`
-                      : "border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-orange-600 hover:shadow-sm"
-                  }`}
+                  className={`rounded-full border px-3 py-2 text-sm font-bold transition-all ${active
+                    ? `${option.tone} shadow-sm ring-2 ring-white ring-offset-2 ring-offset-orange-100`
+                    : "border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-orange-600 hover:shadow-sm"
+                    }`}
                 >
                   {option.label}
                 </button>
@@ -1453,41 +1452,41 @@ const Home = () => {
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-12 bg-gradient-to-r from-[#fff7f1] to-transparent sm:block" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-[#fff7f1] to-transparent sm:block" />
             <div ref={brandCarouselRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-1 pb-5 pt-1 [scrollbar-width:thin]">
-            {topBrandCards.map((brand) => (
-              <button
-                key={brand.name}
-                onClick={() =>
-                  brand.restaurantId
-                    ? navigate(`/restaurant-menu/${brand.restaurantId}`)
-                    : navigate("/order-now")
-                }
-                className="group w-60 shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-              >
-                <div className="relative h-36 w-full overflow-hidden bg-slate-100">
-                  <img
-                    src={brand.image}
-                    alt={brand.name}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                    onError={(event) => {
-                      event.currentTarget.onerror = null;
-                      event.currentTarget.src = `${assetBase}aboutPage.png`;
-                    }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent" />
-                </div>
-                <div className="p-4">
-                  <p className="min-h-12 text-lg font-black leading-6 text-slate-900 line-clamp-2">
-                    {brand.name}
-                  </p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <p className="text-sm font-bold text-orange-600">{brand.time}</p>
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 transition group-hover:text-orange-600">View menu <IoChevronForward /></span>
+              {topBrandCards.map((brand) => (
+                <button
+                  key={brand.name}
+                  onClick={() =>
+                    brand.restaurantId
+                      ? navigate(`/restaurant-menu/${brand.restaurantId}`)
+                      : navigate("/order-now")
+                  }
+                  className="group w-60 shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                >
+                  <div className="relative h-36 w-full overflow-hidden bg-slate-100">
+                    <img
+                      src={brand.image}
+                      alt={brand.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = `${assetBase}aboutPage.png`;
+                      }}
+                    />
+                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent" />
                   </div>
-                </div>
-              </button>
-            ))}
+                  <div className="p-4">
+                    <p className="min-h-12 text-lg font-black leading-6 text-slate-900 line-clamp-2">
+                      {brand.name}
+                    </p>
+                    <div className="mt-3 flex items-center justify-between">
+                      <p className="text-sm font-bold text-orange-600">{brand.time}</p>
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 transition group-hover:text-orange-600">View menu <IoChevronForward /></span>
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         </div>

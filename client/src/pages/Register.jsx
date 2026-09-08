@@ -75,7 +75,7 @@ const Register = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Unknown error occurred during registration. Please try again.",
+        "Unknown error occurred during registration. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -97,188 +97,183 @@ const Register = () => {
           </div>
         </section>
         <div className="px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
-        <div className="mb-8 lg:hidden"><p className="text-2xl font-black text-orange-700">Cravings</p><p className="mt-1 text-sm text-slate-500">Make every craving count.</p></div>
-        <h1 className="text-3xl font-black tracking-tight text-slate-900">Create your account</h1>
-        <p className="mt-2 mb-8 text-sm leading-6 text-slate-500">Join Cravings and get your favorite food delivered with less effort.</p>
+          <div className="mb-8 lg:hidden"><p className="text-2xl font-black text-orange-700">Cravings</p><p className="mt-1 text-sm text-slate-500">Make every craving count.</p></div>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900">Create your account</h1>
+          <p className="mt-2 mb-8 text-sm leading-6 text-slate-500">Join Cravings and get your favorite food delivered with less effort.</p>
 
-        {/* User Type Selection */}
-        <div className="mb-6">
+          {/* User Type Selection */}
+          <div className="mb-6">
             <label className="mb-3 block text-sm font-bold text-slate-700">
-            Register as:
-          </label>
-          <div className="flex gap-5">
-            {["customer", "restaurant", "rider"].map((type) => (
-              <label
-                key={type}
-                className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
-              >
+              Register as:
+            </label>
+            <div className="flex gap-5">
+              {["customer", "restaurant", "rider"].map((type) => (
+                <label
+                  key={type}
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
+                >
+                  <input
+                    type="radio"
+                    name="userType"
+                    value={type}
+                    checked={formData.userType === type}
+                    onChange={handleUserTypeChange}
+                    className="cursor-pointer"
+                  />
+                  <span className="capitalize text-slate-700">
+                    {type}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit}>
+            {/* Full Name */}
+            <div className="mb-4">
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.fullName
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
+                  }`}
+              />
+              {errors.fullName && (
+                <span className="text-(--color-error) text-xs mt-1 block">
+                  {errors.fullName}
+                </span>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="mb-4">
+
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.email
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
+                  }`}
+              />
+              {errors.email && (
+                <span className="text-(--color-error) text-xs mt-1 block">
+                  {errors.email}
+                </span>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div className="mb-4">
+
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Enter your phone number"
+                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.phone
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
+                  }`}
+              />
+              {errors.phone && (
+                <span className="text-(--color-error) text-xs mt-1 block">
+                  {errors.phone}
+                </span>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="mb-4">
+
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.password
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
+                  }`}
+              />
+              {errors.password && (
+                <span className="text-(--color-error) text-xs mt-1 block">
+                  {errors.password}
+                </span>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="mb-6">
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                placeholder="Confirm your password"
+                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.confirmPassword
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
+                  }`}
+              />
+              {errors.confirmPassword && (
+                <span className="text-(--color-error) text-xs mt-1 block">
+                  {errors.confirmPassword}
+                </span>
+              )}
+            </div>
+            <div className="mb-6">
+              <label className="flex items-start gap-2 cursor-pointer text-(--color-secondary)">
                 <input
-                  type="radio"
-                  name="userType"
-                  value={type}
-                  checked={formData.userType === type}
-                  onChange={handleUserTypeChange}
-                  className="cursor-pointer"
+                  type="checkbox"
+                  name="agreeTerms"
+                  checked={formData.agreeTerms}
+                  onChange={handleInputChange}
+                  className="mt-1 cursor-pointer"
                 />
-                <span className="capitalize text-slate-700">
-                  {type}
+                <span className="text-sm">
+                  I agree to the{" "}
+                  <span className="text-(--color-primary) hover:underline">
+                    terms and conditions.
+                  </span>
                 </span>
               </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Registration Form */}
-        <form onSubmit={handleSubmit}>
-          {/* Full Name */}
-          <div className="mb-4">
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              placeholder="Enter your full name"
-              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                errors.fullName
-                  ? "border-(--color-error) border-2"
-                  : "border-(--color-base-300)"
-              }`}
-            />
-            {errors.fullName && (
-              <span className="text-(--color-error) text-xs mt-1 block">
-                {errors.fullName}
-              </span>
-            )}
-          </div>
-
-          {/* Email */}
-          <div className="mb-4">
-            
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="Enter your email"
-              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                errors.email
-                  ? "border-(--color-error) border-2"
-                  : "border-(--color-base-300)"
-              }`}
-            />
-            {errors.email && (
-              <span className="text-(--color-error) text-xs mt-1 block">
-                {errors.email}
-              </span>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div className="mb-4">
-           
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              placeholder="Enter your phone number"
-              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                errors.phone
-                  ? "border-(--color-error) border-2"
-                  : "border-(--color-base-300)"
-              }`}
-            />
-            {errors.phone && (
-              <span className="text-(--color-error) text-xs mt-1 block">
-                {errors.phone}
-              </span>
-            )}
-          </div>
-
-          {/* Password */}
-          <div className="mb-4">
-          
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              placeholder="Enter your password"
-              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                errors.password
-                  ? "border-(--color-error) border-2"
-                  : "border-(--color-base-300)"
-              }`}
-            />
-            {errors.password && (
-              <span className="text-(--color-error) text-xs mt-1 block">
-                {errors.password}
-              </span>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="mb-6">
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              placeholder="Confirm your password"
-              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                errors.confirmPassword
-                  ? "border-(--color-error) border-2"
-                  : "border-(--color-base-300)"
-              }`}
-            />
-            {errors.confirmPassword && (
-              <span className="text-(--color-error) text-xs mt-1 block">
-                {errors.confirmPassword}
-              </span>
-            )}
-          </div>
-          <div className="mb-6">
-            <label className="flex items-start gap-2 cursor-pointer text-(--color-secondary)">
-              <input
-                type="checkbox"
-                name="agreeTerms"
-                checked={formData.agreeTerms}
-                onChange={handleInputChange}
-                className="mt-1 cursor-pointer"
-              />
-              <span className="text-sm">
-                I agree to the{" "}
-                <span className="text-(--color-primary) hover:underline">
-                  terms and conditions.
+              {errors.agreeTerms && (
+                <span className="text-(--color-error) text-xs mt-1 block ml-7">
+                  {errors.agreeTerms}
                 </span>
-              </span>
-            </label>
-            {errors.agreeTerms && (
-              <span className="text-(--color-error) text-xs mt-1 block ml-7">
-                {errors.agreeTerms}
-              </span>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Register Button */}
-          <button
-            type="submit"
-            className="mb-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-orange-600 to-red-500 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:shadow-xl"
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
-        </form>
+            {/* Register Button */}
+            <button
+              type="submit"
+              className="mb-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-orange-600 to-red-500 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </form>
 
-        {/* Login Link */}
-        <p className="text-center text-sm text-slate-500">
-          Already registered?{" "}
-          <Link
-            to="/login"
-            className="text-(--color-primary) font-semibold hover:underline"
-          >
-            Login here
-          </Link>
-        </p>
+          {/* Login Link */}
+          <p className="text-center text-sm text-slate-500">
+            Already registered?{" "}
+            <Link
+              to="/login"
+              className="text-(--color-primary) font-semibold hover:underline"
+            >
+              Login here
+            </Link>
+          </p>
         </div>
       </div>
     </main>
