@@ -374,11 +374,10 @@ const AdminDataViewer = () => {
               setActiveCollection(item.key);
               setSelectedRow(null);
             }}
-            className={`text-left rounded-2xl border p-4 transition ${
-              item.active
-                ? "border-(--color-primary) bg-orange-50"
-                : "border-slate-200 bg-white hover:bg-slate-50"
-            }`}
+            className={`text-left rounded-2xl border p-4 transition ${item.active
+              ? "border-(--color-primary) bg-orange-50"
+              : "border-slate-200 bg-white hover:bg-slate-50"
+              }`}
           >
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
               {item.title}
