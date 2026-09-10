@@ -15,11 +15,10 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   const renderTab = (tab) => (
     <li
       key={tab.value}
-      className={`cursor-pointer rounded-full px-3 py-2 text-sm text-(--color-neutral) flex items-center gap-2 whitespace-nowrap ${
-        activeTab === tab.value
-          ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
-          : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
-      }`}
+      className={`cursor-pointer rounded-full px-3 py-2 text-sm text-(--color-neutral) flex items-center gap-2 whitespace-nowrap ${activeTab === tab.value
+        ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
+        : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
+        }`}
       onClick={() => setActiveTab(tab.value)}
     >
       {tab.icon} {tab.name}
