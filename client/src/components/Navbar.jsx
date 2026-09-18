@@ -379,19 +379,19 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-[999] relative w-full h-16 overflow-visible border-b border-orange-300/30 bg-gradient-to-r from-[#9f2708] via-[#ea5b0b] to-[#c2410c] text-white transition-[box-shadow,background-color,transform] duration-300 ${
+      className={`sticky top-0 z-[999] relative w-full min-h-16 overflow-visible border-b border-orange-300/30 bg-gradient-to-r from-[#9f2708] via-[#ea5b0b] to-[#c2410c] text-white transition-[box-shadow,background-color,transform] duration-300 ${
         isScrolled ? "shadow-xl" : "shadow-md"
       } before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_18%_0%,rgba(255,213,125,0.22),transparent_25%),radial-gradient(circle_at_82%_100%,rgba(255,255,255,0.12),transparent_25%)]`}
     >
-      <div className="relative z-10 max-w-7xl mx-auto h-full flex items-center justify-between gap-3 px-4 md:px-8">
+      <div className="relative z-10 mx-auto flex min-h-16 w-full max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4 md:px-8">
         
         {/* LOGO */}
-        <div className={`h-full flex items-center transition-transform duration-300 ${isScrolled ? "scale-[0.96]" : "scale-100"}`}>
-          <Link to="/" className="rounded-2xl px-2 transition hover:bg-white/10">
+        <div className={`flex shrink-0 items-center transition-transform duration-300 ${isScrolled ? "scale-[0.96]" : "scale-100"}`}>
+          <Link to="/" className="rounded-2xl px-1.5 transition hover:bg-white/10 sm:px-2">
             <img 
               src={logoLight} 
               alt="Logo" 
-              className="h-10 md:h-12 w-auto transition-all" 
+              className="h-9 w-auto transition-all sm:h-10 md:h-12"
             />
           </Link>
         </div>
@@ -431,17 +431,17 @@ const Navbar = () => {
 
         {/* ACTIONS */}
         {isLogin ? (
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex min-w-0 items-center justify-end gap-1.5 sm:gap-3">
             <button
               type="button"
               onClick={() => setIsMobileSearchOpen((open) => !open)}
-              className="lg:hidden rounded-full bg-white/10 px-3 py-2 text-sm font-bold text-white transition hover:bg-white/20"
+              className="lg:hidden shrink-0 rounded-full bg-white/10 px-2.5 py-2 text-xs font-bold text-white transition hover:bg-white/20 sm:px-3 sm:text-sm"
             >
               Search
             </button>
             <button
               onClick={handleNavigate}
-              className="group flex items-center gap-2.5 rounded-full border border-yellow-200/40 bg-gradient-to-r from-amber-300/30 to-white/10 pl-1.5 pr-3.5 py-1 shadow-lg shadow-orange-950/10 transition-all duration-300 hover:-translate-y-0.5 hover:from-amber-300/45 hover:to-white/20 hover:shadow-md cursor-pointer"
+              className="group flex min-w-0 shrink items-center gap-1.5 rounded-full border border-yellow-200/40 bg-gradient-to-r from-amber-300/30 to-white/10 pl-1 pr-2 py-1 shadow-lg shadow-orange-950/10 transition-all duration-300 hover:-translate-y-0.5 hover:from-amber-300/45 hover:to-white/20 hover:shadow-md cursor-pointer sm:gap-2.5 sm:pl-1.5 sm:pr-3.5"
               title="Go to Dashboard"
             >
               <img

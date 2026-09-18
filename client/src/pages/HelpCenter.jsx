@@ -107,7 +107,7 @@ const HelpCenter = () => {
 
   return (
     <div
-      className="flex min-h-[90vh] items-center justify-center bg-cover bg-center p-10"
+      className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-cover bg-center px-4 py-8 sm:px-6 sm:py-10 lg:p-10"
       style={{ backgroundImage: `url(${helpHeroBg})` }}
     >
       {/* Two-column card */}
@@ -115,20 +115,20 @@ const HelpCenter = () => {
         className="bg-black/60 backdrop-blur-sm rounded-xl shadow-xl w-full max-w-5xl overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-center gap-2 pt-8 pb-4 px-10">
+        <div className="flex items-center justify-center gap-2 px-4 pb-4 pt-7 sm:px-10 sm:pt-8">
           <FaQuestionCircle className="text-(--color-primary) text-2xl" />
           <h1 className="text-3xl font-bold text-(--color-primary)">
             Help Center
           </h1>
         </div>
-        <p className="text-(--color-secondary-content) text-center mb-6 px-10">
+        <p className="mb-6 px-4 text-center text-(--color-secondary-content) sm:px-10">
           Browse FAQs or submit a support ticket below.
         </p>
 
         {/* Columns */}
         <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-200/80 px-0">
           {/* LEFT — FAQ Accordion */}
-          <div className="md:w-1/2 px-10 pb-8">
+          <div className="px-4 pb-8 sm:px-8 md:w-1/2 md:px-10">
             <h2 className="text-(--color-neutral-content) font-semibold mb-4 text-sm uppercase tracking-wide">
               Frequently Asked Questions
             </h2>
@@ -164,7 +164,7 @@ const HelpCenter = () => {
           </div>
 
           {/* RIGHT — Support Ticket Form */}
-          <div className="md:w-1/2 px-10 pb-8">
+          <div className="px-4 pb-8 sm:px-8 md:w-1/2 md:px-10">
             <h2 className="text-(--color-neutral-content) font-semibold mb-4 text-sm uppercase tracking-wide">
               Submit a Support Ticket
             </h2>

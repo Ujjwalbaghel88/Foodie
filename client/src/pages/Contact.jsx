@@ -55,10 +55,10 @@ const Contact = () => {
 
   return (
     <div
-      className="flex h-[90vh] items-center justify-start bg-cover bg-center p-10 md:ps-30"
+      className="flex min-h-[calc(100vh-4rem)] items-center justify-start bg-cover bg-center px-4 py-8 sm:px-6 sm:py-10 md:ps-30"
       style={{ backgroundImage: `url(${contactHeroBg})` }}
     >
-      <div className="bg-white rounded-lg shadow-md px-10 py-6 max-w-md w-full overflow-y-auto max-h-[85vh]">
+      <div className="w-full max-w-md overflow-y-auto rounded-lg bg-white px-5 py-6 shadow-md sm:px-8 sm:py-7 md:px-10 md:max-h-[85vh]">
         <h1 className="text-3xl font-bold text-(--color-primary) mb-2 text-center">
           Contact Us
         </h1>

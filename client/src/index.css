@@ -20,6 +20,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top, rgba(251, 146, 60, 0.12), transparent 28%),
     radial-gradient(
@@ -251,6 +252,23 @@ img,
 video {
   display: block;
   max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    overflow-wrap: anywhere;
+  }
+
+  section {
+    contain-intrinsic-size: 1px 560px;
+  }
 }
 
 :focus-visible {
