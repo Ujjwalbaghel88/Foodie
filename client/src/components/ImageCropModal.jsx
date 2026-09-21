@@ -41,6 +41,7 @@ const ImageCropModal = ({ isOpen, onClose, image, onCropComplete, aspectRatio = 
       pixelCrop.width,
       pixelCrop.height
     );
+    
 
     return new Promise((resolve) => {
       canvas.toBlob((blob) => {
