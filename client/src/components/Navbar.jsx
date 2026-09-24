@@ -1,111 +1,4 @@
-// import React from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import logoLight from "../assets/transparentLogoLight.png";
-// import { useAuth } from "../context/AuthContext";
-// import { FaPowerOff } from "react-icons/fa";
-// import toast from "react-hot-toast";
-// import api from "../config/ApiConfig";
-
-// const Navbar = () => {
-//   const { user, isLogin, role, setUser, setIsLogin, setRole } = useAuth();
-//   const navigate = useNavigate();
-
-//   const handleNavigate = () => {
-//     //console.log("Handle Navigate", role);
-
-//     if (role === "customer") {
-//       navigate("/customer-dashboard");
-//     } else if (role === "restaurant") {
-//       navigate("/restaurant-dashboard");
-//     } else if (role === "rider") {
-//       navigate("/rider-dashboard");
-//     } else if (role === "admin") {
-//       navigate("/admin-dashboard");
-//     } else {
-//       navigate("/");
-//     }
-//   };
-
-
-//     const handleLogout = async () => {
-//     try {
-//       const res = await api.get("/auth/logout");
-//       toast.success(res.data.message);
-
-//       sessionStorage.removeItem("cravingUser");
-//       setUser(null);
-//       setIsLogin(false);
-//       setRole(null);
-//       navigate("/");
-//     } catch (error) {
-//       toast.error(
-//         error.response?.data?.message ||
-//         "Unknown error occurred during registration. Please try again.",
-//       );
-//     }
-//   };
-//   return (
-//     <>
-//       <div className="sticky top-0 z-99 flex items-center justify-between px-12 py-1 bg-(--color-primary) text-white w-full h-16 shadow-md">
-//         <div className="h-full">
-//           <Link to="/">
-//             <img src={logoLight} alt="Logo" className="w-fit h-full" />{" "}
-//           </Link>
-//         </div>
-
-//         {isLogin ? (
-//           <div className="flex items-center gap-2">
-//             <button
-//               className="flex gap-2 items-center text-(--color-primary-content) border border-transparent hover:border-(--color-primary-content)  px-3 py-1 rounded"
-//               title="Go to Dashboard"
-//               onClick={handleNavigate}
-//             >
-//               <img
-//                 src={user?.photo?.url}
-//                 alt={user?.fullName}
-//                 className="w-12 h-12 rounded-full object-cover object-top"
-//               />
-//               <div className="flex flex-col items-start">
-//                 <span className="text-base">{user?.fullName}</span>
-//                 <span className="text-xs text-(--color-primary-content)/80">
-//                   {user?.userType.charAt(0).toUpperCase() +
-//                     user?.userType.slice(1)}
-//                 </span>
-//               </div>
-//             </button>
-//             <button
-//               onClick={handleLogout}
-//               className="text-(--color-primary-content) border border-transparent hover:border-(--color-primary-content) hover:bg-(--color-error) px-3 py-3 rounded"
-//               title="Logout"
-//             >
-//               <FaPowerOff />
-//             </button>
-//           </div>
-//         ) : (
-//           <div className="flex items-center gap-2">
-//             <Link
-//               to="/login"
-//               className="text-(--color-primary-content) border border-transparent hover:border-(--color-primary-content) px-3 py-1 rounded"
-//             >
-//               Login
-//             </Link>
-//             <Link
-//               to="/register/customer"
-//               className="bg-(--color-primary-content) text-(--color-primary) hover:bg-(--color-primary) hover:text-(--color-primary-content) border px-3 py-1 rounded"
-//             >
-//               Register
-//             </Link>
-//           </div>
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Navbar;
-
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoLight from "../assets/transparentLogoLight.png";
 import useAuth from "../context/useAuth";
@@ -113,12 +6,34 @@ import { FaPowerOff, FaSearch, FaMapMarkerAlt, FaSignInAlt, FaSignOutAlt, FaTime
 import toast from "react-hot-toast";
 import api from "../config/ApiConfig";
 
+const reverseGeocodeLocation = async (latitude, longitude) => {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+  );
+
+  if (!response.ok) throw new Error("Reverse geocoding failed");
+
+  const data = await response.json();
+  const address = data.address || {};
+  return (
+    address.city ||
+    address.town ||
+    address.village ||
+    address.suburb ||
+    address.state_district ||
+    address.state ||
+    data.display_name ||
+    "Current location"
+  );
+};
+
 const Navbar = () => {
   const { user, isLogin, role, setUser } = useAuth();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [locationQuery, setLocationQuery] = useState("");
   const [dishQuery, setDishQuery] = useState("");
+  const [isLocating, setIsLocating] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [customerSession, setCustomerSession] = useState(() => {
     try {
@@ -172,6 +87,45 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const requestCurrentLocation = useCallback((showErrorToast = false) => {
+    if (!navigator.geolocation) {
+      if (showErrorToast) toast.error("Location is not supported by this browser");
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const locationName = await reverseGeocodeLocation(
+            coords.latitude,
+            coords.longitude,
+          );
+          setLocationQuery(locationName);
+        } catch (error) {
+          console.error("Could not identify current location:", error);
+          setLocationQuery(
+            `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`,
+          );
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (error) => {
+        console.error("Could not get current location:", error);
+        setIsLocating(false);
+        if (showErrorToast) {
+          toast.error("Location permission is required to detect your location");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
+    );
+  }, []);
+
+  useEffect(() => {
+    requestCurrentLocation();
+  }, [requestCurrentLocation]);
 
   const handleNavigate = () => {
     if (role === "customer") navigate("/customer-dashboard");
@@ -379,18 +333,17 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-[999] relative w-full min-h-16 overflow-visible border-b border-orange-300/30 bg-gradient-to-r from-[#9f2708] via-[#ea5b0b] to-[#c2410c] text-white transition-[box-shadow,background-color,transform] duration-300 ${
-        isScrolled ? "shadow-xl" : "shadow-md"
-      } before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_18%_0%,rgba(255,213,125,0.22),transparent_25%),radial-gradient(circle_at_82%_100%,rgba(255,255,255,0.12),transparent_25%)]`}
+      className={`sticky top-0 z-[999] relative w-full min-h-16 overflow-visible border-b border-orange-300/30 bg-gradient-to-r from-[#9f2708] via-[#ea5b0b] to-[#c2410c] text-white transition-[box-shadow,background-color,transform] duration-300 ${isScrolled ? "shadow-xl" : "shadow-md"
+        } before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_18%_0%,rgba(255,213,125,0.22),transparent_25%),radial-gradient(circle_at_82%_100%,rgba(255,255,255,0.12),transparent_25%)]`}
     >
       <div className="relative z-10 mx-auto flex min-h-16 w-full max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4 md:px-8">
-        
+
         {/* LOGO */}
         <div className={`flex shrink-0 items-center transition-transform duration-300 ${isScrolled ? "scale-[0.96]" : "scale-100"}`}>
           <Link to="/" className="rounded-2xl px-1.5 transition hover:bg-white/10 sm:px-2">
-            <img 
-              src={logoLight} 
-              alt="Logo" 
+            <img
+              src={logoLight}
+              alt="Logo"
               className="h-9 w-auto transition-all sm:h-10 md:h-12"
             />
           </Link>
@@ -398,35 +351,44 @@ const Navbar = () => {
 
         {/* SEARCH BAR */}
         <div className={`hidden lg:flex items-stretch flex-1 max-w-3xl mx-6 bg-white rounded-full shadow-[0_8px_28px_rgba(82,28,5,0.18)] border-2 border-orange-200/80 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100 ring-2 ring-yellow-300/20" : "opacity-95"}`}>
-           <div className="flex items-center gap-2 px-4 py-2 border-r border-orange-100 min-w-[170px] text-red-500 bg-gradient-to-r from-white to-orange-50">
-              <FaMapMarkerAlt className="shrink-0" />
-              <input
-                type="text"
-                value={locationQuery}
-                onChange={(e) => setLocationQuery(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-                placeholder="Location"
-                className="bg-transparent text-sm font-bold outline-none text-gray-700 w-full placeholder:text-gray-400"
-              />
-           </div>
-           <div className="flex items-center gap-3 px-4 w-full text-gray-400 bg-white">
-              <FaSearch size={14} className="shrink-0" />
-              <input
-                type="text"
-                value={dishQuery}
-                onChange={(e) => setDishQuery(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-                placeholder="Search for a dish..."
-                className="bg-transparent text-sm w-full outline-none text-gray-700 placeholder:text-gray-400"
-              />
-              <button
-                type="button"
-                onClick={handleSearch}
-                className="rounded-full bg-gradient-to-r from-red-500 to-orange-500 px-5 py-2 text-xs font-black text-white shadow-md shadow-red-500/25 transition hover:from-red-600 hover:to-orange-600 active:scale-95"
-              >
-                Search
-              </button>
-           </div>
+          <div className="flex items-center gap-2 px-4 py-2 border-r border-orange-100 min-w-[170px] text-red-500 bg-gradient-to-r from-white to-orange-50">
+            <button
+              type="button"
+              onClick={() => requestCurrentLocation(true)}
+              disabled={isLocating}
+              title="Detect my current location"
+              aria-label="Detect my current location"
+              className="shrink-0 text-red-500 transition hover:scale-110 disabled:cursor-wait disabled:opacity-60"
+            >
+              <FaMapMarkerAlt />
+            </button>
+            <input
+              type="text"
+              value={locationQuery}
+              onChange={(e) => setLocationQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Location"
+              className="bg-transparent text-sm font-bold outline-none text-gray-700 w-full placeholder:text-gray-400"
+            />
+          </div>
+          <div className="flex items-center gap-3 px-4 w-full text-gray-400 bg-white">
+            <FaSearch size={14} className="shrink-0" />
+            <input
+              type="text"
+              value={dishQuery}
+              onChange={(e) => setDishQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Search for a dish..."
+              className="bg-transparent text-sm w-full outline-none text-gray-700 placeholder:text-gray-400"
+            />
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="rounded-full bg-gradient-to-r from-red-500 to-orange-500 px-5 py-2 text-xs font-black text-white shadow-md shadow-red-500/25 transition hover:from-red-600 hover:to-orange-600 active:scale-95"
+            >
+              Search
+            </button>
+          </div>
         </div>
 
         {/* ACTIONS */}
@@ -589,7 +551,16 @@ const Navbar = () => {
           <div className="mx-auto max-w-7xl rounded-2xl border border-white/15 bg-white p-3 shadow-xl">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="flex items-center gap-2 rounded-2xl border border-slate-200 px-3 py-2">
-                <FaMapMarkerAlt className="shrink-0 text-red-500" />
+                <button
+                  type="button"
+                  onClick={() => requestCurrentLocation(true)}
+                  disabled={isLocating}
+                  title="Detect my current location"
+                  aria-label="Detect my current location"
+                  className="shrink-0 text-red-500 transition hover:scale-110 disabled:cursor-wait disabled:opacity-60"
+                >
+                  <FaMapMarkerAlt />
+                </button>
                 <input
                   type="text"
                   value={locationQuery}
