@@ -5,7 +5,7 @@
 }
 
 html {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
   background:
     radial-gradient(circle at top, rgba(251, 146, 60, 0.14), transparent 32%),
     radial-gradient(
@@ -256,8 +256,8 @@ video {
 
 input,
 textarea,
-select,
-button {
+select {
+  min-width: 0;
   max-width: 100%;
 }
 
