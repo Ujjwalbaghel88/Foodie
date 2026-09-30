@@ -763,21 +763,21 @@ const Home = () => {
           <div className="max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
               <FaFireAlt className="text-orange-300" />
-              Discover restaurants, dishes, and deals near you
+              Fast delivery • trusted kitchens • tasty cravings
             </div>
 
             <p className="text-sm font-bold tracking-[0.22em] text-orange-200">
               {user?.userType === "customer"
                 ? `Welcome back${user.fullName ? `, ${user.fullName.split(" ")[0]}` : ""} 👋`
-                : "Your local food playground"}
+                : "Cravings, made easy"}
             </p>
             <h1 className="mt-3 max-w-xl text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.5rem]">
-              Good food,
-              <span className="block text-orange-300">good mood.</span>
+              Food that feels
+              <span className="block text-orange-300">like home.</span>
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-6 text-white/82 sm:text-lg">
-              Search restaurants, explore moods, and order from trusted kitchens with
-              a smoother experience that feels crafted, not crowded.
+              Explore local favorites, discover your next comfort meal, and enjoy a
+              smoother food-ordering experience designed around how you actually eat.
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -800,7 +800,7 @@ const Home = () => {
                       : "/order-now",
                   )
                 }
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600"
+                className="btn-primary inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-500/30 transition hover:translate-y-[-1px]"
               >
                 Explore food
                 <MdArrowForward size={18} />

@@ -243,6 +243,15 @@ a {
   text-decoration: none;
 }
 
+.btn-primary {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  box-shadow: 0 18px 38px rgba(249, 115, 22, 0.26);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+}
+
 button {
   cursor: pointer;
   touch-action: manipulation;
