@@ -20,8 +20,25 @@ const RestaurantMenu = () => {
   // States
   const [restaurant, setRestaurant] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
+  const [dietFilter, setDietFilter] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [cart, setCart] = useState([]);
+  const [cartsByRestaurant, setCartsByRestaurant] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("cravings_restaurant_carts") || "{}");
+      return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+    } catch {
+      return {};
+    }
+  });
+  const cart = Array.isArray(cartsByRestaurant[restaurantId]) ? cartsByRestaurant[restaurantId] : [];
+  const setCart = (nextCart) => {
+    setCartsByRestaurant((current) => {
+      const items = typeof nextCart === "function" ? nextCart(current[restaurantId] || []) : nextCart;
+      const updated = { ...current, [restaurantId]: items };
+      try { localStorage.setItem("cravings_restaurant_carts", JSON.stringify(updated)); } catch { /* Keep the in-memory cart usable when storage is full. */ }
+      return updated;
+    });
+  };
 
   // Load restaurant and menu data
   useEffect(() => {
@@ -82,8 +99,9 @@ const RestaurantMenu = () => {
   const addToCart = (item) => {
     const existingItem = cart.find((c) => c.itemName === item.itemName);
     if (existingItem) {
-      existingItem.quantity += 1;
-      setCart([...cart]);
+      setCart(cart.map((cartItem) => cartItem.itemName === item.itemName
+        ? { ...cartItem, quantity: cartItem.quantity + 1 }
+        : cartItem));
     } else {
       setCart([...cart, { ...item, quantity: 1 }]);
     }
@@ -107,11 +125,16 @@ const RestaurantMenu = () => {
     }
   };
 
-  const getTotalPrice = () => {
-    return cart
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
+  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const tax = Number((subtotal * 0.05).toFixed(2));
+  const total = Number((subtotal + (cart.length ? 30 : 0) + tax).toFixed(2));
+  const visibleMenuItems = menuItems.filter((item) => {
+    const type = String(item.foodType || "").toLowerCase();
+    if (dietFilter === "veg") return ["veg", "vegan", "jain", "gluten-free"].includes(type);
+    if (dietFilter === "nonveg") return type === "nonveg";
+    if (dietFilter === "egg") return type === "egg";
+    return true;
+  });
 
   const handleCheckout = () => {
     if (!user) {
@@ -220,9 +243,35 @@ const RestaurantMenu = () => {
               This restaurant does not have a matching {requestedDish} item. Use the back button to try another restaurant.
             </div>
           )}
+          {menuItems.length > 0 && (
+            <div className="mb-5 flex flex-wrap items-center gap-2" aria-label="Filter dishes by food type">
+              {[
+                ["all", "All dishes"],
+                ["veg", "Vegetarian"],
+                ["nonveg", "Non-veg"],
+                ["egg", "Egg"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={dietFilter === value}
+                  onClick={() => setDietFilter(value)}
+                  className={`rounded-full border px-4 py-2 text-sm font-bold transition ${dietFilter === value
+                    ? "border-orange-700 bg-orange-700 text-white shadow-md shadow-orange-900/15"
+                    : "border-orange-100 bg-white text-slate-700 hover:border-orange-300 hover:bg-orange-50"
+                    }`}
+                >
+                  {label}
+                </button>
+              ))}
+              <span className="ml-auto text-xs font-semibold text-slate-500" aria-live="polite">
+                {visibleMenuItems.length} dishes
+              </span>
+            </div>
+          )}
           {menuItems.length > 0 ? (
-            <div className="space-y-3">
-              {menuItems.map((item, idx) => (
+            visibleMenuItems.length > 0 ? <div className="space-y-3">
+              {visibleMenuItems.map((item, idx) => (
                 <div
                   key={idx}
                   className="bg-(--color-base-100) rounded-2xl shadow-md hover:shadow-lg transition flex flex-col md:flex-row gap-4 p-4 border border-(--color-base-200)"
@@ -315,6 +364,8 @@ const RestaurantMenu = () => {
                   </div>
                 </div>
               ))}
+            </div> : <div className="rounded-2xl border border-dashed border-orange-200 bg-white p-8 text-center text-sm font-medium text-slate-600">
+              No dishes match this food type. Try another filter.
             </div>
           ) : (
             <div className="text-center py-12 bg-(--color-base-100) rounded-lg border border-(--color-base-200)">
@@ -347,12 +398,11 @@ const RestaurantMenu = () => {
               </div>
 
               {/* Total Amount */}
-              <div className="text-left sm:text-right">
-                <p className="text-xs text-(--color-base-content)">
-                  Total Amount
-                </p>
-                <p className="text-2xl font-bold text-(--color-primary)">
-                  ₹{(parseFloat(getTotalPrice()) + 50).toFixed(2)}
+              <div className="min-w-40 text-left sm:text-right">
+                <p className="text-xs text-(--color-base-content)">Subtotal ₹{subtotal.toFixed(2)}</p>
+                <p className="text-xs text-(--color-base-content)">Delivery ₹30 · Tax ₹{tax.toFixed(2)}</p>
+                <p className="mt-0.5 text-xl font-bold text-(--color-primary)" aria-live="polite">
+                  Total ₹{total.toFixed(2)}
                 </p>
               </div>
 

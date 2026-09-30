@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import Order from "../model/orderModel.js";
-import Restaurant from "../model/restaurantModel.js";
+import { buildOrderData } from "../utils/buildOrderData.js";
 
 const getRazorpayAuth = () => {
   if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
@@ -21,58 +21,6 @@ const assertRazorpayConfiguration = () => {
       { status: 503 },
     );
   }
-};
-
-const buildOrderData = async (customerId, payload) => {
-  const {
-    restaurantId,
-    restaurantName,
-    restaurantImage,
-    restaurantLocation,
-    deliveryAddress,
-    items,
-    deliveryFee = 30,
-  } = payload;
-
-  if (!restaurantId || !restaurantName) throw Object.assign(new Error("Restaurant information is required"), { status: 400 });
-  if (!Array.isArray(items) || items.length === 0) throw Object.assign(new Error("Cart is empty"), { status: 400 });
-  if (!deliveryAddress?.address || !deliveryAddress?.geolocation) throw Object.assign(new Error("Delivery address is required"), { status: 400 });
-
-  const isBakeryCrav = restaurantId === "bakery-crav";
-  const restaurant = isBakeryCrav
-    ? null
-    : await Restaurant.findById(restaurantId).select("restaurantName images geolocation");
-  if (!restaurant && !isBakeryCrav) throw Object.assign(new Error("Restaurant not found"), { status: 404 });
-
-  const normalizedItems = items.map((item) => ({
-    itemId: item.itemId || item._id || "",
-    itemName: item.itemName || item.name,
-    price: Number(item.price || 0),
-    quantity: Number(item.quantity || 1),
-    foodType: item.foodType || "",
-    image: item.image || "",
-  }));
-  const subtotal = normalizedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = Number((subtotal * 0.05).toFixed(2));
-  const safeDeliveryFee = Number(deliveryFee);
-  const total = Number((subtotal + safeDeliveryFee + tax).toFixed(2));
-
-  return {
-    customerId,
-    ...(isBakeryCrav ? {} : { restaurantId }),
-    restaurantName: isBakeryCrav ? "BakeryCrav" : restaurantName || restaurant.restaurantName,
-    restaurantImage: restaurantImage || restaurant?.images?.[0]?.URL || "https://placehold.co/400x200?text=Restaurant",
-    restaurantLocation: restaurantLocation || restaurant?.geolocation || { lat: 0, lng: 0 },
-    deliveryAddress,
-    items: normalizedItems,
-    subtotal,
-    deliveryFee: safeDeliveryFee,
-    tax,
-    total,
-    status: "placed",
-    statusHistory: [{ status: "placed", label: "Order placed" }],
-    trackingCode: `CRV-${Date.now().toString().slice(-6)}`,
-  };
 };
 
 export const createRazorpayOrder = async (req, res, next) => {
@@ -124,10 +72,24 @@ export const verifyRazorpayPayment = async (req, res, next) => {
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
         .update(`${razorpay_order_id}|${razorpay_payment_id}`)
         .digest("hex");
-      if (expectedSignature !== razorpay_signature) return res.status(400).json({ message: "Payment verification failed" });
+      const expected = Buffer.from(expectedSignature, "hex");
+      const received = Buffer.from(razorpay_signature, "hex");
+      if (expected.length !== received.length || !crypto.timingSafeEqual(expected, received)) {
+        return res.status(400).json({ message: "Payment verification failed" });
+      }
     }
 
     const orderData = await buildOrderData(req.user._id, orderPayload);
+    if (!demoMode) {
+      const paymentResponse = await fetch(`https://api.razorpay.com/v1/payments/${encodeURIComponent(razorpay_payment_id)}`, {
+        headers: { Authorization: `Basic ${getRazorpayAuth()}` },
+      });
+      const payment = await paymentResponse.json();
+      const expectedAmount = Math.round(orderData.total * 100);
+      if (!paymentResponse.ok || payment.order_id !== razorpay_order_id || payment.amount !== expectedAmount || payment.status !== "captured") {
+        return res.status(400).json({ message: "Payment amount or status could not be verified" });
+      }
+    }
     const order = await Order.create({
       ...orderData,
       paymentMethod: "razorpay",

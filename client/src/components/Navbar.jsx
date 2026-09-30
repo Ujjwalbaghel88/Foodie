@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoLight from "../assets/transparentLogoLight.png";
 import useAuth from "../context/useAuth";
-import { FaPowerOff, FaSearch, FaMapMarkerAlt, FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaPowerOff, FaSearch, FaMapMarkerAlt, FaSignInAlt, FaSignOutAlt, FaTimes, FaMoon, FaSun } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../config/ApiConfig";
 
@@ -31,6 +31,15 @@ const Navbar = () => {
   const { user, isLogin, role, setUser } = useAuth();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    try { return localStorage.getItem("cravings_theme") === "dark"; } catch { return false; }
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("app-dark", isDarkMode);
+    document.documentElement.style.colorScheme = isDarkMode ? "dark" : "light";
+    try { localStorage.setItem("cravings_theme", isDarkMode ? "dark" : "light"); } catch { /* Storage may be unavailable. */ }
+  }, [isDarkMode]);
   const [locationQuery, setLocationQuery] = useState("");
   const [dishQuery, setDishQuery] = useState("");
   const [isLocating, setIsLocating] = useState(false);
@@ -392,6 +401,15 @@ const Navbar = () => {
         </div>
 
         {/* ACTIONS */}
+        <button
+          type="button"
+          onClick={() => setIsDarkMode((current) => !current)}
+          className="shrink-0 rounded-full bg-white/10 p-2.5 text-white transition hover:bg-white/20"
+          aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
+          title={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
+        >
+          {isDarkMode ? <FaSun aria-hidden="true" /> : <FaMoon aria-hidden="true" />}
+        </button>
         {isLogin ? (
           <div className="flex min-w-0 items-center justify-end gap-1.5 sm:gap-3">
             <button

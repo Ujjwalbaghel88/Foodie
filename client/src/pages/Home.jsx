@@ -753,15 +753,16 @@ const Home = () => {
         />
       )}
 
-      <section className="relative overflow-hidden text-white">
+      <section className="home-hero relative overflow-hidden text-white">
         <div className="pointer-events-none absolute inset-0 z-0">
           <CarouselComponent />
         </div>
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/82 via-black/56 to-black/28" />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#160d0a]/90 via-[#29130c]/65 to-[#29130c]/28" />
+        <div className="home-hero-orbit pointer-events-none absolute -right-24 top-12 z-[2] hidden h-80 w-80 rounded-full border border-orange-100/25 lg:block" />
 
         <div className="relative z-10 mx-auto grid min-h-[64vh] max-w-7xl items-center gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
           <div className="max-w-2xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-100/25 bg-[#29130c]/45 px-4 py-2 text-sm font-medium backdrop-blur-md">
               <FaFireAlt className="text-orange-300" />
               Fast delivery • trusted kitchens • tasty cravings
             </div>
@@ -781,10 +782,11 @@ const Home = () => {
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
-              <div className="flex items-center gap-3 rounded-full bg-white px-4 py-2.5 text-slate-900 shadow-[0_18px_45px_rgba(0,0,0,0.18)]">
+              <div className="home-search flex items-center gap-3 rounded-full bg-white px-4 py-2.5 text-slate-900 shadow-[0_18px_45px_rgba(0,0,0,0.18)]">
                 <IoSearch className="text-lg text-orange-500" />
                 <input
                   type="text"
+                  aria-label="Search restaurants, cuisines, or dishes"
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
                   placeholder="Search restaurants, cuisines, or dishes"
@@ -812,7 +814,7 @@ const Home = () => {
                 <button
                   key={chip}
                   onClick={() => setSearchQuery(chip)}
-                  className="rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20"
+                  className="home-chip rounded-full border border-white/20 bg-[#29130c]/35 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20"
                 >
                   {chip}
                 </button>
@@ -823,7 +825,7 @@ const Home = () => {
               {highlightStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-md"
+                  className="home-stat rounded-2xl border border-white/20 bg-[#29130c]/35 p-3 backdrop-blur-md"
                 >
                   <p className="text-xl font-black">{stat.value}</p>
                   <p className="mt-1 text-sm text-white/75">{stat.label}</p>
@@ -832,7 +834,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="w-full max-w-md justify-self-end rounded-[2rem] border border-white/15 bg-white/10 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
+          <div className="home-quick-card w-full max-w-md justify-self-end rounded-[2rem] border border-orange-100/25 bg-[#24120d]/55 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
@@ -1043,7 +1045,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section ref={dishShowcaseRef} className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <section ref={dishShowcaseRef} className="home-discovery mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div
           className={`mb-7 flex flex-col gap-3 transition-all duration-700 sm:flex-row sm:items-end sm:justify-between ${dishShowcaseVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
@@ -1125,9 +1127,9 @@ const Home = () => {
               return (
                 <div
                   key={restaurant.id}
-                  className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white text-left shadow-[0_12px_36px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(190,24,93,0.16)]"
+                  className="restaurant-card group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-orange-100 bg-white text-left shadow-[0_12px_36px_rgba(75,35,15,0.08)] transition"
                 >
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="restaurant-card__media relative h-64 overflow-hidden">
                     <img
                       src={restaurant.image}
                       alt={restaurant.name}
@@ -1136,7 +1138,7 @@ const Home = () => {
                       decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
-                    <div className="absolute left-4 top-4 rounded-full bg-white/18 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+                    <div className="absolute left-4 top-4 rounded-full border border-white/25 bg-[#24120d]/55 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white shadow-sm backdrop-blur-md">
                       Trusted pick
                     </div>
                     <div className="absolute left-4 right-16 bottom-4">

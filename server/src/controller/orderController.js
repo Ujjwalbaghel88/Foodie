@@ -1,5 +1,6 @@
 import Order from "../model/orderModel.js";
 import Restaurant from "../model/restaurantModel.js";
+import { buildOrderData } from "../utils/buildOrderData.js";
 
 const statusFlow = [
   { status: "placed", label: "Order placed", thresholdMs: 0 },
@@ -77,88 +78,8 @@ const serializeOrder = (orderDoc) => {
 
 export const createOrder = async (req, res, next) => {
   try {
-    const customerId = req.user._id;
-    const {
-      restaurantId,
-      restaurantName,
-      restaurantImage,
-      restaurantLocation,
-      deliveryAddress,
-      items,
-      deliveryFee = 30,
-    } = req.body;
-
-    if (!restaurantId || !restaurantName) {
-      const error = new Error("Restaurant information is required");
-      error.status = 400;
-      return next(error);
-    }
-
-    if (!Array.isArray(items) || items.length === 0) {
-      const error = new Error("Cart is empty");
-      error.status = 400;
-      return next(error);
-    }
-
-    if (!deliveryAddress?.address || !deliveryAddress?.geolocation) {
-      const error = new Error("Delivery address is required");
-      error.status = 400;
-      return next(error);
-    }
-
-    const isBakeryCrav = restaurantId === "bakery-crav";
-    const restaurant = isBakeryCrav ? null : await Restaurant.findById(restaurantId).select(
-      "restaurantName images geolocation",
-    );
-
-    if (!restaurant && !isBakeryCrav) {
-      const error = new Error("Restaurant not found");
-      error.status = 404;
-      return next(error);
-    }
-
-    const normalizedItems = items.map((item) => ({
-      itemId: item.itemId || item._id || "",
-      itemName: item.itemName || item.name,
-      price: Number(item.price || 0),
-      quantity: Number(item.quantity || 1),
-      foodType: item.foodType || "",
-      image: item.image || "",
-    }));
-
-    const subtotal = normalizedItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0,
-    );
-    const tax = Number((subtotal * 0.05).toFixed(2));
-    const total = Number((subtotal + Number(deliveryFee) + tax).toFixed(2));
-    const trackingCode = `CRV-${Date.now().toString().slice(-6)}`;
-
-    const order = await Order.create({
-      customerId,
-      ...(isBakeryCrav ? {} : { restaurantId }),
-      restaurantName: isBakeryCrav ? "BakeryCrav" : restaurantName || restaurant.restaurantName,
-      restaurantImage:
-        restaurantImage ||
-        restaurant?.images?.[0]?.URL ||
-        "https://placehold.co/400x200?text=Restaurant",
-      restaurantLocation:
-        restaurantLocation || restaurant?.geolocation || { lat: 0, lng: 0 },
-      deliveryAddress,
-      items: normalizedItems,
-      subtotal,
-      deliveryFee: Number(deliveryFee),
-      tax,
-      total,
-      status: "placed",
-      statusHistory: [
-        {
-          status: "placed",
-          label: "Order placed",
-        },
-      ],
-      trackingCode,
-    });
+    const orderData = await buildOrderData(req.user._id, req.body);
+    const order = await Order.create({ ...orderData, paymentMethod: "cod", paymentStatus: "pending" });
 
     res.status(201).json({
       message: "Order placed successfully",

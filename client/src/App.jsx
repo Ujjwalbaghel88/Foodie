@@ -27,9 +27,11 @@ const App = () => {
   return (
     <>
       <Toaster />
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Navbar />
-      <Suspense fallback={<div className="grid min-h-[50vh] place-items-center text-orange-700">Loading...</div>}>
-        <Routes>
+      <div id="main-content" tabIndex="-1">
+        <Suspense fallback={<div className="grid min-h-[50vh] place-items-center text-orange-700" role="status">Loading page…</div>}>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/order-now" element={<OrderNow />} />
@@ -51,8 +53,9 @@ const App = () => {
           <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
           <Route path="/rider-dashboard" element={<RiderDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        </Routes>
-      </Suspense>
+          </Routes>
+        </Suspense>
+      </div>
       <Footer />
     </>
   );

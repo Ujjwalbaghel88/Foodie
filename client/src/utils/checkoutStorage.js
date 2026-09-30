@@ -23,7 +23,7 @@ export const buildCheckoutDataFromRestaurant = (restaurant, items = []) => {
       geolocation: normalizeGeolocation(restaurant.geolocation),
     },
     items: items.map((item) => ({
-      itemId: item.itemId || item._id || "",
+      itemId: item.itemId || item._id || item.id || "",
       itemName: item.itemName || item.name || "",
       price: toNumber(item.price),
       quantity: toNumber(item.quantity, 1),
@@ -82,4 +82,3 @@ export const loadCheckoutData = () => {
     return null;
   }
 };
-

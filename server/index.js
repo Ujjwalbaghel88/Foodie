@@ -18,6 +18,10 @@ import publicRouter from "./src/router/publicRouter.js";
 import adminRouter from "./src/router/adminRouter.js";
 
 const app = express();
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+  throw new Error("JWT_SECRET must be configured with at least 32 characters");
+}
+app.disable("x-powered-by");
 const allowedOrigins = new Set(
   [
     "http://localhost:5175",
@@ -33,12 +37,14 @@ app.use(
         return callback(null, true);
       }
 
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
+      const error = new Error("Origin is not allowed");
+      error.status = 403;
+      return callback(error);
     },
     credentials: true,
   }),
 );
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
@@ -51,14 +57,18 @@ app.use("/public", publicRouter);
 app.use("/admin", adminRouter);
 
 app.get("/", (req, res) => {
-  res.send("Hello, World!");
+  res.status(200).json({ name: "Cravings API", status: "ok" });
 });
 
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res
-    .status(err.status || 500)
-    .json({ message: err.message || "Internal Server Error" });
+  if (res.headersSent) return next(err);
+  if (err.status >= 500 || !err.status) console.error(err);
+  const status = err.status || 500;
+  res.status(status).json({
+    message: status >= 500 ? "Internal Server Error" : err.message,
+  });
 });
 
 const PORT = process.env.PORT || 4501;
