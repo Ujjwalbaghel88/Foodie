@@ -8,7 +8,6 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import connectDB from "./src/config/dbConnection.js";
 import cloudinary from "./src/config/cloudinaryConfig.js";
-
 import authRouter from "./src/router/authRouter.js";
 import restaurantRouter from "./src/router/restaurantRouter.js";
 import customerRouter from "./src/router/customerRouter.js";
