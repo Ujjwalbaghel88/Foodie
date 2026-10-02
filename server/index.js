@@ -20,14 +20,30 @@ const app = express();
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be configured with at least 32 characters");
 }
-app.disable("x-powered-by");
-const allowedOrigins = new Set(
-  [
+
+const buildAllowedOrigins = () => {
+  const defaultOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
     "http://localhost:5175",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
     "http://127.0.0.1:5175",
-    ...((process.env.ALLOWED_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean)),
-  ].filter(Boolean),
-);
+    "http://0.0.0.0:5173",
+    "http://0.0.0.0:5174",
+    "http://0.0.0.0:5175",
+  ];
+
+  const configuredOrigins = (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return new Set([...defaultOrigins, ...configuredOrigins]);
+};
+
+app.disable("x-powered-by");
+const allowedOrigins = buildAllowedOrigins();
 
 app.use(
   cors({
