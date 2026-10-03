@@ -70,7 +70,7 @@ const moodCards = [
   {
     label: "Fresh start",
     description: "Lighter meals and daytime favorites",
-    search: "south indian",
+    search: "indian",
     image: `${assetBase}menu-images/masala-dosa.png`,
     tone: "from-emerald-500 to-teal-600",
   },

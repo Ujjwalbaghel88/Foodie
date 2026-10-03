@@ -21,6 +21,34 @@ const Login = () => {
     setErrors((previous) => ({ ...previous, [name]: "" }));
   };
 
+  const persistAuthSession = (userData, token, rememberMeEnabled) => {
+    const userType = userData?.userType;
+    const roleLabel = userType ? `${userType.charAt(0).toUpperCase()}${userType.slice(1)}` : "";
+
+    if (rememberMeEnabled) {
+      localStorage.setItem("cravingUser", JSON.stringify(userData));
+      if (token) localStorage.setItem("cravingToken", token);
+      if (roleLabel) {
+        localStorage.setItem(`craving${roleLabel}User`, JSON.stringify(userData));
+        if (token) localStorage.setItem(`craving${roleLabel}Token`, token);
+      }
+    } else {
+      localStorage.removeItem("cravingUser");
+      localStorage.removeItem("cravingToken");
+      if (roleLabel) {
+        localStorage.removeItem(`craving${roleLabel}User`);
+        localStorage.removeItem(`craving${roleLabel}Token`);
+      }
+    }
+
+    sessionStorage.setItem("cravingUser", JSON.stringify(userData));
+    if (token) sessionStorage.setItem("cravingToken", token);
+    if (roleLabel) {
+      sessionStorage.setItem(`craving${roleLabel}User`, JSON.stringify(userData));
+      if (token) sessionStorage.setItem(`craving${roleLabel}Token`, token);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const nextErrors = {};
@@ -34,19 +62,18 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await api.post("/auth/login", formData);
+      const userData = response.data.data;
+      const token = response.data.token;
+      persistAuthSession(userData, token, formData.rememberMe);
       toast.success(response.data.message || "Welcome back to Cravings!");
-      sessionStorage.setItem("cravingUser", JSON.stringify(response.data.data));
-      if (response.data.token) sessionStorage.setItem("cravingToken", response.data.token);
-      sessionStorage.setItem(`craving${response.data.data.userType[0].toUpperCase()}${response.data.data.userType.slice(1)}User`, JSON.stringify(response.data.data));
-      if (response.data.token) sessionStorage.setItem(`craving${response.data.data.userType[0].toUpperCase()}${response.data.data.userType.slice(1)}Token`, response.data.token);
-      setUser(response.data.data);
+      setUser(userData);
       const dashboards = {
         customer: "/customer-dashboard",
         restaurant: "/restaurant-dashboard",
         rider: "/rider-dashboard",
         admin: "/admin-dashboard",
       };
-      navigate(dashboards[response.data.data.userType] || "/");
+      navigate(dashboards[userData.userType] || "/");
     } catch (error) {
       toast.error(error.response?.data?.message || "We could not sign you in. Please try again.");
     } finally {

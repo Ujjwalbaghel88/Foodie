@@ -49,6 +49,44 @@ const OrderNow = () => {
       .filter(Boolean);
   };
 
+  const normalizeSearchText = (value = "") =>
+    String(value)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const buildSearchVariants = (value = "") => {
+    const normalized = normalizeSearchText(value);
+    if (!normalized) return [];
+
+    const variants = new Set();
+    const replacements = [
+      ["panner", "paneer"],
+      ["paneer", "paneer"],
+      ["sahi", "shahi"],
+      ["shahi", "shahi"],
+    ];
+
+    const expanded = normalized.split(" ").filter(Boolean).map((token) => {
+      let updated = token;
+      replacements.forEach(([from, to]) => {
+        if (updated === from) updated = to;
+      });
+      return updated;
+    }).join(" ");
+
+    variants.add(normalized);
+    variants.add(expanded);
+    variants.add(normalized.replace(/panner/g, "paneer").replace(/sahi/g, "shahi"));
+    variants.add(expanded.replace(/panner/g, "paneer").replace(/sahi/g, "shahi"));
+
+    const spacedVariants = [...variants].filter(Boolean);
+    return [...new Set(spacedVariants.flatMap((variant) => [variant, variant.replace(/\s+/g, "")]))].filter(Boolean);
+  };
+
   const swiggyFilters = [
     { id: "all", label: "All" },
     { id: "topRated", label: "Top Rated" },
@@ -81,6 +119,30 @@ const OrderNow = () => {
           ? response.data.data
           : [];
 
+        const menuResponses = await Promise.all(
+          restaurantsData.map(async (restaurant) => {
+            try {
+              const menuResponse = await api.get(`/public/restaurant/${restaurant._id}/menu`);
+              const menuItems = Array.isArray(menuResponse.data?.data?.items)
+                ? menuResponse.data.data.items
+                : [];
+              return {
+                restaurantId: restaurant._id,
+                menuText: menuItems
+                  .map((item) => `${item.itemName || ""} ${item.description || ""} ${item.foodType || ""}`)
+                  .join(" "),
+              };
+            } catch (error) {
+              console.warn(`Could not load menu for ${restaurant._id}:`, error);
+              return { restaurantId: restaurant._id, menuText: "" };
+            }
+          }),
+        );
+
+        const menuLookup = new Map(
+          menuResponses.map((entry) => [entry.restaurantId, entry.menuText]),
+        );
+
         const formattedRestaurants = restaurantsData.map((restaurant) => ({
           id: restaurant._id,
           name: restaurant.restaurantName,
@@ -97,6 +159,7 @@ const OrderNow = () => {
           cuisines: formatCuisineList(restaurant.cuisineType),
           city: restaurant.city,
           address: restaurant.address,
+          menuText: menuLookup.get(restaurant._id) || "",
         }));
 
         setRestaurants(formattedRestaurants);
@@ -137,26 +200,43 @@ const OrderNow = () => {
   // Filter restaurants
   useEffect(() => {
     let filtered = restaurants;
-    const locationQ = locationQuery.trim().toLowerCase();
-    const searchQ = searchQuery.trim().toLowerCase();
+    const locationQ = normalizeSearchText(locationQuery);
+    const searchQ = normalizeSearchText(searchQuery);
 
     if (locationQ) {
-      filtered = filtered.filter(
-        (r) =>
-          r.city?.toLowerCase().includes(locationQ) ||
-          r.address?.toLowerCase().includes(locationQ),
-      );
+      filtered = filtered.filter((r) => {
+        const locationText = [r.city, r.address].filter(Boolean).join(" ");
+        return normalizeSearchText(locationText).includes(locationQ);
+      });
     }
 
     if (searchQ) {
-      filtered = filtered.filter(
-        (r) =>
-          r.name.toLowerCase().includes(searchQ) ||
-          r.cuisines.some((c) => c.toLowerCase().includes(searchQ)) ||
-          r.city.toLowerCase().includes(searchQ) ||
-          r.address?.toLowerCase().includes(searchQ) ||
-          r.description?.toLowerCase().includes(searchQ),
-      );
+      const searchVariants = buildSearchVariants(searchQ);
+
+      filtered = filtered.filter((r) => {
+        const searchableText = [
+          r.name,
+          r.description,
+          r.city,
+          r.address,
+          r.menuText,
+          ...r.cuisines,
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        const normalizedSearchableText = normalizeSearchText(searchableText);
+
+        return searchVariants.some((variant) => {
+          if (!variant) return false;
+          if (normalizedSearchableText.includes(variant)) return true;
+
+          const typedTokens = normalizeSearchText(variant).split(" ").filter(Boolean);
+          if (typedTokens.length <= 1) return false;
+
+          return typedTokens.every((token) => normalizedSearchableText.includes(token));
+        });
+      });
     }
 
     if (selectedCategory !== "all") {

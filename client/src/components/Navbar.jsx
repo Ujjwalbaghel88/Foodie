@@ -148,6 +148,14 @@ const Navbar = () => {
     try {
       const res = await api.post("/auth/logout");
       toast.success(res.data.message);
+      localStorage.removeItem("cravingUser");
+      localStorage.removeItem("cravingToken");
+      localStorage.removeItem("cravingAdminUser");
+      localStorage.removeItem("cravingAdminToken");
+      localStorage.removeItem("cravingCustomerUser");
+      localStorage.removeItem("cravingCustomerToken");
+      localStorage.removeItem("cravingRestaurantUser");
+      localStorage.removeItem("cravingRestaurantToken");
       sessionStorage.removeItem("cravingUser");
       sessionStorage.removeItem("cravingToken");
       sessionStorage.removeItem("cravingAdminUser");
@@ -219,6 +227,12 @@ const Navbar = () => {
     } catch {
       // The local customer session is still removed if the server cookie is unavailable.
     }
+    localStorage.removeItem("cravingCustomerUser");
+    localStorage.removeItem("cravingCustomerToken");
+    localStorage.removeItem("cravingUser");
+    localStorage.removeItem("cravingToken");
+    localStorage.removeItem("cravingAdminUser");
+    localStorage.removeItem("cravingAdminToken");
     sessionStorage.removeItem("cravingCustomerUser");
     sessionStorage.removeItem("cravingCustomerToken");
     setCustomerSession(null);
@@ -359,8 +373,8 @@ const Navbar = () => {
         </div>
 
         {/* SEARCH BAR */}
-        <div className={`hidden lg:flex items-stretch flex-1 max-w-3xl mx-6 bg-white rounded-full shadow-[0_8px_28px_rgba(82,28,5,0.18)] border-2 border-orange-200/80 overflow-hidden transition-all duration-300 ${isScrolled ? "opacity-100 ring-2 ring-yellow-300/20" : "opacity-95"}`}>
-          <div className="flex items-center gap-2 px-4 py-2 border-r border-orange-100 min-w-[170px] text-red-500 bg-gradient-to-r from-white to-orange-50">
+        <div className="hidden lg:flex items-stretch flex-1 max-w-3xl mx-6 overflow-hidden rounded-full border border-white/20 bg-white shadow-[0_8px_28px_rgba(82,28,5,0.18)] transition-all duration-300 focus-within:border-white/0 focus-within:ring-0 focus:outline-none">
+          <div className="flex min-w-[170px] items-center gap-2 border-r border-slate-100 bg-gradient-to-r from-white to-orange-50 px-4 py-2 text-red-500">
             <button
               type="button"
               onClick={() => requestCurrentLocation(true)}
@@ -377,7 +391,7 @@ const Navbar = () => {
               onChange={(e) => setLocationQuery(e.target.value)}
               onKeyDown={handleSearchKeyDown}
               placeholder="Location"
-              className="bg-transparent text-sm font-bold outline-none text-gray-700 w-full placeholder:text-gray-400"
+              className="w-full bg-transparent text-sm font-bold text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-0"
             />
           </div>
           <div className="flex items-center gap-3 px-4 w-full text-gray-400 bg-white">
@@ -388,7 +402,7 @@ const Navbar = () => {
               onChange={(e) => setDishQuery(e.target.value)}
               onKeyDown={handleSearchKeyDown}
               placeholder="Search for a dish..."
-              className="bg-transparent text-sm w-full outline-none text-gray-700 placeholder:text-gray-400"
+              className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-0"
             />
             <button
               type="button"
