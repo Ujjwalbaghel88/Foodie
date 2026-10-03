@@ -17,6 +17,7 @@ import { divIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import api from "../../config/ApiConfig";
 import useAuth from "../../context/useAuth";
+import { CHECKOUT_STORAGE_KEY, loadCheckoutData } from "../../utils/checkoutStorage";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
 
 const DEFAULT_CENTER = [23.2599, 77.4126];
@@ -399,14 +400,18 @@ const CheckoutPage = () => {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [error, setError] = useState("");
   const activeOrder = order || null;
+  const isCustomer = isLogin && user?.userType === "customer";
 
   useEffect(() => {
-    if (!isLogin || user?.userType !== "customer") {
-      navigate("/login");
+    if (!isCustomer) {
+      navigate("/login", { replace: true });
+      return;
     }
-  }, [isLogin, navigate, user]);
+  }, [isCustomer, navigate]);
 
   useEffect(() => {
+    if (!isCustomer) return;
+
     const load = async () => {
       try {
         setLoading(true);
@@ -418,13 +423,13 @@ const CheckoutPage = () => {
           return;
         }
 
-        const stored = localStorage.getItem("cravings_checkout_data");
+        const stored = loadCheckoutData();
         if (!stored) {
           setError("No checkout data found. Please add items from a restaurant menu.");
           return;
         }
 
-        setCheckoutData(normalizeCheckoutData(JSON.parse(stored)));
+        setCheckoutData(normalizeCheckoutData(stored));
 
         const customerResponse = await api.get("/customer/get-customer");
         setCustomer(customerResponse.data.data);
@@ -441,7 +446,7 @@ const CheckoutPage = () => {
     };
 
     load();
-  }, [orderId]);
+  }, [isCustomer, orderId]);
 
   useEffect(() => {
     if (!orderId) return undefined;
@@ -591,7 +596,7 @@ const CheckoutPage = () => {
       };
 
       const finishOrder = (response) => {
-        localStorage.removeItem("cravings_checkout_data");
+        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         localStorage.setItem(ACTIVE_ORDER_STORAGE_KEY, JSON.stringify({
           orderId: response.data.data._id,
           restaurantName: response.data.data.restaurantName,
@@ -680,7 +685,7 @@ const CheckoutPage = () => {
         razorpay_signature: "demo_signature",
         orderPayload: demoPayment.payload,
       });
-      localStorage.removeItem("cravings_checkout_data");
+      localStorage.removeItem(CHECKOUT_STORAGE_KEY);
       toast.success("Demo payment successful and order placed");
       setDemoPayment(null);
       navigate(`/track-order/${response.data.data._id}`, { replace: true });
