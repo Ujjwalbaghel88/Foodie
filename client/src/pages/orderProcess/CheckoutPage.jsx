@@ -1,24 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { IoArrowBack, IoCheckmarkCircle, IoTimeOutline } from "react-icons/io5";
 import { MdDeliveryDining, MdRestaurant, MdOutlineShoppingBag } from "react-icons/md";
 import { FaMapMarkerAlt, FaClock, FaRoute } from "react-icons/fa";
-import {
-  MapContainer,
-  TileLayer,
-  CircleMarker,
-  Marker,
-  Polyline,
-  Tooltip,
-  useMap,
-} from "react-leaflet";
-import { divIcon } from "leaflet";
-import "leaflet/dist/leaflet.css";
 import api from "../../config/ApiConfig";
 import useAuth from "../../context/useAuth";
 import { CHECKOUT_STORAGE_KEY, loadCheckoutData } from "../../utils/checkoutStorage";
 import { getRestaurantCoverImage } from "../../utils/restaurantCoverImages";
+
+const MapPanel = lazy(() => import("../../components/order/LiveOrderMap"));
 
 const DEFAULT_CENTER = [23.2599, 77.4126];
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
@@ -106,194 +97,6 @@ const interpolatePoint = (from, to, progress) => {
     from[0] + (to[0] - from[0]) * ratio,
     from[1] + (to[1] - from[1]) * ratio,
   ];
-};
-
-const MapAutoFit = ({ points }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!points?.length) return;
-    const validPoints = points.filter(
-      (point) => Array.isArray(point) && point.length === 2,
-    );
-
-    if (validPoints.length === 0) return;
-    if (validPoints.length === 1) {
-      map.setView(validPoints[0], 15, { animate: true });
-      return;
-    }
-
-    map.fitBounds(validPoints, {
-      padding: [40, 40],
-      animate: true,
-      maxZoom: 15,
-    });
-  }, [map, points]);
-
-  return null;
-};
-
-const MapPanel = ({ restaurantPoint, riderPoint, customerPoint, liveLabel, statusProgress }) => {
-  const center = useMemo(() => {
-    const lat = (restaurantPoint[0] + customerPoint[0]) / 2;
-    const lng = (restaurantPoint[1] + customerPoint[1]) / 2;
-    return [lat, lng];
-  }, [customerPoint, restaurantPoint]);
-
-  const estimateDistanceKm = useMemo(() => {
-    const toRad = (value) => (value * Math.PI) / 180;
-    const R = 6371;
-    const dLat = toRad(customerPoint[0] - restaurantPoint[0]);
-    const dLng = toRad(customerPoint[1] - restaurantPoint[1]);
-    const a =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos(toRad(restaurantPoint[0])) *
-      Math.cos(toRad(customerPoint[0])) *
-      Math.sin(dLng / 2) ** 2;
-    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(1);
-  }, [customerPoint, restaurantPoint]);
-
-  const etaMinutes = useMemo(() => {
-    const remaining = Math.max(0, 100 - statusProgress);
-    return Math.max(8, Math.round(remaining / 6));
-  }, [statusProgress]);
-
-  const riderIcon = useMemo(
-    () =>
-      divIcon({
-        className: "rider-map-icon",
-        html: '<span class="rider-map-icon__pulse"></span><span class="rider-map-icon__body">⌁</span>',
-        iconSize: [44, 44],
-        iconAnchor: [22, 22],
-      }),
-    [],
-  );
-
-  return (
-    <div className="overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-orange-100">
-      <style>{`
-        .rider-map-icon { background: transparent; border: 0; }
-        .rider-map-icon__body {
-          position: absolute; inset: 8px; display: grid; place-items: center;
-          border: 3px solid white; border-radius: 999px; background: #f97316;
-          color: white; font-size: 24px; font-weight: 900; line-height: 1;
-          box-shadow: 0 5px 14px rgba(234, 88, 12, .4);
-          transform: rotate(-45deg);
-        }
-        .rider-map-icon__pulse {
-          position: absolute; inset: 2px; border-radius: 999px;
-          border: 2px solid #fb923c; animation: rider-pulse 1.8s ease-out infinite;
-        }
-        @keyframes rider-pulse { 0% { transform: scale(.7); opacity: .8; } 100% { transform: scale(1.35); opacity: 0; } }
-      `}</style>
-      <div className="border-b border-orange-400/30 bg-gradient-to-br from-[#f97316] via-[#ea580c] to-[#c2410c] px-5 py-5 text-white">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white/75">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" /> Live tracking
-            </p>
-            <h3 className="mt-1 text-lg font-black">{liveLabel}</h3>
-          </div>
-          <div className="text-right">
-            <p className="text-2xl font-black leading-none">{etaMinutes}<span className="ml-1 text-sm font-bold">min</span></p>
-            <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-white/70">estimated arrival</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-3 border-b border-slate-100 bg-white p-4 sm:grid-cols-3">
-        <div className="rounded-[1.25rem] border border-slate-100 bg-slate-50 p-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-            <MdRestaurant />
-            Restaurant
-          </div>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
-            Pickup point
-          </p>
-        </div>
-        <div className="rounded-[1.25rem] border border-orange-100 bg-orange-50 p-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-600">
-            <FaRoute />
-            Distance
-          </div>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
-            Approx. {estimateDistanceKm} km
-          </p>
-        </div>
-        <div className="rounded-[1.25rem] border border-emerald-100 bg-emerald-50 p-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">
-            <FaClock />
-            ETA
-          </div>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
-            About {etaMinutes} min
-          </p>
-        </div>
-      </div>
-
-      <div className="relative h-[420px] w-full">
-        <MapContainer center={center} zoom={13} scrollWheelZoom className="h-full w-full">
-          <MapAutoFit points={[restaurantPoint, riderPoint, customerPoint]} />
-          <TileLayer
-            attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> &copy; OpenStreetMap contributors'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            subdomains="abcd"
-          />
-          <Polyline
-            positions={[restaurantPoint, riderPoint]}
-            pathOptions={{
-              color: "#ea580c",
-              weight: 7,
-              lineCap: "round",
-            }}
-          />
-          <Polyline
-            positions={[riderPoint, customerPoint]}
-            pathOptions={{ color: "#94a3b8", weight: 5, dashArray: "8 12", lineCap: "round" }}
-          />
-          <CircleMarker
-            center={restaurantPoint}
-            radius={11}
-            pathOptions={{ color: "#1d4ed8", fillColor: "#1d4ed8", fillOpacity: 1 }}
-          >
-            <Tooltip direction="top" permanent>
-              Restaurant
-            </Tooltip>
-          </CircleMarker>
-          <Marker position={riderPoint} icon={riderIcon}>
-            <Tooltip direction="top" permanent>
-              Your rider
-            </Tooltip>
-          </Marker>
-          <CircleMarker
-            center={customerPoint}
-            radius={11}
-            pathOptions={{ color: "#16a34a", fillColor: "#16a34a", fillOpacity: 1 }}
-          >
-            <Tooltip direction="top" permanent>
-              You
-            </Tooltip>
-          </CircleMarker>
-        </MapContainer>
-        <div className="pointer-events-none absolute left-4 top-4 z-[400] rounded-2xl bg-white/95 px-3 py-2 shadow-lg backdrop-blur">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-            <span className="h-2.5 w-2.5 rounded-full bg-orange-500" /> Rider is on the way
-          </div>
-          <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-slate-400">
-            <span className="h-0.5 w-5 bg-slate-400" /> Live route updates every few seconds
-          </div>
-        </div>
-        <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-[400] rounded-2xl bg-slate-950/85 px-4 py-3 text-white shadow-xl backdrop-blur-sm">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span>Order progress</span><span>{statusProgress}%</span>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/20">
-            <div className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-300 transition-all duration-700" style={{ width: `${statusProgress}%` }} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 const DemoPaymentModal = ({ total, method, setMethod, onClose, onComplete }) => {
@@ -881,13 +684,15 @@ const CheckoutPage = () => {
             </div>
 
             <div className="space-y-6">
-              <MapPanel
+              <Suspense fallback={<div className="h-72 animate-pulse rounded-3xl bg-orange-50 sm:h-96" aria-label="Loading live map" />}>
+                <MapPanel
                 restaurantPoint={mapPoints.restaurantPoint}
                 riderPoint={mapPoints.riderPoint}
                 customerPoint={mapPoints.customerPoint}
                 liveLabel={activeOrder.liveStatusLabel || "Live route"}
                 statusProgress={progress}
-              />
+                />
+              </Suspense>
 
               <section className="rounded-[2rem] bg-white p-6 shadow-sm">
                 <h2 className="text-xl font-black text-slate-900">Order summary</h2>
@@ -1009,13 +814,15 @@ const CheckoutPage = () => {
               )}
             </div>
 
-            <MapPanel
+            <Suspense fallback={<div className="h-72 animate-pulse rounded-3xl bg-orange-50 sm:h-96" aria-label="Loading live map" />}>
+              <MapPanel
               restaurantPoint={mapPoints.restaurantPoint}
               riderPoint={mapPoints.riderPoint}
               customerPoint={mapPoints.customerPoint}
               liveLabel="Checkout delivery route"
               statusProgress={35}
-            />
+              />
+            </Suspense>
           </section>
 
           <aside className="space-y-6">
@@ -1133,3 +940,4 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
+

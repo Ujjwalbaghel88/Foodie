@@ -39,17 +39,17 @@ const RiderDashboard = () => {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-4rem)] flex flex-col lg:flex-row gap-2 m-2">
-        <div className="w-full lg:w-72 xl:w-80 bg-(--color-base-200) p-4 rounded-lg shadow-md h-auto lg:h-full">
+      <main id="rider-dashboard" className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-[1600px] flex-col gap-3 p-3 sm:p-4 lg:flex-row">
+        <aside className="w-full shrink-0 rounded-xl bg-(--color-base-200) p-3 shadow-md sm:p-4 lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)] lg:w-64 xl:w-72">
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-        </div>
-        <div className="w-full flex-1 bg-(--color-base-100) p-4 rounded-lg shadow-md h-auto lg:h-full overflow-y-auto">
+        </aside>
+        <section className="min-w-0 w-full flex-1 overflow-hidden rounded-xl bg-(--color-base-100) p-3 shadow-md sm:p-5 lg:min-h-[calc(100vh-6rem)] lg:p-6">
           {activeTab === "overview" && <RiderOverview />}
           {activeTab === "deliveries" && <RiderDeliveries />}
           {activeTab === "earnings" && <RiderEarnings />}
           {activeTab === "settings" && <RiderSetting />}
-        </div>
-      </div>
+        </section>
+      </main>
     </>
   );
 };

@@ -30,6 +30,16 @@ const BakeryCrav = () => {
   const selectedDish = searchParams.get("dish");
 
   useEffect(() => {
+    if (!bakeryItems.some((item) => item.model)) return;
+    if (customElements.get("model-viewer")) return;
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
+    document.head.appendChild(script);
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem(BAKERY_CART_KEY, JSON.stringify(cart));
   }, [cart]);
 

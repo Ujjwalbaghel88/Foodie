@@ -21,6 +21,11 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
           ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
           : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
       }`}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") setActiveTab(tab.value);
+      }}
       onClick={() => setActiveTab(tab.value)}
     >
       {tab.icon} {tab.name}
@@ -29,14 +34,14 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 
   return (
     <>
-      <div className="h-full flex flex-col">
-        <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-4 lg:overflow-visible lg:pb-0 flex-1">
+      <nav aria-label="Rider dashboard" className="flex min-w-0 flex-col lg:h-full">
+        <ul className="flex min-w-0 gap-2 overflow-x-auto pb-2 lg:flex-1 lg:flex-col lg:gap-2 lg:overflow-visible lg:pb-0">
           {mainTabs.map((tab) => renderTab(tab))}
         </ul>
-        <ul className="flex gap-2 overflow-x-auto border-t border-(--color-secondary) pt-4 lg:flex-col lg:gap-4 lg:overflow-visible">
+        <ul className="flex gap-2 overflow-x-auto border-t border-(--color-secondary) pt-3 lg:flex-col lg:gap-2 lg:overflow-visible">
           {renderTab(settingsTab)}
         </ul>
-      </div>
+      </nav>
     </>
   );
 };
