@@ -9,6 +9,7 @@ import useAuth from "../../context/useAuth";
 
 const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
 
+
 const RiderDashboard = () => {
   const { user, isLogin } = useAuth();
   const navigate = useNavigate();
