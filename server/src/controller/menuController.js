@@ -15,6 +15,7 @@ export const addMenuItem = async (req, res, next) => {
       error.status = 400;
       return next(error);
     }
+    
 
     // Get restaurant by userId
     const restaurant = await Restaurant.findOne({ userId });
