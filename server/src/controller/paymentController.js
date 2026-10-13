@@ -64,6 +64,7 @@ export const verifyRazorpayPayment = async (req, res, next) => {
       return res.status(400).json({ message: "Incomplete Razorpay payment details" });
     }
 
+  
     const demoMode = process.env.NODE_ENV !== "production" &&
       process.env.RAZORPAY_DEMO_MODE === "true";
     if (!demoMode) {
