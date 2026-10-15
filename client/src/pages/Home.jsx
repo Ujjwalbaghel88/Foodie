@@ -107,6 +107,17 @@ const brandNames = [
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
 const ACTIVE_ORDER_DISMISS_PREFIX = "cravings_live_order_dismissed";
 const QUICK_ORDER_PROMPT_KEY = "cravings_quick_order_prompt_dismissed_v1";
+const NAVRATRI_POPUP_KEY = "cravings_navratri_popup_dismissed_2026";
+
+const isNavratriSeason = () => {
+  const indiaDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  return indiaDate >= "2026-10-11" && indiaDate <= "2026-10-20";
+};
 
 const readStoredLiveOrder = () => {
   try {
@@ -282,6 +293,25 @@ const QuickOrderPopup = ({ onClose, onStartOrder, onBrowseSaved }) => {
   );
 };
 
+const NavratriPopup = ({ onClose, onExplore }) => (
+  <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="navratri-popup-title">
+    <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-amber-200 bg-[#fffaf3] shadow-[0_30px_100px_rgba(38,15,5,0.4)]">
+      <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-rose-600 via-orange-500 to-amber-300" />
+      <button onClick={onClose} className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/20 text-xl font-bold text-white transition hover:bg-white/35" aria-label="Close Navratri celebration popup">×</button>
+      <div className="bg-[radial-gradient(circle_at_50%_0%,rgba(255,211,111,0.42),transparent_54%),linear-gradient(135deg,#6d1740,#a52a39_55%,#dc5b22)] px-7 pb-7 pt-9 text-center text-white">
+        <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-amber-100/50 bg-white/10 text-5xl shadow-[0_0_38px_rgba(255,199,75,0.35)]" aria-hidden="true">🪔</div>
+        <p className="mt-4 text-xs font-black uppercase tracking-[0.28em] text-amber-200">Celebrate the festive season</p>
+        <h2 id="navratri-popup-title" className="mt-2 text-4xl font-black">Happy Navratri</h2>
+        <p className="mt-3 text-sm leading-6 text-white/85">Nine nights of joy, devotion, and delicious moments. Find something special from your favorite local kitchens.</p>
+      </div>
+      <div className="p-5">
+        <button onClick={onExplore} className="w-full rounded-2xl bg-gradient-to-r from-orange-600 to-rose-600 px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-900/15 transition hover:-translate-y-0.5 hover:brightness-105">Explore restaurants <MdArrowForward className="ml-1 inline" /></button>
+        <button onClick={onClose} className="mt-2 w-full rounded-2xl px-5 py-2.5 text-sm font-bold text-slate-500 transition hover:bg-orange-50 hover:text-orange-700">Maybe later</button>
+      </div>
+    </div>
+  </div>
+);
+
 const ReviewPromptPopup = ({ order, onClose, onSubmit }) => {
   const [sentiment, setSentiment] = useState("Good");
   const [feedback, setFeedback] = useState("");
@@ -411,6 +441,7 @@ const Home = () => {
   const [loadError, setLoadError] = useState("");
   const [activeOrder, setActiveOrder] = useState(null);
   const [showQuickOrderPopup, setShowQuickOrderPopup] = useState(false);
+  const [showNavratriPopup, setShowNavratriPopup] = useState(false);
   const [customerOrders, setCustomerOrders] = useState([]);
   const [customerOrdersLoading, setCustomerOrdersLoading] = useState(false);
   const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
@@ -418,6 +449,12 @@ const Home = () => {
   const [dishShowcaseVisible, setDishShowcaseVisible] = useState(false);
   const dishShowcaseRef = useRef(null);
   const brandCarouselRef = useRef(null);
+
+  useEffect(() => {
+    if (isNavratriSeason() && !localStorage.getItem(NAVRATRI_POPUP_KEY)) {
+      setShowNavratriPopup(true);
+    }
+  }, []);
 
   useEffect(() => {
     const showcase = dishShowcaseRef.current;
@@ -490,6 +527,11 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    if (showNavratriPopup) {
+      setShowQuickOrderPopup(false);
+      return undefined;
+    }
+
     if (!user || user.userType !== "customer") {
       setActiveOrder(null);
       return undefined;
@@ -598,7 +640,12 @@ const Home = () => {
     }, 3500);
 
     return () => window.clearTimeout(timer);
-  }, [user, activeOrder]);
+  }, [user, activeOrder, showNavratriPopup]);
+
+  const handleCloseNavratriPopup = () => {
+    localStorage.setItem(NAVRATRI_POPUP_KEY, "1");
+    setShowNavratriPopup(false);
+  };
 
   const filteredRestaurants = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -732,6 +779,16 @@ const Home = () => {
         onTrack={() => activeOrder?.orderId && navigate(`/track-order/${activeOrder.orderId}`)}
       />
 
+      {showNavratriPopup && !activeOrder && !pendingReviewOrder && (
+        <NavratriPopup
+          onClose={handleCloseNavratriPopup}
+          onExplore={() => {
+            handleCloseNavratriPopup();
+            navigate("/order-now");
+          }}
+        />
+      )}
+
       {showQuickOrderPopup && !activeOrder && (
         <QuickOrderPopup
           onClose={handleCloseQuickOrderPopup}
@@ -759,6 +816,7 @@ const Home = () => {
           <CarouselComponent />
         </div>
         <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#160d0a]/90 via-[#29130c]/65 to-[#29130c]/28" />
+        <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(ellipse_at_18%_48%,rgba(249,115,22,0.28),transparent_38%),radial-gradient(ellipse_at_86%_82%,rgba(251,191,36,0.18),transparent_30%)]" />
         <div className="home-hero-orbit pointer-events-none absolute -right-24 top-12 z-[2] hidden h-80 w-80 rounded-full border border-orange-100/25 lg:block" />
 
         <div className="relative z-10 mx-auto grid min-h-[64vh] max-w-7xl items-center gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
