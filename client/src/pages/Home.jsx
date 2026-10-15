@@ -719,6 +719,7 @@ const Home = () => {
       name: brandName,
       time: `${25 + (index % 4) * 2} min`,
       image: getRestaurantCoverImage(brandName, `${assetBase}aboutPage.png`),
+      isLogo: /manohar|burger king/i.test(brandName),
       restaurantId: matchedRestaurant?.id || null,
     };
   });
@@ -1133,7 +1134,7 @@ const Home = () => {
                     <img
                       src={restaurant.image}
                       alt={restaurant.name}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      className={`h-full w-full ${brand.isLogo ? "bg-white object-contain p-4" : "object-cover transition duration-500 group-hover:scale-105"}`}
                       loading="lazy"
                       decoding="async"
                     />

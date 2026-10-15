@@ -27,12 +27,11 @@ const COVER_IMAGE_OVERRIDES = [
   {
     patterns: ["manohar", "manohar dairy", "manohar dairy and restaurant"],
     image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=85",
+      "https://static.wixstatic.com/media/d1e9aa_bd5ae27422204be7a53acc64c34a0e75~mv2.png/v1/fill/w_195%2Ch_147%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/ManoharDairy_NewLogo_Final_CC%20%281%29.png",
   },
   {
     patterns: ["burger king"],
-    image:
-      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=900&q=85",
+    image: "https://upload.wikimedia.org/wikipedia/commons/c/cc/Burger_King_2020.svg",
   },
   {
     patterns: ["spice kitchen", "meeras spice kitchen", "meera spice kitchen"],
