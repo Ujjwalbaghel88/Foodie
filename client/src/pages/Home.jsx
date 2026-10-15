@@ -107,16 +107,36 @@ const brandNames = [
 const ACTIVE_ORDER_STORAGE_KEY = "cravings_live_order";
 const ACTIVE_ORDER_DISMISS_PREFIX = "cravings_live_order_dismissed";
 const QUICK_ORDER_PROMPT_KEY = "cravings_quick_order_prompt_dismissed_v1";
-const NAVRATRI_POPUP_KEY = "cravings_navratri_popup_dismissed_2026";
+const FESTIVAL_POPUP_DISMISSED_KEY = "cravings_festival_popup_dismissed";
 
-const isNavratriSeason = () => {
+const getActiveFestival = () => {
   const indiaDate = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kolkata",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   }).format(new Date());
-  return indiaDate >= "2026-10-11" && indiaDate <= "2026-10-20";
+  const festivals = [{
+    id: "navratri-2026", start: "2026-10-11", end: "2026-10-20",
+    title: "Happy Navratri", subtitle: "Celebrate the festive season",
+    description: "Nine nights of joy, devotion, and delicious moments. Find something special from your favorite local kitchens.",
+    dailyMessages: [
+      "May Maa Shailputri bless your first night with strength and new beginnings.",
+      "Celebrate Maa Brahmacharini with devotion, peace, and a delicious meal.",
+      "May Maa Chandraghanta bring courage and joy to your festive evening.",
+      "Celebrate Maa Kushmanda and share a little warmth with your loved ones.",
+      "May Maa Skandamata fill your day with care, happiness, and good food.",
+      "Honor Maa Katyayani with festive flavors from your favorite local kitchens.",
+      "May Maa Kalaratri guide you through the night with strength and hope.",
+      "Celebrate Maa Mahagauri with peace, positivity, and something delicious.",
+      "May Maa Siddhidatri bless your Navratri with joy and fulfillment.",
+      "Wishing you a joyful Vijayadashami filled with new beginnings.",
+    ],
+  }];
+  const festival = festivals.find(({ start, end }) => indiaDate >= start && indiaDate <= end);
+  if (!festival) return null;
+  const dayIndex = Math.floor((Date.parse(`${indiaDate}T00:00:00Z`) - Date.parse(`${festival.start}T00:00:00Z`)) / 86_400_000);
+  return { ...festival, message: festival.dailyMessages[dayIndex] || festival.description };
 };
 
 const readStoredLiveOrder = () => {
@@ -293,16 +313,16 @@ const QuickOrderPopup = ({ onClose, onStartOrder, onBrowseSaved }) => {
   );
 };
 
-const NavratriPopup = ({ onClose, onExplore }) => (
-  <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="navratri-popup-title">
+const FestivalPopup = ({ festival, onClose, onExplore }) => (
+  <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="festival-popup-title">
     <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-amber-200 bg-[#fffaf3] shadow-[0_30px_100px_rgba(38,15,5,0.4)]">
       <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-rose-600 via-orange-500 to-amber-300" />
-      <button onClick={onClose} className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/20 text-xl font-bold text-white transition hover:bg-white/35" aria-label="Close Navratri celebration popup">×</button>
+      <button onClick={onClose} className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/20 text-xl font-bold text-white transition hover:bg-white/35" aria-label={`Close ${festival.title} celebration popup`}>×</button>
       <div className="bg-[radial-gradient(circle_at_50%_0%,rgba(255,211,111,0.42),transparent_54%),linear-gradient(135deg,#6d1740,#a52a39_55%,#dc5b22)] px-7 pb-7 pt-9 text-center text-white">
         <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-amber-100/50 bg-white/10 text-5xl shadow-[0_0_38px_rgba(255,199,75,0.35)]" aria-hidden="true">🪔</div>
-        <p className="mt-4 text-xs font-black uppercase tracking-[0.28em] text-amber-200">Celebrate the festive season</p>
-        <h2 id="navratri-popup-title" className="mt-2 text-4xl font-black">Happy Navratri</h2>
-        <p className="mt-3 text-sm leading-6 text-white/85">Nine nights of joy, devotion, and delicious moments. Find something special from your favorite local kitchens.</p>
+        <p className="mt-4 text-xs font-black uppercase tracking-[0.28em] text-amber-200">{festival.subtitle}</p>
+        <h2 id="festival-popup-title" className="mt-2 text-4xl font-black">{festival.title}</h2>
+        <p className="mt-3 text-sm leading-6 text-white/85">{festival.message}</p>
       </div>
       <div className="p-5">
         <button onClick={onExplore} className="w-full rounded-2xl bg-gradient-to-r from-orange-600 to-rose-600 px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-900/15 transition hover:-translate-y-0.5 hover:brightness-105">Explore restaurants <MdArrowForward className="ml-1 inline" /></button>
@@ -441,7 +461,8 @@ const Home = () => {
   const [loadError, setLoadError] = useState("");
   const [activeOrder, setActiveOrder] = useState(null);
   const [showQuickOrderPopup, setShowQuickOrderPopup] = useState(false);
-  const [showNavratriPopup, setShowNavratriPopup] = useState(false);
+  const [activeFestival, setActiveFestival] = useState(null);
+  const [showFestivalPopup, setShowFestivalPopup] = useState(false);
   const [customerOrders, setCustomerOrders] = useState([]);
   const [customerOrdersLoading, setCustomerOrdersLoading] = useState(false);
   const [savedRestaurantIds, setSavedRestaurantIds] = useState([]);
@@ -451,9 +472,9 @@ const Home = () => {
   const brandCarouselRef = useRef(null);
 
   useEffect(() => {
-    if (isNavratriSeason() && !localStorage.getItem(NAVRATRI_POPUP_KEY)) {
-      setShowNavratriPopup(true);
-    }
+    const festival = getActiveFestival();
+    setActiveFestival(festival);
+    if (festival && localStorage.getItem(FESTIVAL_POPUP_DISMISSED_KEY) !== festival.id) setShowFestivalPopup(true);
   }, []);
 
   useEffect(() => {
@@ -527,7 +548,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (showNavratriPopup) {
+    if (showFestivalPopup) {
       setShowQuickOrderPopup(false);
       return undefined;
     }
@@ -640,11 +661,11 @@ const Home = () => {
     }, 3500);
 
     return () => window.clearTimeout(timer);
-  }, [user, activeOrder, showNavratriPopup]);
+  }, [user, activeOrder, showFestivalPopup]);
 
-  const handleCloseNavratriPopup = () => {
-    localStorage.setItem(NAVRATRI_POPUP_KEY, "1");
-    setShowNavratriPopup(false);
+  const handleCloseFestivalPopup = () => {
+    if (activeFestival) localStorage.setItem(FESTIVAL_POPUP_DISMISSED_KEY, activeFestival.id);
+    setShowFestivalPopup(false);
   };
 
   const filteredRestaurants = useMemo(() => {
@@ -779,11 +800,12 @@ const Home = () => {
         onTrack={() => activeOrder?.orderId && navigate(`/track-order/${activeOrder.orderId}`)}
       />
 
-      {showNavratriPopup && !activeOrder && !pendingReviewOrder && (
-        <NavratriPopup
-          onClose={handleCloseNavratriPopup}
+      {showFestivalPopup && activeFestival && !activeOrder && !pendingReviewOrder && (
+        <FestivalPopup
+          festival={activeFestival}
+          onClose={handleCloseFestivalPopup}
           onExplore={() => {
-            handleCloseNavratriPopup();
+            handleCloseFestivalPopup();
             navigate("/order-now");
           }}
         />
