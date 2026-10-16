@@ -130,9 +130,8 @@ const ForgotPassword = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your registered email"
-                className={`w-full rounded-xl border px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange-200 ${
-                  errors.email ? "border-red-500" : "border-slate-200"
-                }`}
+                className={`w-full rounded-xl border px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange-200 ${errors.email ? "border-red-500" : "border-slate-200"
+                  }`}
               />
               {errors.email && (
                 <p className="mt-2 text-xs font-medium text-red-500">{errors.email}</p>
@@ -166,9 +165,8 @@ const ForgotPassword = () => {
                 value={formData.otp}
                 onChange={handleChange}
                 placeholder="Enter 6-digit OTP"
-                className={`w-full rounded-xl border px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange-200 ${
-                  errors.otp ? "border-red-500" : "border-slate-200"
-                }`}
+                className={`w-full rounded-xl border px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange-200 ${errors.otp ? "border-red-500" : "border-slate-200"
+                  }`}
               />
               {errors.otp && (
                 <p className="mt-2 text-xs font-medium text-red-500">{errors.otp}</p>
@@ -186,9 +184,8 @@ const ForgotPassword = () => {
                   value={formData.newPassword}
                   onChange={handleChange}
                   placeholder="Enter new password"
-                  className={`w-full rounded-xl border px-4 py-3 pr-12 outline-none transition focus:ring-2 focus:ring-orange-200 ${
-                    errors.newPassword ? "border-red-500" : "border-slate-200"
-                  }`}
+                  className={`w-full rounded-xl border px-4 py-3 pr-12 outline-none transition focus:ring-2 focus:ring-orange-200 ${errors.newPassword ? "border-red-500" : "border-slate-200"
+                    }`}
                 />
                 <button
                   type="button"
@@ -215,9 +212,8 @@ const ForgotPassword = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Confirm new password"
-                className={`w-full rounded-xl border px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange-200 ${
-                  errors.confirmPassword ? "border-red-500" : "border-slate-200"
-                }`}
+                className={`w-full rounded-xl border px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange-200 ${errors.confirmPassword ? "border-red-500" : "border-slate-200"
+                  }`}
               />
               {errors.confirmPassword && (
                 <p className="mt-2 text-xs font-medium text-red-500">
