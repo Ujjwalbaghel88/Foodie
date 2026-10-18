@@ -32,27 +32,27 @@ const App = () => {
       <div id="main-content" tabIndex="-1">
         <Suspense fallback={<div className="grid min-h-[50vh] place-items-center text-orange-700" role="status">Loading page…</div>}>
           <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/order-now" element={<OrderNow />} />
-          <Route path="/restaurant-menu/:restaurantId" element={<RestaurantMenu />} />
-          <Route path="/bakery-crav" element={<BakeryCrav />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/track-order/:orderId" element={<CheckoutPage />} />
-          <Route path="/terms-and-conditions" element={<TermsOfService />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/site-map" element={<SiteMap />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/feedback" element={<Feedback />} />
-          <Route path="/help-center" element={<HelpCenter />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/register/:userType" element={<Register />} />
-          <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-          <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
-          <Route path="/rider-dashboard" element={<RiderDashboard />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/order-now" element={<OrderNow />} />
+            <Route path="/restaurant-menu/:restaurantId" element={<RestaurantMenu />} />
+            <Route path="/bakery-crav" element={<BakeryCrav />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/track-order/:orderId" element={<CheckoutPage />} />
+            <Route path="/terms-and-conditions" element={<TermsOfService />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/site-map" element={<SiteMap />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/register/:userType" element={<Register />} />
+            <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+            <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
+            <Route path="/rider-dashboard" element={<RiderDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </Suspense>
       </div>
@@ -60,5 +60,4 @@ const App = () => {
     </>
   );
 };
-
 export default App;
