@@ -364,7 +364,11 @@ input[type="password"]::-ms-reveal {
 /* A warm, recognizable Cravings signature for the discovery home page. */
 .home-hero {
   isolation: isolate;
-  background: #1a0d08;
+  min-height: 40rem;
+  background: #160d09;
+  background-image:
+    radial-gradient(ellipse at 78% 35%, rgba(255, 145, 42, 0.3), transparent 36%),
+    linear-gradient(125deg, #160d09 5%, #32160d 55%, #71300d 100%);
 }
 
 .home-hero::after {
@@ -382,6 +386,28 @@ input[type="password"]::-ms-reveal {
     0 0 0 32px rgba(255, 255, 255, 0.035),
     0 0 0 72px rgba(255, 255, 255, 0.025);
   animation: cravingsOrbit 18s linear infinite;
+}
+
+.home-hero .home-quick-card {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(30, 17, 13, 0.72);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38), inset 0 1px rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(22px);
+}
+
+.home-hero h1 {
+  text-wrap: balance;
+  line-height: 1.04;
+}
+
+.home-hero .home-stat {
+  backdrop-filter: blur(12px);
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.home-hero .home-stat:hover {
+  transform: translateY(-3px);
+  background-color: rgba(41, 19, 12, 0.62);
 }
 
 .home-search {
@@ -489,6 +515,7 @@ input[type="password"]::-ms-reveal {
 
 @media (max-width: 640px) {
   .home-hero {
+    min-height: auto;
     background-image: radial-gradient(
       ellipse at 80% 0%,
       rgba(249, 115, 22, 0.2),
