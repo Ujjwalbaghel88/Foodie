@@ -555,6 +555,45 @@ input[type="password"]::-ms-reveal {
 .app-dark .bg-slate-100 {
   background-color: #273449 !important;
 }
+.app-dark .bg-orange-50 {
+  background-color: #3b3026 !important;
+}
+.app-dark .bg-orange-100 {
+  background-color: #51351f !important;
+}
+.app-dark .text-orange-700,
+.app-dark .text-orange-600,
+.app-dark .text-orange-500 {
+  color: #fdba74 !important;
+}
+.app-dark [class*="text-(--color-content)"],
+.app-dark [class*="text-(--color-base-content)"] {
+  color: #f3f4f6 !important;
+}
+.app-dark [class*="bg-(--color-base-100)"] {
+  background-color: #1f2937 !important;
+}
+.app-dark .home-hero [class*="bg-white"] {
+  background-color: #f8fafc !important;
+}
+.app-dark .home-hero [class*="text-slate-900"] {
+  color: #172033 !important;
+}
+.app-dark .home-hero [class*="text-slate-800"] {
+  color: #263247 !important;
+}
+.app-dark .home-hero [class*="text-orange-600"] {
+  color: #c2410c !important;
+}
+.app-dark .home-hero .home-chip {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background-color: rgba(35, 20, 15, 0.82) !important;
+  color: #fff7ed !important;
+}
+.app-dark .home-hero .home-chip:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
 .app-dark .text-slate-900,
 .app-dark .text-slate-800,
 .app-dark .text-slate-700,

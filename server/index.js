@@ -38,16 +38,17 @@ const buildAllowedOrigins = () => {
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-  return new Set([...defaultOrigins, ...configuredOrigins]);
+  return { origins: new Set([...defaultOrigins, ...configuredOrigins]), isDevelopment: process.env.NODE_ENV !== "production" };
 };
 
 app.disable("x-powered-by");
-const allowedOrigins = buildAllowedOrigins();
+const { origins: allowedOrigins, isDevelopment } = buildAllowedOrigins();
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.has(origin)) {
+      const isLocalNetworkDevOrigin = isDevelopment && /^http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}):5175$/.test(origin || "");
+      if (!origin || allowedOrigins.has(origin) || isLocalNetworkDevOrigin) {
         return callback(null, true);
       }
 

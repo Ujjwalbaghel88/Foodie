@@ -1,39 +1,42 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import foodTableImage from "../assets/foodTable.webp";
+import carouselImageTwo from "../assets/carousel/bgImage2.jpg";
+import carouselImageFour from "../assets/carousel/bgImage4.jpg";
 
 const SLIDES = [
   {
-    type: "video",
-    source: `${import.meta.env.BASE_URL}cravings-showcase.mp4`,
-    duration: 8000,
+    type: "image",
+    source: foodTableImage,
+    duration: 6000,
     title: "Signature feasts",
     subtitle: "Slow panning visuals that keep the focus on flavor.",
   },
   {
-    type: "video",
-    source: `${import.meta.env.BASE_URL}cravings-video-2.mp4`,
-    duration: 12000,
+    type: "image",
+    source: carouselImageTwo,
+    duration: 6000,
     title: "Street food energy",
     subtitle: "Warm, fast, and packed with everyday cravings.",
   },
   {
-    type: "video",
-    source: `${import.meta.env.BASE_URL}cravings-video-3.mp4`,
-    duration: 8000,
+    type: "image",
+    source: `${import.meta.env.BASE_URL}commonBG.avif`,
+    duration: 6000,
     title: "Family dinner mood",
     subtitle: "Rich colors and inviting close-ups for comfort meals.",
   },
   {
-    type: "video",
-    source: `${import.meta.env.BASE_URL}cravings-video-4.mp4`,
-    duration: 12000,
+    type: "image",
+    source: carouselImageFour,
+    duration: 6000,
     title: "Fresh and vibrant",
     subtitle: "Greens, textures, and soft motion for lighter picks.",
   },
   {
-    type: "video",
-    source: `${import.meta.env.BASE_URL}cravings-video-5.mp4`,
-    duration: 12000,
+    type: "image",
+    source: `${import.meta.env.BASE_URL}aboutPage.webp`,
+    duration: 6000,
     title: "Dessert spotlight",
     subtitle: "A sweeter frame for bakery and after-meal cravings.",
   },
@@ -41,38 +44,25 @@ const SLIDES = [
 
 const CarouselComponent = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [autoPlay, setAutoPlay] = useState(true);
-  const prefersReducedMotion = useMemo(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
-    [],
-  );
-
   // Auto-rotate carousel
   useEffect(() => {
-    if (!autoPlay || prefersReducedMotion) return;
-
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
     }, SLIDES[currentSlide]?.duration || 5000);
 
     return () => clearInterval(interval);
-  }, [autoPlay, currentSlide, prefersReducedMotion]);
+  }, [currentSlide]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
-    setAutoPlay(false);
   };
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-    setAutoPlay(false);
   };
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-    setAutoPlay(false);
   };
 
   const activeSlide = SLIDES[currentSlide];
@@ -80,8 +70,6 @@ const CarouselComponent = () => {
   return (
     <div
       className="relative h-full w-full overflow-hidden rounded-[2rem] border border-white/15 bg-slate-950/30 shadow-[0_30px_80px_rgba(15,23,42,0.35)]"
-      onMouseEnter={() => setAutoPlay(false)}
-      onMouseLeave={() => setAutoPlay(true)}
     >
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_20%_20%,rgba(251,146,60,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(244,114,182,0.18),transparent_25%),linear-gradient(180deg,rgba(2,6,23,0.08),rgba(2,6,23,0.46))]" />
 
@@ -102,6 +90,8 @@ const CarouselComponent = () => {
             src={activeSlide.source}
             alt={`Slide ${currentSlide + 1}`}
             className="h-full w-full object-cover"
+            loading={currentSlide === 0 ? "eager" : "lazy"}
+            fetchPriority={currentSlide === 0 ? "high" : "auto"}
             decoding="async"
           />
         )}

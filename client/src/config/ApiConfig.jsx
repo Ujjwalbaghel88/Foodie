@@ -14,7 +14,7 @@ const resolveBaseURL = () => {
 
   return localHosts.includes(hostname)
     ? "http://localhost:4501"
-    : window.location.origin;
+    : `${window.location.protocol}//${hostname}:4501`;
 };
 
 const api = axios.create({

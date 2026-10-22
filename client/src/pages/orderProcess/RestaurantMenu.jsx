@@ -9,6 +9,9 @@ import {
   buildCheckoutDataFromRestaurant,
   storeCheckoutData,
 } from "../../utils/checkoutStorage";
+import { readDailyCart, writeDailyCart } from "../../utils/dailyCartStorage";
+
+const RESTAURANT_CARTS_KEY = "cravings_restaurant_carts";
 
 const RestaurantMenu = () => {
   const navigate = useNavigate();
@@ -23,19 +26,15 @@ const RestaurantMenu = () => {
   const [dietFilter, setDietFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [cartsByRestaurant, setCartsByRestaurant] = useState(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("cravings_restaurant_carts") || "{}");
-      return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
-    } catch {
-      return {};
-    }
+    const stored = readDailyCart(RESTAURANT_CARTS_KEY, {});
+    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
   });
   const cart = Array.isArray(cartsByRestaurant[restaurantId]) ? cartsByRestaurant[restaurantId] : [];
   const setCart = (nextCart) => {
     setCartsByRestaurant((current) => {
       const items = typeof nextCart === "function" ? nextCart(current[restaurantId] || []) : nextCart;
       const updated = { ...current, [restaurantId]: items };
-      try { localStorage.setItem("cravings_restaurant_carts", JSON.stringify(updated)); } catch { /* Keep the in-memory cart usable when storage is full. */ }
+      writeDailyCart(RESTAURANT_CARTS_KEY, updated);
       return updated;
     });
   };

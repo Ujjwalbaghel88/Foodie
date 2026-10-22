@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { MdAdd, MdRemove, MdShoppingCart } from "react-icons/md";
 import useAuth from "../../context/useAuth";
 import { buildCheckoutDataFromRestaurant, storeCheckoutData } from "../../utils/checkoutStorage";
+import { readDailyCart, writeDailyCart } from "../../utils/dailyCartStorage";
 
 const assetBase = import.meta.env.BASE_URL;
 const BAKERY_CART_KEY = "bakerycrav_cart";
@@ -21,11 +22,8 @@ const BakeryCrav = () => {
   const { isLogin } = useAuth();
   const [searchParams] = useSearchParams();
   const [cart, setCart] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem(BAKERY_CART_KEY)) || [];
-    } catch {
-      return [];
-    }
+    const stored = readDailyCart(BAKERY_CART_KEY, []);
+    return Array.isArray(stored) ? stored : [];
   });
   const selectedDish = searchParams.get("dish");
 
@@ -40,7 +38,7 @@ const BakeryCrav = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(BAKERY_CART_KEY, JSON.stringify(cart));
+    writeDailyCart(BAKERY_CART_KEY, cart);
   }, [cart]);
 
   const visibleItems = useMemo(() => selectedDish
