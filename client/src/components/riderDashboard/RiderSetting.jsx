@@ -179,7 +179,6 @@ const RiderSetting = () => {
       setIsUploadingPhoto(false);
     }
   };
-
   const handleCancelPhotoUpload = () => {
     if (countdownIntervalRef.current) {
       clearInterval(countdownIntervalRef.current);
