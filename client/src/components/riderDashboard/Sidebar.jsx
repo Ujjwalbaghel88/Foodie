@@ -10,7 +10,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { name: "Deliveries", value: "deliveries", icon: <FaTruck /> },
     { name: "Earnings", value: "earnings", icon: <MdAttachMoney /> },
   ];
-
+  
   const settingsTab = { name: "Settings", value: "settings", icon: <IoMdSettings /> };
 
   const renderTab = (tab) => (
