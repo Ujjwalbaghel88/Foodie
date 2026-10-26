@@ -11,6 +11,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { name: "Earnings", value: "earnings", icon: <MdAttachMoney /> },
   ];
   
+  
   const settingsTab = { name: "Settings", value: "settings", icon: <IoMdSettings /> };
 
   const renderTab = (tab) => (
