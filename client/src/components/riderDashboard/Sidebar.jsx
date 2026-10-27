@@ -3,6 +3,7 @@ import { MdDashboard } from "react-icons/md";
 import { FaTruck } from "react-icons/fa";
 import { MdAttachMoney } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
+import ThemeToggle from "../ThemeToggle";
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   const mainTabs = [
@@ -10,7 +11,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { name: "Deliveries", value: "deliveries", icon: <FaTruck /> },
     { name: "Earnings", value: "earnings", icon: <MdAttachMoney /> },
   ];
-  
   
   const settingsTab = { name: "Settings", value: "settings", icon: <IoMdSettings /> };
 
@@ -35,13 +35,14 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 
   return (
     <>
-      <nav aria-label="Rider dashboard" className="flex min-w-0 flex-col lg:h-full">
+      <nav aria-label="Rider dashboard" className="flex min-w-0 flex-col gap-3 lg:h-full">
         <ul className="flex min-w-0 gap-2 overflow-x-auto pb-2 lg:flex-1 lg:flex-col lg:gap-2 lg:overflow-visible lg:pb-0">
           {mainTabs.map((tab) => renderTab(tab))}
         </ul>
         <ul className="flex gap-2 overflow-x-auto border-t border-(--color-secondary) pt-3 lg:flex-col lg:gap-2 lg:overflow-visible">
           {renderTab(settingsTab)}
         </ul>
+        <ThemeToggle className="w-full justify-center bg-(--color-primary) text-(--color-primary-content) hover:opacity-90" />
       </nav>
     </>
   );

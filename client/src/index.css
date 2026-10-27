@@ -213,11 +213,6 @@ body {
   animation: cravingsMediaReveal 480ms ease-out both;
 }
 
-section {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 720px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -304,6 +299,13 @@ select {
 }
 
 :root {
+  color-scheme: light;
+  --app-background: #fffaf5;
+  --app-foreground: #2d1b10;
+  --surface-primary: #fff8f1;
+  --surface-secondary: #f5ede5;
+  --surface-border: #e7d9c9;
+  --muted-foreground: #6b7280;
   /* Primary */
   --color-primary: #c2410c;
   --color-primary-content: #ffffff;
@@ -341,6 +343,28 @@ select {
   /* Error */
   --color-error: #ef4444;
   --color-error-content: #ffffff;
+}
+
+:root.app-dark {
+  color-scheme: dark;
+  --app-background: #111827;
+  --app-foreground: #f3f4f6;
+  --surface-primary: #1f2937;
+  --surface-secondary: #273449;
+  --surface-border: #475569;
+  --muted-foreground: #cbd5e1;
+  --color-neutral: #e2e8f0;
+  --color-base-100: #1f2937;
+  --color-base-200: #273449;
+  --color-base-300: #374151;
+  --color-base-content: #f3f4f6;
+}
+
+html,
+body {
+  background: var(--app-background);
+  color: var(--app-foreground);
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 /* Remove number input spinner buttons */
@@ -541,19 +565,15 @@ input[type="password"]::-ms-reveal {
   }
 }
 
-/* App-wide dark surfaces; images and branded orange actions retain their colors. */
-.app-dark body,
-.app-dark #root {
-  background: #111827;
-  color: #f3f4f6;
-}
+/* Dark theme surfaces; imagery and branded orange actions keep their colors. */
+.app-dark #root { color: var(--app-foreground); }
 
 .app-dark .bg-white {
   background-color: #1f2937 !important;
 }
 .app-dark .bg-slate-50,
 .app-dark .bg-slate-100 {
-  background-color: #273449 !important;
+  background-color: var(--surface-secondary) !important;
 }
 .app-dark .bg-orange-50 {
   background-color: #3b3026 !important;
@@ -571,7 +591,14 @@ input[type="password"]::-ms-reveal {
   color: #f3f4f6 !important;
 }
 .app-dark [class*="bg-(--color-base-100)"] {
-  background-color: #1f2937 !important;
+  background-color: var(--surface-primary) !important;
+}
+.app-dark [class*="bg-(--color-base-200)"] {
+  background-color: var(--surface-secondary) !important;
+}
+.app-dark [class*="border-(--color-secondary)"],
+.app-dark [class*="border-(--color-base-300)"] {
+  border-color: var(--surface-border) !important;
 }
 .app-dark .home-hero [class*="bg-white"] {
   background-color: #f8fafc !important;
@@ -602,8 +629,9 @@ input[type="password"]::-ms-reveal {
 }
 .app-dark .text-slate-600,
 .app-dark .text-slate-500,
-.app-dark .text-gray-500 {
-  color: #cbd5e1 !important;
+.app-dark .text-gray-500,
+.app-dark [class*="text-(--color-neutral)"] {
+  color: var(--muted-foreground) !important;
 }
 .app-dark .border-slate-100,
 .app-dark .border-slate-200,
