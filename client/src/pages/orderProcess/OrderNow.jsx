@@ -40,6 +40,7 @@ const OrderNow = () => {
     { id: "others", label: "Others", icon: MdLunchDining },
   ];
 
+
   const formatCuisineList = (value) => {
     if (!value) return [];
     if (Array.isArray(value)) return value;
@@ -48,7 +49,7 @@ const OrderNow = () => {
       .map((item) => item.trim())
       .filter(Boolean);
   };
-
+  
   const normalizeSearchText = (value = "") =>
     String(value)
       .toLowerCase()
