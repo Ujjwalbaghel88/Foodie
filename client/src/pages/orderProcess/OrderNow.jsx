@@ -49,7 +49,6 @@ const OrderNow = () => {
       .map((item) => item.trim())
       .filter(Boolean);
   };
-  
 
   const normalizeSearchText = (value = "") =>
     String(value)
