@@ -398,6 +398,8 @@ const CheckoutPage = () => {
         deliveryFee: 30,
       };
 
+
+      
       const finishOrder = (response) => {
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         localStorage.setItem(ACTIVE_ORDER_STORAGE_KEY, JSON.stringify({
