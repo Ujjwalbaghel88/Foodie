@@ -70,7 +70,6 @@ const OrderNow = () => {
       ["sahi", "shahi"],
       ["shahi", "shahi"],
     ];
-
     const expanded = normalized.split(" ").filter(Boolean).map((token) => {
       let updated = token;
       replacements.forEach(([from, to]) => {
@@ -78,7 +77,6 @@ const OrderNow = () => {
       });
       return updated;
     }).join(" ");
-
     variants.add(normalized);
     variants.add(expanded);
     variants.add(normalized.replace(/panner/g, "paneer").replace(/sahi/g, "shahi"));
