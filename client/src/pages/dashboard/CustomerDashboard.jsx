@@ -3,7 +3,7 @@ import Sidebar from "../../components/customerDashboard/Sidebar";
 import CustomerOverview from "../../components/customerDashboard/CustomerOverview";
 import CustomerOrders from "../../components/customerDashboard/CustomerOrders";
 import CustomerSetting from "../../components/customerDashboard/CustomerSetting";
-import { useLocation , useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../context/useAuth";
 
 const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
