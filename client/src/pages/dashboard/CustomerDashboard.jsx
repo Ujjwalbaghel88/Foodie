@@ -13,6 +13,7 @@ const CustomerDashboard = () => {
   const active = useLocation().state?.activeTab;
   const [activeTab, setActiveTab] = React.useState(active || "overview");
 
+
   if (!isLogin || user?.userType !== "customer") {
     return (
       <div
@@ -34,8 +35,6 @@ const CustomerDashboard = () => {
       </div>
     );
   }
-
-
   return (
     <>
       <div className="min-h-[calc(100vh-4rem)] flex flex-col lg:flex-row gap-2 m-2">
