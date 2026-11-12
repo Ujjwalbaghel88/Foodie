@@ -5,14 +5,12 @@ import CustomerOrders from "../../components/customerDashboard/CustomerOrders";
 import CustomerSetting from "../../components/customerDashboard/CustomerSetting";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../context/useAuth";
-
 const dashboardBg = `${import.meta.env.BASE_URL}foodTable.webp`;
 const CustomerDashboard = () => {
   const { user, isLogin } = useAuth();
   const navigate = useNavigate();
   const active = useLocation().state?.activeTab;
   const [activeTab, setActiveTab] = React.useState(active || "overview");
-
 
   if (!isLogin || user?.userType !== "customer") {
     return (

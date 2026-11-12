@@ -424,6 +424,14 @@ input[type="password"]::-ms-reveal {
   line-height: 1.04;
 }
 
+.home-hero-copy {
+  animation: cravingsFadeUp 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-hero-card {
+  animation: cravingsFloat 6s ease-in-out 700ms infinite;
+}
+
 .home-hero .home-stat {
   backdrop-filter: blur(12px);
   transition: transform 180ms ease, background-color 180ms ease;
@@ -485,6 +493,7 @@ input[type="password"]::-ms-reveal {
 }
 
 .restaurant-card {
+  animation: cravingsFadeUp 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
   transition:
     transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
     box-shadow 240ms ease,
@@ -561,6 +570,12 @@ input[type="password"]::-ms-reveal {
 
 @media (prefers-reduced-motion: reduce) {
   .home-hero-orbit {
+    animation: none;
+  }
+
+  .home-hero-copy,
+  .home-hero-card,
+  .restaurant-card {
     animation: none;
   }
 }

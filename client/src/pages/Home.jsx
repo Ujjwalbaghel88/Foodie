@@ -506,6 +506,34 @@ const Home = () => {
         const response = await api.get("/public/restaurants");
         const restaurantsData = Array.isArray(response.data?.data) ? response.data.data : [];
 
+        const menuResponses = await Promise.all(
+          restaurantsData.map(async (restaurant) => {
+            try {
+              const menuResponse = await api.get(
+                `/public/restaurant/${restaurant._id}/menu`,
+              );
+              const menuItems = Array.isArray(menuResponse.data?.data?.items)
+                ? menuResponse.data.data.items
+                : [];
+
+              return {
+                restaurantId: restaurant._id,
+                menuText: menuItems
+                  .map((item) =>
+                    `${item.itemName || ""} ${item.description || ""} ${item.foodType || ""}`,
+                  )
+                  .join(" "),
+              };
+            } catch (error) {
+              console.warn(`Could not load menu for ${restaurant._id}:`, error);
+              return { restaurantId: restaurant._id, menuText: "" };
+            }
+          }),
+        );
+        const menuLookup = new Map(
+          menuResponses.map(({ restaurantId, menuText }) => [restaurantId, menuText]),
+        );
+
         const formattedRestaurants = restaurantsData.map((restaurant) => ({
           id: restaurant._id,
           name: restaurant.restaurantName,
@@ -526,6 +554,7 @@ const Home = () => {
               .filter(Boolean),
           city: restaurant.city,
           address: restaurant.address,
+          menuText: menuLookup.get(restaurant._id) || "",
           openingHours: restaurant.openingHours,
           closingHours: restaurant.closingHours,
         }));
@@ -675,11 +704,18 @@ const Home = () => {
     if (query) {
       list = list.filter((restaurant) => {
         const cuisineText = restaurant.cuisines.join(" ").toLowerCase();
+        const searchableText = [
+          restaurant.name,
+          cuisineText,
+          restaurant.city,
+          restaurant.description,
+          restaurant.menuText,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
         return (
-          restaurant.name.toLowerCase().includes(query) ||
-          cuisineText.includes(query) ||
-          restaurant.city?.toLowerCase().includes(query) ||
-          restaurant.description?.toLowerCase().includes(query)
+          searchableText.includes(query)
         );
       });
     }
@@ -842,7 +878,7 @@ const Home = () => {
         <div className="home-hero-orbit pointer-events-none absolute -right-24 top-12 z-[2] hidden h-80 w-80 rounded-full border border-orange-100/25 lg:block" />
 
         <div className="relative z-10 mx-auto grid min-h-[64vh] max-w-7xl items-center gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
-          <div className="max-w-2xl">
+          <div className="home-hero-copy max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-100/25 bg-[#29130c]/45 px-4 py-2 text-sm font-medium backdrop-blur-md">
               <FaFireAlt className="text-orange-300" />
               Fast delivery • trusted kitchens • tasty cravings
@@ -915,7 +951,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="home-quick-card w-full max-w-md justify-self-end rounded-[2rem] border border-orange-100/25 bg-[#24120d]/55 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
+          <div className="home-quick-card home-hero-card w-full max-w-md justify-self-end rounded-[2rem] border border-orange-100/25 bg-[#24120d]/55 p-3.5 shadow-2xl backdrop-blur-xl lg:p-4">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
@@ -1201,7 +1237,7 @@ const Home = () => {
           </div>
         ) : topRestaurants.length > 0 ? (
           <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
-            {topRestaurants.map((restaurant) => {
+            {topRestaurants.map((restaurant, index) => {
               const cuisines = restaurant.cuisines.length ? restaurant.cuisines : ["Popular"];
               const isSaved = savedRestaurantIds.includes(restaurant.id);
 
@@ -1209,6 +1245,7 @@ const Home = () => {
                 <div
                   key={restaurant.id}
                   className="restaurant-card group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-orange-100 bg-white text-left shadow-[0_12px_36px_rgba(75,35,15,0.08)] transition"
+                  style={{ animationDelay: `${index * 90}ms` }}
                 >
                   <div className="restaurant-card__media relative h-64 overflow-hidden">
                     <img
@@ -1610,4 +1647,3 @@ const Home = () => {
 };
 
 export default Home;
-
