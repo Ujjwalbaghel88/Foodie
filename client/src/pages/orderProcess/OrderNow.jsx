@@ -15,6 +15,7 @@ import {
   toggleFavoriteRestaurantId,
 } from "../../utils/favoritesStorage";
 
+
 const OrderNow = () => {
   const navigate = useNavigate();
   const location = useLocation();
