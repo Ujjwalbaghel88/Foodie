@@ -85,8 +85,7 @@ const OrderNow = () => {
 
     const spacedVariants = [...variants].filter(Boolean);
     return [...new Set(spacedVariants.flatMap((variant) => [variant, variant.replace(/\s+/g, "")]))].filter(Boolean);
-  };
-
+  }
   const swiggyFilters = [
     { id: "all", label: "All" },
     { id: "topRated", label: "Top Rated" },
