@@ -93,6 +93,8 @@ const OrderNow = () => {
     { id: "mostReviewed", label: "Most Reviewed" },
   ];
 
+  
+
   const applySort = useCallback((list) => {
     const sorted = [...list];
     if (sortMode === "rating") {
