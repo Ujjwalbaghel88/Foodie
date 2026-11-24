@@ -11,7 +11,6 @@ const CustomerDashboard = () => {
   const navigate = useNavigate();
   const active = useLocation().state?.activeTab;
   const [activeTab, setActiveTab] = React.useState(active || "overview");
-
   if (!isLogin || user?.userType !== "customer") {
     return (
       <div
@@ -33,7 +32,7 @@ const CustomerDashboard = () => {
       </div>
     );
 
-    
+
   }
   return (
     <>
