@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-
 const contactHeroBg = `${import.meta.env.BASE_URL}contactPage.jpg`;
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -47,10 +45,9 @@ const Contact = () => {
   };
 
   const inputClass = (field) =>
-    `w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-      errors[field]
-        ? "border-(--color-error) border-2"
-        : "border-(--color-base-300)"
+    `w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors[field]
+      ? "border-(--color-error) border-2"
+      : "border-(--color-base-300)"
     }`;
 
   return (
