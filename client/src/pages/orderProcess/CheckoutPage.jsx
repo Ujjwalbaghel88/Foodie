@@ -500,7 +500,6 @@ const CheckoutPage = () => {
       setPlacingOrder(false);
     }
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fff7f1] grid place-items-center">
